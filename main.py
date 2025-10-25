@@ -272,11 +272,14 @@ async def websocket_endpoint(ws: WebSocket):
                     
                     success = True
                 except asyncio.TimeoutError:
+                    print(f"⏱️ Timeout waiting for answer")
                     answer = "Oops! Something went wrong on my end. Could you please repeat your question?"
                     sources = []
                     success = False
                 except Exception as e:
-                    print(f"Error generating answer: {e}")
+                    print(f"❌ Error generating answer: {type(e).__name__}: {e}")
+                    import traceback
+                    traceback.print_exc()
                     answer = "Oops! Something went wrong on my end. Could you please repeat your question?"
                     sources = []
                     success = False
