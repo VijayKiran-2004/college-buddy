@@ -196,6 +196,12 @@
                                     </svg>
                                     <span>Clear History</span>
                                 </button>
+                                <button onclick="exportChatHistory()" class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    <span>Export Chat</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -349,6 +355,43 @@
         function clearChatHistory() {
             localStorage.removeItem('chatHistory');
             messageArea.innerHTML = '';
+            displayMessage("Chat history cleared. How can I help you today?", false, []);
+        }
+        
+        function exportChatHistory() {
+            const messages = [];
+            messageArea.querySelectorAll('.flex.mb-4').forEach(msg => {
+                const bubble = msg.querySelector('div > div');
+                const timestamp = msg.querySelector('.text-xs.text-gray-500');
+                if (bubble) {
+                    messages.push({
+                        text: bubble.textContent,
+                        isUser: msg.classList.contains('justify-end'),
+                        timestamp: timestamp ? timestamp.textContent : ''
+                    });
+                }
+            });
+            
+            // Create text format
+            let chatText = 'College Buddy Chat History\n';
+            chatText += '='.repeat(50) + '\n\n';
+            messages.forEach(msg => {
+                const sender = msg.isUser ? 'You' : 'College Buddy';
+                chatText += `[${msg.timestamp}] ${sender}:\n${msg.text}\n\n`;
+            });
+            
+            // Download as text file
+            const blob = new Blob([chatText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat-history-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            console.log('Chat history exported');
         }
 
         function connectWebSocket() {
@@ -403,6 +446,27 @@
         connectWebSocket();
 
         // --- Utility Functions ---
+
+        function submitFeedback(message, sentiment) {
+            fetch('/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    sentiment: sentiment,
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Feedback submitted:', sentiment);
+            })
+            .catch(error => {
+                console.error('Error submitting feedback:', error);
+            });
+        }
 
         function scrollToBottom() {
             messageArea.scrollTop = messageArea.scrollHeight;
@@ -576,6 +640,45 @@
                 });
                 // Append sources at the BOTTOM of the message bubble
                 messageBubble.appendChild(sourcesDiv);
+            }
+            
+            // Add feedback buttons (thumbs up/down) for bot messages
+            if (!isUser) {
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'mt-3 pt-3 border-t border-gray-200 flex items-center gap-3';
+                feedbackDiv.innerHTML = `
+                    <span class="text-xs text-gray-500">Was this helpful?</span>
+                    <button class="feedback-btn thumbs-up text-gray-400 hover:text-green-600 transition-colors duration-200" title="Helpful">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                        </svg>
+                    </button>
+                    <button class="feedback-btn thumbs-down text-gray-400 hover:text-red-600 transition-colors duration-200" title="Not helpful">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" />
+                        </svg>
+                    </button>
+                `;
+                
+                // Add click handlers for feedback
+                const thumbsUp = feedbackDiv.querySelector('.thumbs-up');
+                const thumbsDown = feedbackDiv.querySelector('.thumbs-down');
+                
+                thumbsUp.addEventListener('click', () => {
+                    submitFeedback(message, 'positive');
+                    thumbsUp.classList.add('text-green-600');
+                    thumbsUp.classList.remove('text-gray-400');
+                    thumbsDown.disabled = true;
+                });
+                
+                thumbsDown.addEventListener('click', () => {
+                    submitFeedback(message, 'negative');
+                    thumbsDown.classList.add('text-red-600');
+                    thumbsDown.classList.remove('text-gray-400');
+                    thumbsUp.disabled = true;
+                });
+                
+                messageBubble.appendChild(feedbackDiv);
             }
             
             messageContainer.appendChild(messageBubble);
