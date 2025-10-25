@@ -69,10 +69,41 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 5) -> List[Doc
         topics = detect_topics(processed_query)
         logger.info(f"Detected topics: {topics}")
         
-        # Process conversation history
+        # Process conversation history for context-aware queries
         history_queries = []
-        if history:
+        context_aware_query = processed_query
+        
+        if history and len(history) >= 2:
             try:
+                # Get recent conversation context (last 2-3 exchanges)
+                recent_context = []
+                for item in history[-6:]:  # Last 3 exchanges (user + bot)
+                    if item.get('role') == 'user' and 'parts' in item:
+                        recent_context.append(f"User: {item['parts'][0]}")
+                    elif item.get('role') == 'model' and 'parts' in item:
+                        # Only include first 100 chars of bot response
+                        recent_context.append(f"Bot: {item['parts'][0][:100]}")
+                
+                # If query is short/vague and we have context, reformulate it
+                if len(processed_query.split()) <= 3 and recent_context:
+                    from rag.chain import gemini_model
+                    if gemini_model:
+                        try:
+                            reformulation_prompt = f"""Given this conversation context:
+{chr(10).join(recent_context)}
+
+The user just asked: "{processed_query}"
+
+This seems like a follow-up question. Reformulate it into a complete, standalone question that includes the necessary context. Keep it concise (under 15 words).
+
+Reformulated question:"""
+                            
+                            context_aware_query = gemini_model(reformulation_prompt).strip()
+                            logger.info(f"Reformulated '{processed_query}' → '{context_aware_query}'")
+                        except Exception as e:
+                            logger.warning(f"Could not reformulate query: {e}")
+                            context_aware_query = processed_query
+                
                 history_queries = [
                     preprocess_query(item['parts'][0]) 
                     for item in history[-5:] 
@@ -81,10 +112,11 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 5) -> List[Doc
             except Exception as he:
                 logger.warning(f"Error processing history: {str(he)}")
         
-        # Create enhanced query
-        enhanced_query = processed_query
-        if history_queries:
-            enhanced_query = f"{' '.join(history_queries)} {enhanced_query}"
+        # Create enhanced query (use reformulated if available)
+        enhanced_query = context_aware_query
+        if history_queries and context_aware_query == processed_query:
+            # Only concatenate if we didn't reformulate
+            enhanced_query = f"{' '.join(history_queries[-2:])} {enhanced_query}"
         
         # Add department-specific terms
         dept_terms = {
