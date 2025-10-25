@@ -88,7 +88,7 @@ app = FastAPI(lifespan=lifespan)
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, replace with ["https://tkrcet.ac.in"]
+    allow_origins=["*"],  # For production, replace with your domain
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -360,7 +360,7 @@ def find_free_port(start_port=8000):
 
 if __name__ == "__main__":
     try:
-        port = 8001
+        port = int(os.environ.get("PORT", 8001))
         print(f"Starting server on port {port}")
         uvicorn.run(app, host="0.0.0.0", port=port)
     except Exception as e:
