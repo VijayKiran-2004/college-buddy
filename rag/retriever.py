@@ -111,8 +111,13 @@ This seems like a follow-up question. Reformulate it into a complete, standalone
 
 Reformulated question:"""
                             
-                            context_aware_query = gemini_model(reformulation_prompt).strip()
-                            logger.info(f"Reformulated '{processed_query}' → '{context_aware_query}'")
+                            reformulated = gemini_model(reformulation_prompt)
+                            if reformulated and isinstance(reformulated, str):
+                                context_aware_query = reformulated.strip()
+                                logger.info(f"Reformulated '{processed_query}' → '{context_aware_query}'")
+                            else:
+                                context_aware_query = processed_query
+                                logger.warning("Gemini returned None or invalid response, using original query")
                         except Exception as e:
                             logger.warning(f"Could not reformulate query: {e}")
                             context_aware_query = processed_query
