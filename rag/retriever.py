@@ -81,11 +81,24 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 5) -> List[Doc
                     if item.get('role') == 'user' and 'parts' in item:
                         recent_context.append(f"User: {item['parts'][0]}")
                     elif item.get('role') == 'model' and 'parts' in item:
-                        # Only include first 100 chars of bot response
-                        recent_context.append(f"Bot: {item['parts'][0][:100]}")
+                        # Only include first 150 chars of bot response
+                        recent_context.append(f"Bot: {item['parts'][0][:150]}")
+                
+                # Check if query is vague/needs context (expanded detection)
+                vague_queries = [
+                    'programs', 'courses', 'faculty', 'facilities', 'labs', 'placements',
+                    'admissions', 'fees', 'scholarship', 'hostel', 'research', 'projects',
+                    'offered', 'available', 'members', 'details', 'information', 'about',
+                    'how many', 'total', 'number'
+                ]
+                
+                is_vague = (
+                    len(processed_query.split()) <= 5 or  # Increased from 3 to 5 words
+                    any(word in processed_query.lower() for word in vague_queries)
+                )
                 
                 # If query is short/vague and we have context, reformulate it
-                if len(processed_query.split()) <= 3 and recent_context:
+                if is_vague and recent_context:
                     from rag.chain import gemini_model
                     if gemini_model:
                         try:
