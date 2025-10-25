@@ -667,27 +667,48 @@ def check_clarification_response(question: str, history: Optional[list]) -> tupl
     if not options:
         return False, None
     
-    # Check if user's response matches any option (fuzzy match)
+    # Check if user's response matches any option (better fuzzy match)
     question_lower = question.lower().strip()
+    question_words = set(question_lower.split())
+    
+    best_match = None
+    best_match_score = 0
     
     for option in options:
         option_clean = re.sub(r'\(.*?\)', '', option).strip().lower()  # Remove parentheses
         option_clean = re.sub(r'[^\w\s]', ' ', option_clean)  # Remove punctuation
+        option_words = set(option_clean.split())
         
-        # Check for partial or full match
-        if option_clean in question_lower or question_lower in option_clean:
-            # Get the previous user question for context
-            prev_user_question = ""
-            for item in reversed(history[:-1]):
-                if item.get("role") == "user":
-                    prev_user_question = item.get("parts", [""])[0]
-                    break
-            
-            # Reformulate: combine previous question with selected option
-            reformulated = f"{prev_user_question} {option.strip()}"
-            logger.info(f"✅ Matched clarification response: '{question}' → '{reformulated}'")
-            return True, reformulated
+        # Check for word overlap
+        common_words = question_words.intersection(option_words)
+        if len(common_words) >= 1:  # At least one word matches
+            match_score = len(common_words) / max(len(question_words), len(option_words))
+            if match_score > best_match_score:
+                best_match_score = match_score
+                best_match = option.strip()
+        
+        # Also check for substring match (more lenient)
+        if question_lower in option_clean or option_clean in question_lower:
+            match_score = 0.9
+            if match_score > best_match_score:
+                best_match_score = match_score
+                best_match = option.strip()
     
+    # If we found a good match (score > 0.3), use it
+    if best_match and best_match_score > 0.3:
+        # Get the previous user question for context
+        prev_user_question = ""
+        for item in reversed(history[:-1]):
+            if item.get("role") == "user":
+                prev_user_question = item.get("parts", [""])[0]
+                break
+        
+        # Reformulate: combine previous question with selected option
+        reformulated = f"{prev_user_question} {best_match}"
+        logger.info(f"✅ Matched clarification response: '{question}' → '{reformulated}' (score: {best_match_score:.2f})")
+        return True, reformulated
+    
+    logger.info(f"No clarification match found for: '{question}'")
     return False, None
 
 def rag_answer(question: str, history: Optional[list] = None, lang: str = "english") -> dict:
