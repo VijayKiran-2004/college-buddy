@@ -634,6 +634,62 @@ def format_faculty_response(faculty_info: Dict[str, List[Dict[str, str]]], query
         
     return "\n\n".join(response_parts)
 
+def check_clarification_response(question: str, history: Optional[list]) -> tuple[bool, Optional[str]]:
+    """
+    Check if user is responding to a bot's clarification question.
+    Returns (is_clarification_response, reformulated_question)
+    """
+    if not history or len(history) < 2:
+        return False, None
+    
+    last_bot_msg = history[-1].get("parts", [""])[0] if history[-1].get("role") == "model" else ""
+    
+    # Detect clarification patterns in bot's last message
+    clarification_indicators = [
+        "what specifically would you like to know",
+        "are you interested in",
+        "would you like to know about",
+        "which one",
+        "please specify",
+        "can you clarify"
+    ]
+    
+    is_clarification = any(indicator in last_bot_msg.lower() for indicator in clarification_indicators)
+    
+    if not is_clarification:
+        return False, None
+    
+    # Extract options from the clarification (numbered list or bullet points)
+    numbered_options = re.findall(r'^\d+\.\s+(.+?)$', last_bot_msg, re.MULTILINE)
+    bullet_options = re.findall(r'^[•\-\*]\s+(.+?)$', last_bot_msg, re.MULTILINE)
+    options = numbered_options or bullet_options
+    
+    if not options:
+        return False, None
+    
+    # Check if user's response matches any option (fuzzy match)
+    question_lower = question.lower().strip()
+    
+    for option in options:
+        option_clean = re.sub(r'\(.*?\)', '', option).strip().lower()  # Remove parentheses
+        option_clean = re.sub(r'[^\w\s]', ' ', option_clean)  # Remove punctuation
+        
+        # Check for partial or full match
+        if option_clean in question_lower or question_lower in option_clean:
+            # Get the previous user question for context
+            prev_user_question = ""
+            for item in reversed(history[:-1]):
+                if item.get("role") == "user":
+                    prev_user_question = item.get("parts", [""])[0]
+                    break
+            
+            # Reformulate: combine previous question with selected option
+            reformulated = f"{prev_user_question} {option.strip()}"
+            logger.info(f"✅ Matched clarification response: '{question}' → '{reformulated}'")
+            return True, reformulated
+    
+    return False, None
+
 def rag_answer(question: str, history: Optional[list] = None, lang: str = "english") -> dict:
     """
     Generate an answer using RAG (Retrieval Augmented Generation).
@@ -658,6 +714,12 @@ def rag_answer(question: str, history: Optional[list] = None, lang: str = "engli
                         question = options[choice_index]
                 except (ValueError, IndexError):
                     pass # Not a valid choice, treat as a regular query
+        
+        # Check if this is a response to a clarification question
+        is_clarification, reformulated_question = check_clarification_response(question, history)
+        if is_clarification and reformulated_question:
+            question = reformulated_question
+            logger.info(f"Using reformulated clarification response: {question}")
 
         # Input validation
         if not isinstance(question, str) or not question.strip():

@@ -75,6 +75,24 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 5) -> List[Doc
         
         if history and len(history) >= 2:
             try:
+                # Check if user is responding to a clarification question
+                # (If so, skip vague query reformulation as chain.py will handle it)
+                is_clarification_response = False
+                if len(history) >= 1 and history[-1].get("role") == "model":
+                    last_bot_msg = history[-1].get("parts", [""])[0]
+                    clarification_indicators = [
+                        "what specifically would you like to know",
+                        "are you interested in",
+                        "would you like to know about",
+                        "which one",
+                        "please specify",
+                        "can you clarify"
+                    ]
+                    is_clarification_response = any(
+                        indicator in last_bot_msg.lower() 
+                        for indicator in clarification_indicators
+                    )
+                
                 # Get recent conversation context (last 2-3 exchanges)
                 recent_context = []
                 for item in history[-6:]:  # Last 3 exchanges (user + bot)
@@ -97,8 +115,11 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 5) -> List[Doc
                     any(word in processed_query.lower() for word in vague_queries)
                 )
                 
-                # If query is short/vague and we have context, reformulate it
-                if is_vague and recent_context:
+                # Only reformulate if:
+                # 1. Query is vague AND
+                # 2. We have context AND
+                # 3. User is NOT responding to a clarification (chain.py handles that)
+                if is_vague and recent_context and not is_clarification_response:
                     from rag.chain import gemini_model
                     if gemini_model:
                         try:
@@ -121,6 +142,8 @@ Reformulated question:"""
                         except Exception as e:
                             logger.warning(f"Could not reformulate query: {e}")
                             context_aware_query = processed_query
+                elif is_clarification_response:
+                    logger.info(f"Skipping reformulation - user responding to clarification")
                 
                 history_queries = [
                     preprocess_query(item['parts'][0]) 
