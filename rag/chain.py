@@ -659,10 +659,11 @@ def check_clarification_response(question: str, history: Optional[list]) -> tupl
     if not is_clarification:
         return False, None
     
-    # Extract options from the clarification (numbered list or bullet points)
+    # Extract options from the clarification (numbered, lettered, or bullet points)
     numbered_options = re.findall(r'^\d+\.\s+(.+?)$', last_bot_msg, re.MULTILINE)
+    lettered_options = re.findall(r'^[a-z]\)\s+(.+?)$', last_bot_msg, re.MULTILINE | re.IGNORECASE)
     bullet_options = re.findall(r'^[•\-\*]\s+(.+?)$', last_bot_msg, re.MULTILINE)
-    options = numbered_options or bullet_options
+    options = numbered_options or lettered_options or bullet_options
     
     if not options:
         return False, None
@@ -724,17 +725,32 @@ def rag_answer(question: str, history: Optional[list] = None, lang: str = "engli
         dict: A dictionary with 'answer' (str) and 'sources' (list) keys
     """
     try:
-        # Handle numbered responses to clarification questions
-        if question.strip().isdigit() and history and history[-1].get("role") == "model":
+        # Handle single character responses (a, b, c) or numbered responses (1, 2, 3) to clarification questions
+        if history and history[-1].get("role") == "model":
             last_bot_response = history[-1].get("parts", [""])[0]
-            options = re.findall(r"^\d+\.\s+(.*)", last_bot_response, re.MULTILINE)
-            if options:
-                try:
-                    choice_index = int(question.strip()) - 1
-                    if 0 <= choice_index < len(options):
-                        question = options[choice_index]
-                except (ValueError, IndexError):
-                    pass # Not a valid choice, treat as a regular query
+            
+            # Handle numbered responses (1, 2, 3)
+            if question.strip().isdigit():
+                options = re.findall(r"^\d+\.\s+(.*)", last_bot_response, re.MULTILINE)
+                if options:
+                    try:
+                        choice_index = int(question.strip()) - 1
+                        if 0 <= choice_index < len(options):
+                            question = options[choice_index]
+                            logger.info(f"Selected numbered option {choice_index + 1}: {question}")
+                    except (ValueError, IndexError):
+                        pass # Not a valid choice, treat as a regular query
+            
+            # Handle lettered responses (a, b, c)
+            elif len(question.strip()) == 1 and question.strip().lower().isalpha():
+                options = re.findall(r"^([a-z])\)\s+(.*)", last_bot_response, re.MULTILINE | re.IGNORECASE)
+                if options:
+                    letter = question.strip().lower()
+                    for opt_letter, opt_text in options:
+                        if opt_letter.lower() == letter:
+                            question = opt_text.strip()
+                            logger.info(f"Selected letter option {letter}: {question}")
+                            break
         
         # Check if this is a response to a clarification question
         is_clarification, reformulated_question = check_clarification_response(question, history)
