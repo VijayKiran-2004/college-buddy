@@ -187,8 +187,7 @@ async def upload_document(file: UploadFile = File(...)):
         )
 
 @app.websocket("/chat")
-@limiter.limit("30/minute")
-async def websocket_endpoint(ws: WebSocket, request: Request):
+async def websocket_endpoint(ws: WebSocket):
     await ws.accept()
     print("Client connected to websocket")
     history = []
