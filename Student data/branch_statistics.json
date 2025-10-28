@@ -1,0 +1,37 @@
+[
+  {
+    "branch": "CE",
+    "branch_full": "Civil Engineering",
+    "description": "Branch Statistics for Civil Engineering:\nTotal Students: 209\nMale: 177\nFemale: 32\nAverage CGPA: 6.65\nHighest CGPA: 8.87\nLowest CGPA: 1.30\nStudents Placed: 16\nPlacement Percentage: 7.66%\nJoining Years: 2020, 2021, 2022"
+  },
+  {
+    "branch": "EEE",
+    "branch_full": "Electrical and Electronics Engineering",
+    "description": "Branch Statistics for Electrical and Electronics Engineering:\nTotal Students: 245\nMale: 209\nFemale: 36\nAverage CGPA: 6.92\nHighest CGPA: 9.13\nLowest CGPA: 1.12\nStudents Placed: 50\nPlacement Percentage: 20.41%\nJoining Years: 2020, 2021, 2022"
+  },
+  {
+    "branch": "MECH",
+    "branch_full": "Mechanical Engineering",
+    "description": "Branch Statistics for Mechanical Engineering:\nTotal Students: 142\nMale: 135\nFemale: 7\nAverage CGPA: 6.71\nHighest CGPA: 8.67\nLowest CGPA: 1.62\nStudents Placed: 19\nPlacement Percentage: 13.38%\nJoining Years: 2020, 2021, 2022"
+  },
+  {
+    "branch": "CSE",
+    "branch_full": "Computer Science and Engineering",
+    "description": "Branch Statistics for Computer Science and Engineering:\nTotal Students: 526\nMale: 348\nFemale: 178\nAverage CGPA: 7.04\nHighest CGPA: 9.31\nLowest CGPA: 1.49\nStudents Placed: 131\nPlacement Percentage: 24.90%\nJoining Years: 2020, 2021, 2022"
+  },
+  {
+    "branch": "IT",
+    "branch_full": "Information Technology",
+    "description": "Branch Statistics for Information Technology:\nTotal Students: 126\nMale: 82\nFemale: 44\nAverage CGPA: 6.61\nHighest CGPA: 8.83\nLowest CGPA: 1.55\nStudents Placed: 21\nPlacement Percentage: 16.67%\nJoining Years: 2020, 2021, 2022"
+  },
+  {
+    "branch": "CSE (AI&ML)",
+    "branch_full": "Computer Science and Engineering (AI & ML)",
+    "description": "Branch Statistics for Computer Science and Engineering (AI & ML):\nTotal Students: 203\nMale: 136\nFemale: 67\nAverage CGPA: 7.31\nHighest CGPA: 9.41\nLowest CGPA: 3.83\nStudents Placed: 55\nPlacement Percentage: 27.09%\nJoining Years: 2020, 2021, 2022"
+  },
+  {
+    "branch": "CSE (DS)",
+    "branch_full": "Computer Science and Engineering (Data Science)",
+    "description": "Branch Statistics for Computer Science and Engineering (Data Science):\nTotal Students: 197\nMale: 140\nFemale: 57\nAverage CGPA: 7.30\nHighest CGPA: 9.14\nLowest CGPA: 3.29\nStudents Placed: 59\nPlacement Percentage: 29.95%\nJoining Years: 2020, 2021, 2022"
+  }
+]

@@ -46,6 +46,43 @@ def create_vector_store_from_scraped_data(json_path: str, collection_name: str, 
             )
             documents.append(doc)
             print("Additional context added successfully")
+    
+    # Add student data
+    student_data_path = "Student data/students_processed.json"
+    if os.path.exists(student_data_path):
+        print(f"Adding student records from {student_data_path}")
+        with open(student_data_path, 'r', encoding='utf-8') as f:
+            students = json.load(f)
+            for student in students:
+                doc = Document(
+                    page_content=student.get("description", ""),
+                    metadata={
+                        "source": "student_records",
+                        "title": f"Student: {student.get('name', 'Unknown')}",
+                        "roll_no": student.get('roll_no', ''),
+                        "branch": student.get('branch', '')
+                    }
+                )
+                documents.append(doc)
+        print(f"Added {len(students)} student records")
+    
+    # Add branch statistics
+    branch_stats_path = "Student data/branch_statistics.json"
+    if os.path.exists(branch_stats_path):
+        print(f"Adding branch statistics from {branch_stats_path}")
+        with open(branch_stats_path, 'r', encoding='utf-8') as f:
+            branch_stats = json.load(f)
+            for stat in branch_stats:
+                doc = Document(
+                    page_content=stat.get("description", ""),
+                    metadata={
+                        "source": "branch_statistics",
+                        "title": f"Statistics: {stat.get('branch_full', 'Unknown')}",
+                        "branch": stat.get('branch', '')
+                    }
+                )
+                documents.append(doc)
+        print(f"Added {len(branch_stats)} branch statistics")
 
     # Create and persist the Chroma vector store
     vectordb = Chroma.from_documents(
