@@ -44,12 +44,15 @@ Thumbs.db
 chroma/
 *.sqlite3
 *.db
-response_cache.json
-analytics_data.json
-background_analytics.json
 
-# Keep structured files but ignore scraped data (can be regenerated)
-scraped_data.json
+# Data files - now organized in data/ directory (regeneratable)
+data/cache/
+data/analytics/
+data/scraped/
+
+# Keep important data files
+!data/links/
+!data/student/
 
 # Logs
 *.log
@@ -67,8 +70,7 @@ logs/
 
 # Large files
 *.xlsx
-*.csv
-!structured_links.csv  # Keep this - it's important
+!data/student/*.xlsx  # Keep student data Excel files
 temp_*
 *.log
 
