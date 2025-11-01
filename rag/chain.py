@@ -876,11 +876,11 @@ def rag_answer(question: str, history: Optional[list] = None, lang: str = "engli
             log_interaction(question, response, str(retrieve_error))
             return {"answer": response, "sources": []}
 
-        # Generate a clarification question if needed
-        clarification = generate_clarification_question(question, source_docs, history)
-        if clarification:
-            log_interaction(question, clarification, "Clarification needed")
-            return {"answer": clarification, "sources": []}
+        # Generate a clarification question if needed (DISABLED FOR PERFORMANCE)
+        # clarification = generate_clarification_question(question, source_docs, history)
+        # if clarification:
+        #     log_interaction(question, clarification, "Clarification needed")
+        #     return {"answer": clarification, "sources": []}
 
         # Extract source information
         sources = []

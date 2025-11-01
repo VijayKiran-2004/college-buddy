@@ -45,7 +45,7 @@ def init_retriever():
 # Initialize on module load
 init_retriever()
 
-def get_docs(query: str, history: Optional[list] = None, k: int = 5) -> List[Document]:
+def get_docs(query: str, history: Optional[list] = None, k: int = 3) -> List[Document]:
     """
     Enhanced document retrieval with NLP processing and error handling.
     
@@ -120,28 +120,20 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 5) -> List[Doc
                 # 2. We have context AND
                 # 3. User is NOT responding to a clarification (chain.py handles that)
                 if is_vague and recent_context and not is_clarification_response:
-                    from rag.chain import gemini_model
-                    if gemini_model:
-                        try:
-                            reformulation_prompt = f"""Given this conversation context:
-{chr(10).join(recent_context)}
-
-The user just asked: "{processed_query}"
-
-This seems like a follow-up question. Reformulate it into a complete, standalone question that includes the necessary context. Keep it concise (under 15 words).
-
-Reformulated question:"""
-                            
-                            reformulated = gemini_model(reformulation_prompt)
-                            if reformulated and isinstance(reformulated, str):
-                                context_aware_query = reformulated.strip()
-                                logger.info(f"Reformulated '{processed_query}' → '{context_aware_query}'")
-                            else:
-                                context_aware_query = processed_query
-                                logger.warning("Gemini returned None or invalid response, using original query")
-                        except Exception as e:
-                            logger.warning(f"Could not reformulate query: {e}")
-                            context_aware_query = processed_query
+                    # OPTIMIZED: Use simple concatenation instead of LLM call
+                    # Extract last user query from context
+                    last_user_query = None
+                    for ctx in reversed(recent_context):
+                        if ctx.startswith("User:"):
+                            last_user_query = ctx.replace("User:", "").strip()
+                            break
+                    
+                    if last_user_query and last_user_query.lower() != processed_query.lower():
+                        # Simple concatenation for context
+                        context_aware_query = f"{last_user_query} {processed_query}"
+                        logger.info(f"Context-aware query: '{context_aware_query}'")
+                    else:
+                        context_aware_query = processed_query
                 elif is_clarification_response:
                     logger.info(f"Skipping reformulation - user responding to clarification")
                 
