@@ -47,7 +47,28 @@ chroma/
 response_cache.json
 analytics_data.json
 background_analytics.json
+
+# Keep structured files but ignore scraped data (can be regenerated)
 scraped_data.json
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# API Keys (double check!)
+*.key
+*-key.json
+!tkr-chatbot-key.json  # If this is needed, be careful!
+
+# Large files
+*.xlsx
+*.csv
+!structured_links.csv  # Keep this - it's important
 temp_*
 *.log
 
