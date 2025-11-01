@@ -63,21 +63,59 @@ python main.py
 
 ## 🌐 Deployment
 
-### Deploy to Render
+### **Recommended: Split Architecture (Frontend + Backend)**
+
+#### **Step 1: Deploy Backend to Render (Free)**
 
 1. Push your code to GitHub
 2. Go to [Render Dashboard](https://dashboard.render.com/)
 3. Click "New +" → "Web Service"
 4. Connect your GitHub repository
 5. Configure:
-   - **Name**: college-buddy
+   - **Name**: college-buddy-backend
    - **Environment**: Python 3
    - **Build Command**: `pip install -r requirements.txt`
    - **Start Command**: `python main.py`
-6. Add Environment Variable: `GEMINI_API_KEY`
+6. Add Environment Variable: `GEMINI_API_KEY=your_api_key`
 7. Click "Create Web Service"
+8. **Note your backend URL**: `https://college-buddy-backend.onrender.com`
 
-Your bot will be live at: `https://college-buddy.onrender.com`
+#### **Step 2: Deploy Frontend to GitHub Pages (Free)**
+
+1. Update `docs/config.js` with your backend URL:
+   ```javascript
+   window.CONFIG = {
+       BACKEND_URL: 'wss://college-buddy-backend.onrender.com'
+   };
+   ```
+
+2. Commit and push:
+   ```bash
+   git add docs/
+   git commit -m "Configure backend URL for GitHub Pages"
+   git push origin main
+   ```
+
+3. Enable GitHub Pages:
+   - Go to your GitHub repo → **Settings** → **Pages**
+   - **Source**: Deploy from a branch
+   - **Branch**: `main` → `/docs` folder
+   - Click **Save**
+
+4. Your frontend will be live at:
+   ```
+   https://VijayKiran-2004.github.io/college-buddy/
+   ```
+
+**Benefits of Split Architecture:**
+- ✅ Frontend on GitHub CDN (fast, free, unlimited bandwidth)
+- ✅ Backend handles AI/database (Render free tier: 750 hrs/month)
+- ✅ Separate scaling and caching
+- ✅ Easy to update frontend without backend restarts
+
+### **Alternative: Deploy Full Stack to Render**
+
+Follow Step 1 above, but access at: `https://college-buddy-backend.onrender.com`
 
 ## 📁 Project Structure
 
