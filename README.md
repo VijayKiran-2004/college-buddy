@@ -15,9 +15,12 @@ An intelligent AI-powered chatbot for Teegala Krishna Reddy College of Engineeri
 ## 🚀 Tech Stack
 
 - **Backend**: Python, FastAPI, WebSocket
-- **AI/ML**: Google Gemini API, LangChain, ChromaDB
-- **Vector Search**: Sentence Transformers (BAAI/bge-small-en)
-- **Frontend**: HTML, JavaScript, Tailwind CSS
+- **AI/ML**: Google Gemini API (gemini-2.5-flash), LangChain
+- **RAG System**: Retrieval Augmented Generation with ChromaDB vector store
+- **Vector Embeddings**: Sentence Transformers (BAAI/bge-small-en, all-MiniLM-L6-v2)
+- **Web Scraping**: Scrapy (primary), BeautifulSoup (fallback), concurrent processing
+- **Data Processing**: Pandas, NumPy, OpenPyXL for student data preprocessing
+- **Frontend**: HTML5, JavaScript, Tailwind CSS
 - **Voice**: Web Speech API, Speech Synthesis API
 
 ## 📋 Prerequisites
@@ -80,17 +83,30 @@ Your bot will be live at: `https://college-buddy.onrender.com`
 
 ```
 college-buddy/
-├── main.py                 # FastAPI server
-├── rag/                    # RAG system
-│   ├── chain.py           # Response generation
-│   ├── retriever.py       # Document retrieval
-│   ├── text_processor.py  # Query processing
-│   └── rules.py           # Conversational rules
-├── scraper/               # Data ingestion
-├── static/                # Frontend files
-│   └── index.html        # Chat interface
-├── requirements.txt       # Python dependencies
-└── .env                  # Environment variables
+├── main.py                      # FastAPI server with WebSocket
+├── rag/                         # RAG (Retrieval Augmented Generation) system
+│   ├── chain.py                # LangChain response generation with Gemini
+│   ├── retriever.py            # ChromaDB vector retrieval & query expansion
+│   ├── text_processor.py       # NLP query processing & entity extraction
+│   ├── enhanced_matcher.py     # Fuzzy matching for clarifications
+│   ├── rules.py                # Conversational tone rules
+│   └── create_vector_store.py  # Vector DB builder (1,748 documents)
+├── scraper/                     # Web scraping & data ingestion
+│   ├── scrapy_scraper.py       # Scrapy spider with BeautifulSoup parser
+│   ├── cache_builder.py        # Scraping orchestrator (Scrapy-first)
+│   ├── loader.py               # Document loader for ChromaDB
+│   └── doc_loader.py           # Word document ingestion
+├── Student data/                # Student records (1,648 students)
+│   ├── students_processed.json # Preprocessed student data
+│   ├── branch_statistics.json  # Department statistics (7 branches)
+│   └── student_data_cleaned.csv# Cleaned student dataset
+├── static/                      # Frontend
+│   └── index.html              # Chat interface with voice support
+├── structured_links.csv         # 92 URLs for scraping (79 HTML + 13 PDFs)
+├── scraped_data.json           # Scraped website content
+├── chroma/                      # ChromaDB vector database (92.12 MB)
+├── requirements.txt             # Python dependencies
+└── .env                        # Environment variables (API keys)
 ```
 
 ## 🎯 Usage
@@ -109,6 +125,23 @@ PORT=8001
 ```
 
 ## 📊 Features in Detail
+
+### RAG (Retrieval Augmented Generation) System
+- **Vector Database**: ChromaDB with 1,748 documents (92.12 MB)
+  - 93 scraped website pages (college info, departments, admissions)
+  - 1,648 student records with CGPA, placements, branch data
+  - 7 branch statistics (CSE, EEE, ECE, MECH, CIVIL, IT, MBA)
+- **Intelligent Retrieval**: 13 topic categories with semantic search
+- **Query Expansion**: Automatic synonym expansion for better matching
+- **Context-Aware**: Clarification-aware follow-up question handling
+- **Embeddings**: Sentence Transformers (all-MiniLM-L6-v2)
+
+### Web Scraping Architecture
+- **Primary Method**: Scrapy with concurrent requests (10 simultaneous)
+- **Fallback Parser**: BeautifulSoup for complex HTML and PDFs
+- **Rate Limiting**: 0.5s delay, automatic retries, custom user agent
+- **Data Sources**: 92 URLs (79 HTML pages + 13 PDF documents)
+- **Performance**: 5x faster than sequential scraping
 
 ### Smart Retrieval
 - 13 topic categories with intelligent query expansion
