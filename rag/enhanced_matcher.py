@@ -17,7 +17,7 @@ CACHE_FILE = 'data/scraped/scraped_data.json'
 class RuleMatcher:
     def __init__(self, csv_path: Optional[str] = None):
         if not csv_path:
-            csv_path = "C:/college-buddy/structured_links.csv"
+            csv_path = "data/links/structured_links.csv"
         self.csv_path = Path(csv_path).resolve()
         self.rules = self.load_rules()
         self.scraped_data = self.load_scraped_data()
