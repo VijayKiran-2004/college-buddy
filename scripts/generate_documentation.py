@@ -497,6 +497,210 @@ def generate_pdf():
         story.append(Paragraph(f"• {principle}", bullet_style))
     
     story.append(Spacer(1, 0.3*inch))
+    story.append(PageBreak())
+    
+    # Extension and Deployment
+    story.append(Paragraph("5. Extension & Deployment Guide", heading_style))
+    
+    # Scaling Considerations
+    story.append(Paragraph("5.1 Scaling Strategies", subheading_style))
+    story.append(Paragraph(
+        "As usage grows, the system can be scaled through various strategies:",
+        body_style
+    ))
+    story.append(Spacer(1, 0.1*inch))
+    
+    scaling_points = [
+        "<b>Horizontal Scaling:</b> Deploy multiple FastAPI instances behind a load balancer (Nginx/AWS ALB)",
+        "<b>Database Scaling:</b> Move from ChromaDB to Pinecone or Weaviate for distributed vector search",
+        "<b>Caching Layer:</b> Replace JSON file cache with Redis for distributed caching",
+        "<b>Async Processing:</b> Use Celery for background tasks (analytics, indexing)",
+        "<b>CDN Integration:</b> Serve static assets through CloudFront or similar CDN",
+        "<b>Database Sharding:</b> Partition vector store by content type or date"
+    ]
+    
+    for point in scaling_points:
+        story.append(Paragraph(f"• {point}", bullet_style))
+    
+    story.append(Spacer(1, 0.2*inch))
+    
+    # CI/CD Pipeline
+    story.append(Paragraph("5.2 CI/CD Pipeline", subheading_style))
+    story.append(Paragraph(
+        "Recommended continuous integration and deployment workflow:",
+        body_style
+    ))
+    story.append(Spacer(1, 0.1*inch))
+    
+    cicd_data = [
+        ['Stage', 'Tools', 'Actions'],
+        ['Code Quality', 'GitHub Actions, Black, Flake8', 'Linting, formatting checks'],
+        ['Testing', 'Pytest, Coverage.py', 'Unit tests, integration tests'],
+        ['Build', 'Docker', 'Container image creation'],
+        ['Security Scan', 'Snyk, Bandit', 'Dependency & code vulnerabilities'],
+        ['Deploy (Staging)', 'Render/Railway', 'Automated staging deployment'],
+        ['Integration Tests', 'Pytest', 'E2E tests on staging'],
+        ['Deploy (Production)', 'Render/AWS', 'Manual approval + deployment'],
+        ['Monitoring', 'Sentry, DataDog', 'Error tracking, performance'],
+    ]
+    
+    cicd_table = Table(cicd_data, colWidths=[1.8*inch, 2*inch, 2.7*inch])
+    cicd_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#e74c3c')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 11),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#ecf0f1')),
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bdc3c7')),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('PADDING', (0, 0), (-1, -1), 6),
+    ]))
+    
+    story.append(cicd_table)
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Monitoring and Observability
+    story.append(Paragraph("5.3 Monitoring & Observability", subheading_style))
+    
+    monitoring_points = [
+        "<b>Application Metrics:</b> Response times, cache hit rates, query volumes (Prometheus + Grafana)",
+        "<b>Error Tracking:</b> Exception monitoring and alerting (Sentry)",
+        "<b>Logs Aggregation:</b> Centralized logging for debugging (ELK Stack or CloudWatch)",
+        "<b>Performance Monitoring:</b> LLM API latency, vector search performance (DataDog/New Relic)",
+        "<b>Uptime Monitoring:</b> Health checks and availability alerts (UptimeRobot)",
+        "<b>User Analytics:</b> Query patterns, popular topics, user satisfaction"
+    ]
+    
+    for point in monitoring_points:
+        story.append(Paragraph(f"• {point}", bullet_style))
+    
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Deployment Platforms
+    story.append(Paragraph("5.4 Deployment Platforms", subheading_style))
+    
+    deployment_data = [
+        ['Platform', 'Best For', 'Pros', 'Cons'],
+        ['Render', 'Quick MVP', 'Easy setup, Free tier', 'Limited scaling'],
+        ['Railway', 'Startups', 'Good DX, Auto-scaling', 'Pricing can increase'],
+        ['AWS EC2/ECS', 'Enterprise', 'Full control, Scalable', 'Complex setup'],
+        ['Google Cloud Run', 'Serverless', 'Auto-scaling, Pay per use', 'Cold starts'],
+        ['DigitalOcean', 'Mid-size', 'Simple, Cost-effective', 'Manual scaling'],
+        ['Heroku', 'Prototypes', 'Very easy', 'Expensive at scale']
+    ]
+    
+    deploy_table = Table(deployment_data, colWidths=[1.3*inch, 1.3*inch, 1.8*inch, 1.8*inch])
+    deploy_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#9b59b6')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#ecf0f1')),
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bdc3c7')),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('PADDING', (0, 0), (-1, -1), 6),
+    ]))
+    
+    story.append(deploy_table)
+    story.append(PageBreak())
+    
+    # Future Improvements
+    story.append(Paragraph("6. Future Improvements & Roadmap", heading_style))
+    
+    # Streaming Responses
+    story.append(Paragraph("6.1 Streaming Responses", subheading_style))
+    story.append(Paragraph(
+        "Implement real-time streaming for better user experience:",
+        body_style
+    ))
+    story.append(Spacer(1, 0.1*inch))
+    
+    streaming_points = [
+        "Use Server-Sent Events (SSE) or WebSocket streaming",
+        "Stream tokens from LLM API as they're generated",
+        "Display progressive responses to users in real-time",
+        "Reduce perceived latency from 2-3s to instant feedback",
+        "Implementation: FastAPI StreamingResponse + async generators"
+    ]
+    
+    for point in streaming_points:
+        story.append(Paragraph(f"• {point}", bullet_style))
+    
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Embeddings Options
+    story.append(Paragraph("6.2 Advanced Embeddings", subheading_style))
+    story.append(Paragraph(
+        "Enhance semantic search with better embedding models:",
+        body_style
+    ))
+    story.append(Spacer(1, 0.1*inch))
+    
+    embeddings_data = [
+        ['Model', 'Dimensions', 'Performance', 'Use Case'],
+        ['all-MiniLM-L6-v2', '384', 'Fast, Lower accuracy', 'Current (Baseline)'],
+        ['all-mpnet-base-v2', '768', 'Balanced', 'Recommended upgrade'],
+        ['text-embedding-3-small', '1536', 'High quality', 'OpenAI (Paid)'],
+        ['voyage-2', '1024', 'Specialized', 'Domain-specific'],
+    ]
+    
+    embed_table = Table(embeddings_data, colWidths=[2*inch, 1.3*inch, 1.5*inch, 1.7*inch])
+    embed_table.setStyle(TableStyle([
+        ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor('#1abc9c')),
+        ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+        ('ALIGN', (0, 0), (-1, -1), 'LEFT'),
+        ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+        ('FONTSIZE', (0, 0), (-1, 0), 10),
+        ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+        ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor('#ecf0f1')),
+        ('GRID', (0, 0), (-1, -1), 1, colors.HexColor('#bdc3c7')),
+        ('FONTNAME', (0, 1), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 1), (-1, -1), 9),
+        ('PADDING', (0, 0), (-1, -1), 6),
+    ]))
+    
+    story.append(embed_table)
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Caching Improvements
+    story.append(Paragraph("6.3 Enhanced Caching Strategy", subheading_style))
+    
+    caching_points = [
+        "<b>Multi-Level Cache:</b> L1 (In-memory) + L2 (Redis) for better performance",
+        "<b>Semantic Cache:</b> Cache similar queries using embedding similarity",
+        "<b>Predictive Cache:</b> Pre-warm cache for popular queries",
+        "<b>Cache Analytics:</b> Track hit rates, identify cache optimization opportunities",
+        "<b>Dynamic TTL:</b> Adjust cache lifetime based on content freshness"
+    ]
+    
+    for point in caching_points:
+        story.append(Paragraph(f"• {point}", bullet_style))
+    
+    story.append(Spacer(1, 0.2*inch))
+    
+    # Additional Features
+    story.append(Paragraph("6.4 Feature Enhancements", subheading_style))
+    
+    features = [
+        "<b>Multi-modal Support:</b> Add image search and document uploads",
+        "<b>Personalization:</b> User profiles and query history",
+        "<b>Multi-language:</b> Support for regional languages",
+        "<b>Voice Interface:</b> Speech-to-text integration",
+        "<b>Admin Dashboard:</b> Analytics, content management, user management",
+        "<b>A/B Testing:</b> Test different prompts and retrieval strategies",
+        "<b>Feedback Loop:</b> Collect user feedback to improve responses"
+    ]
+    
+    for feature in features:
+        story.append(Paragraph(f"• {feature}", bullet_style))
+    
+    story.append(Spacer(1, 0.3*inch))
     
     # Footer
     story.append(Spacer(1, 0.5*inch))
