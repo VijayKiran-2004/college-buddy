@@ -26,7 +26,7 @@ else:
 class BackgroundAnalytics:
     """Analyzes queries and responses in background (no user delay)"""
     
-    def __init__(self, analytics_file: str = "background_analytics.json"):
+    def __init__(self, analytics_file: str = "data/analytics/background_analytics.json"):
         self.analytics_file = analytics_file
         self.load_analytics()
     

@@ -12,7 +12,7 @@ from rag.retriever import ABBREVIATION_MAP
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-CACHE_FILE = 'scraped_data.json'
+CACHE_FILE = 'data/scraped/scraped_data.json'
 
 class RuleMatcher:
     def __init__(self, csv_path: Optional[str] = None):

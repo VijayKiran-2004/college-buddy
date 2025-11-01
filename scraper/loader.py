@@ -99,4 +99,4 @@ def ingest_from_cache(cache_path: str):
     print(f"[loader] Successfully ingested {len(all_chunks)} text chunks from {len(scraped_docs)} documents into the database.")
 
 if __name__ == "__main__":
-    ingest_from_cache('scraped_data.json')
+    ingest_from_cache('data/scraped/scraped_data.json')

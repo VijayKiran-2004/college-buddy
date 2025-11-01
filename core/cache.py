@@ -7,7 +7,7 @@ import hashlib
 from datetime import datetime, timedelta
 from typing import Optional
 
-CACHE_FILE = "response_cache.json"
+CACHE_FILE = "data/cache/response_cache.json"
 CACHE_DURATION_HOURS = 24
 
 class ResponseCache:

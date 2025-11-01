@@ -157,7 +157,7 @@ class TKRCETSpider(scrapy.Spider):
         logger.info(f"Total pages scraped: {len(self.scraped_data)}")
 
 
-def run_scrapy_scraper(output_file: str = 'scraped_data.json', urls: Optional[List[str]] = None, csv_path: str = 'structured_links.csv') -> List[Dict]:
+def run_scrapy_scraper(output_file: str = 'data/scraped/scraped_data.json', urls: Optional[List[str]] = None, csv_path: str = 'data/links/structured_links.csv') -> List[Dict]:
     """
     Run the Scrapy scraper and save results
     

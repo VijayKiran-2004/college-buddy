@@ -12,13 +12,13 @@ from scraper.loader import ingest_from_cache
 from scraper.doc_loader import ingest_word_document
 from typing import Dict, Optional, Tuple, Union
 import json
-from response_cache import response_cache
-from analytics_logger import analytics
-from feedback_collector import feedback_collector
-from background_analytics import analyze_query_background
-from typo_corrector import correct_typos, get_correction_message
+from core.cache import response_cache
+from core.analytics import analytics
+from core.feedback import feedback_collector
+from core.background_analytics import analyze_query_background
+from core.typo_corrector import correct_typos, get_correction_message
 
-CACHE_FILE = 'scraped_data.json'
+CACHE_FILE = 'data/scraped/scraped_data.json'
 DB_DIR = './chroma'
 CACHE_MAX_AGE_SECONDS = 24 * 60 * 60  # 24 hours
 
@@ -120,7 +120,7 @@ def get_analytics(request: Request):
 @limiter.limit("10/minute")
 def get_background_analytics(request: Request):
     """Get LLM-powered background analytics (no delay to users)."""
-    from background_analytics import get_quick_stats
+    from core.background_analytics import get_quick_stats
     try:
         stats = get_quick_stats()
         return JSONResponse(content=stats)

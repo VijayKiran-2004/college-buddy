@@ -9,7 +9,7 @@ from datetime import datetime
 from collections import defaultdict
 from pathlib import Path
 
-ANALYTICS_FILE = "analytics_data.json"
+ANALYTICS_FILE = "data/analytics/analytics_data.json"
 
 class ChatAnalytics:
     def __init__(self):

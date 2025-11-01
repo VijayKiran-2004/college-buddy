@@ -48,7 +48,7 @@ def create_vector_store_from_scraped_data(json_path: str, collection_name: str, 
             print("Additional context added successfully")
     
     # Add student data
-    student_data_path = "Student data/students_processed.json"
+    student_data_path = "data/student/students_processed.json"
     if os.path.exists(student_data_path):
         print(f"Adding student records from {student_data_path}")
         with open(student_data_path, 'r', encoding='utf-8') as f:
@@ -67,7 +67,7 @@ def create_vector_store_from_scraped_data(json_path: str, collection_name: str, 
         print(f"Added {len(students)} student records")
     
     # Add branch statistics
-    branch_stats_path = "Student data/branch_statistics.json"
+    branch_stats_path = "data/student/branch_statistics.json"
     if os.path.exists(branch_stats_path):
         print(f"Adding branch statistics from {branch_stats_path}")
         with open(branch_stats_path, 'r', encoding='utf-8') as f:
@@ -96,7 +96,7 @@ def create_vector_store_from_scraped_data(json_path: str, collection_name: str, 
 
 if __name__ == "__main__":
     create_vector_store_from_scraped_data(
-        json_path='scraped_data.json',
+        json_path='data/scraped/scraped_data.json',
         collection_name='college_buddy',
         persist_directory='./chroma',
         additional_context_path='additional_context.txt'

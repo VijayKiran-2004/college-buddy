@@ -5,7 +5,7 @@ def preprocess_student_data():
     """Preprocess student data and convert to structured format for the chatbot"""
     
     print("Loading student data...")
-    df = pd.read_csv('Student data/student_data.csv')
+    df = pd.read_csv('data/student/student_data.csv')
     
     # 1. Handle missing values in COMPANY PLACED
     df['COMPANY PLACED'] = df['COMPANY PLACED'].fillna('Not Placed')
@@ -83,15 +83,15 @@ Joining Years: {', '.join(map(str, sorted(branch_data['joining_year'].unique()))
     print("\nSaving processed data...")
     
     # Save individual student records
-    with open('Student data/students_processed.json', 'w', encoding='utf-8') as f:
+    with open('data/student/students_processed.json', 'w', encoding='utf-8') as f:
         json.dump(student_records, f, indent=2, ensure_ascii=False)
     
     # Save branch statistics
-    with open('Student data/branch_statistics.json', 'w', encoding='utf-8') as f:
+    with open('data/student/branch_statistics.json', 'w', encoding='utf-8') as f:
         json.dump(branch_stats, f, indent=2, ensure_ascii=False)
     
     # Save cleaned CSV
-    df.to_csv('Student data/student_data_cleaned.csv', index=False)
+    df.to_csv('data/student/student_data_cleaned.csv', index=False)
     
     print(f"✅ Processed {len(student_records)} student records")
     print(f"✅ Generated statistics for {len(branch_stats)} branches")

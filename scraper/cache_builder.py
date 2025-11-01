@@ -113,4 +113,4 @@ def build_cache_from_csv(csv_path: str, output_path: str):
     print(f"\nScraping complete. {len(all_docs)} documents saved to {output_path}.")
 
 if __name__ == "__main__":
-    build_cache_from_csv('structured_links.csv', 'scraped_data.json')
+    build_cache_from_csv('data/links/structured_links.csv', 'data/scraped/scraped_data.json')

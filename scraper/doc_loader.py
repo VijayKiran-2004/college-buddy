@@ -36,7 +36,7 @@ def read_word_document(file_path: str) -> str:
     
     return '\n'.join(full_text)
 
-def ingest_word_document(file_path: str, cache_file: str = 'scraped_data.json') -> None:
+def ingest_word_document(file_path: str, cache_file: str = 'data/scraped/scraped_data.json') -> None:
     """
     Ingest content from a Word document and add it to the cache.
     
