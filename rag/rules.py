@@ -22,6 +22,26 @@ CONVERSATIONAL_RULES = [
     {
         "pattern": r"^(bye|goodbye|see you|cya|exit|quit)$",
         "answer": "Goodbye! Feel free to come back anytime you have questions about TKRCET."
+    },
+    {
+        "pattern": r"(list of|all) (hod|hods|head of department|heads of department)",
+        "answer": """Here are all the **Heads of Departments (HODs)** at TKRCET:
+
+**Engineering Departments:**
+• **Civil Engineering** - Dr. K. Satya Sai | 📞 8498085212 | 📧 civil@tkrcet.com
+• **Electrical & Electronics (EEE)** - Dr. K. Raju | 📞 8498085213 | 📧 eee@tkrcet.com  
+• **Mechanical Engineering** - Mr. D Rushi Kumar Reddy | 📞 8498085214 | 📧 mech@tkrcet.com
+• **Electronics & Communication (ECE)** - Dr. M. Mahesh | 📞 8498085215 | 📧 ece@tkrcet.com
+• **Computer Science (CSE)** - Dr. A. Suresh Rao | 📞 8498085216 | 📧 cse@tkrcet.com
+• **CSE (AI & ML)** - Dr. B. Sunil Srinivas | 📞 8498993377 | 📧 csm@tkrcet.com
+• **CSE (Data Science)** - Dr. V. Krishna | 📞 9100377791 | 📧 csd@tkrcet.com
+• **Information Technology (IT)** - Dr. N. Satya Narayana | 📞 8498085217 | 📧 it@tkrcet.com
+
+**Other Departments:**
+• **MBA** - Dr. K. Gyaneshwari | 📞 8886878546
+• **Humanities & Sciences** - Dr. D.V.S.R. Anil Kumar | 📞 8498085221 | 📧 anilkumar@tkrcet.com
+
+[View Contact Information →](https://tkrcet.ac.in/contact-us/)"""
     }
 ]
 

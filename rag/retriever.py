@@ -153,17 +153,25 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 3) -> List[Doc
         
         # Add department-specific terms
         dept_terms = {
-            'cse': ['computer science engineering', 'computer science and engineering department', 'CSE department'],
-            'ece': ['electronics and communication engineering', 'ECE department'],
-            'eee': ['electrical and electronics engineering', 'EEE department'],
-            'it': ['information technology', 'IT department'],
-            'mba': ['master of business administration', 'MBA department']
+            'cse': ['computer science engineering', 'computer science and engineering department', 'CSE department', 'CSE HOD', 'computer science head'],
+            'ece': ['electronics and communication engineering', 'ECE department', 'ECE HOD', 'electronics communication head'],
+            'eee': ['electrical and electronics engineering', 'EEE department', 'EEE HOD', 'electrical electronics head'],
+            'it': ['information technology', 'IT department', 'IT HOD', 'information technology head', 'Dr. N. Satya Narayana', 'Satya Narayana', 'it@tkrcet.com', '8498085217'],
+            'mba': ['master of business administration', 'MBA department', 'MBA HOD', 'management head'],
+            'civil': ['civil engineering', 'civil department', 'civil HOD', 'Dr. K. Satya Sai', 'civil@tkrcet.com', '8498085212'],
+            'mech': ['mechanical engineering', 'mechanical department', 'mech HOD', 'D Rushi Kumar Reddy', 'mech@tkrcet.com', '8498085214']
         }
         
-        # Check for department mentions
+        # Check for department mentions and HOD queries
+        is_hod_query = any(word in query.lower() for word in ['hod', 'head of department', 'head of', 'department head'])
+        
         for dept, terms in dept_terms.items():
             if dept.lower() in query.lower():
-                enhanced_query = f"{enhanced_query} {' '.join(terms)}"
+                if is_hod_query:
+                    # For HOD queries, add contact information terms
+                    enhanced_query = f"{enhanced_query} {' '.join(terms)} contact information phone email"
+                else:
+                    enhanced_query = f"{enhanced_query} {' '.join(terms)}"
         
         # Comprehensive topic-specific expansions for intelligent retrieval
         topic_expansions = {
@@ -182,10 +190,12 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 3) -> List[Doc
                 'last date to apply', 'reservation policy', 'admission guidelines', 'intake capacity'
             ],
             'faculty': [
-                'faculty members', 'teaching staff', 'professors', 'department head', 'hod name',
+                'faculty members', 'teaching staff', 'professors', 'department head', 'hod name', 'head of department',
                 'faculty profile', 'faculty qualification', 'teaching experience', 'faculty expertise',
                 'faculty research', 'faculty publications', 'assistant professor', 'associate professor',
-                'visiting faculty', 'faculty achievements', 'faculty contact', 'faculty directory'
+                'visiting faculty', 'faculty achievements', 'faculty contact', 'faculty directory',
+                'HOD', 'Dr.', 'contact number', 'email', 'phone', 'department head contact',
+                'Satya Narayana', 'Suresh Rao', 'Mahesh', 'Satya Sai', 'Raju', 'contact information'
             ],
             'fee': [
                 'fee structure', 'tuition fee', 'course fee', 'total fee', 'fee payment',
@@ -247,7 +257,10 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 3) -> List[Doc
             'contact': [
                 'contact', 'address', 'phone number', 'email', 'location', 'contact details',
                 'how to reach', 'contact information', 'college address', 'office contact',
-                'helpline', 'principal contact', 'admission office contact', 'enquiry'
+                'helpline', 'principal contact', 'admission office contact', 'enquiry',
+                'department contact', 'HOD contact', 'faculty contact', 'phone', 'email id',
+                'contact number', 'mobile number', 'department phone', 'department email',
+                'Dr.', 'Professor', '@tkrcet.com', '8498085', 'contact us'
             ]
         }
         
