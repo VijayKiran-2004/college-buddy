@@ -741,7 +741,17 @@
         function sendMessage() {
             const message = userInput.value.trim();
             
-            if (!message) return;
+            // Prevent empty messages
+            if (!message) {
+                console.log('⚠️ Empty message, ignoring');
+                return;
+            }
+            
+            // Prevent duplicate sends while waiting for response
+            if (isWaitingForResponse) {
+                console.log('⚠️ Already waiting for response, ignoring');
+                return;
+            }
             
             if (!ws || ws.readyState !== WebSocket.OPEN) {
                 console.log('⚠️ WebSocket not connected');
