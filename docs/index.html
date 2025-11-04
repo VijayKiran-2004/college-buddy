@@ -412,7 +412,7 @@
                 
                 if (data.type === 'response') {
                     hideTypingIndicator();
-                    displayMessage(data.message, false, data.sources || []);
+                    displayMessage(data.message, false, data.sources || [], data.suggestions || []);
                     
                     // Speak response if voice response is enabled - SYNCHRONIZED!
                     if (voiceResponseCheckbox && voiceResponseCheckbox.checked) {
@@ -426,7 +426,10 @@
                     }
                 } else if (data.type === 'error') {
                     hideTypingIndicator();
-                    displayMessage(`Error: ${data.message}`, false, []);
+                    displayMessage(data.message, false, [], data.suggestions || []);
+                } else if (data.type === 'feedback_received') {
+                    // Show brief confirmation toast
+                    console.log('✅ ' + data.message);
                 }
             };
 
@@ -473,8 +476,19 @@
         function scrollToBottom() {
             messageArea.scrollTop = messageArea.scrollHeight;
         }
+        
+        function submitFeedback(message, helpful) {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                ws.send(JSON.stringify({
+                    type: 'feedback',
+                    message: message,
+                    helpful: helpful
+                }));
+                console.log(`📊 Feedback submitted: ${helpful ? '👍' : '👎'}`);
+            }
+        }
 
-        function displayMessage(text, isUser = false, sources = [], elementId = null) {
+        function displayMessage(text, isUser = false, sources = [], suggestions = [], elementId = null) {
             const messageWrapper = document.createElement('div');
             messageWrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`;
             if (elementId) {
@@ -674,13 +688,37 @@
                 });
                 
                 thumbsDown.addEventListener('click', () => {
-                    submitFeedback(message, 'negative');
+                    submitFeedback(text, false);
                     thumbsDown.classList.add('text-red-600');
                     thumbsDown.classList.remove('text-gray-400');
                     thumbsUp.disabled = true;
                 });
                 
                 messageBubble.appendChild(feedbackDiv);
+            }
+            
+            // Add suggestion chips for guided conversation
+            if (!isUser && suggestions && suggestions.length > 0) {
+                const suggestionsDiv = document.createElement('div');
+                suggestionsDiv.className = 'mt-3 pt-3 border-t border-gray-200';
+                suggestionsDiv.innerHTML = '<div class="text-xs font-semibold text-indigo-600 mb-2">Quick questions:</div>';
+                
+                const chipsContainer = document.createElement('div');
+                chipsContainer.className = 'flex flex-wrap gap-2';
+                
+                suggestions.forEach(suggestion => {
+                    const chip = document.createElement('button');
+                    chip.className = 'px-3 py-1.5 text-xs bg-indigo-50 hover:bg-indigo-100 text-indigo-700 rounded-full transition-all duration-200 hover:shadow-md';
+                    chip.textContent = suggestion;
+                    chip.addEventListener('click', () => {
+                        chatInput.value = suggestion;
+                        sendButton.click();
+                    });
+                    chipsContainer.appendChild(chip);
+                });
+                
+                suggestionsDiv.appendChild(chipsContainer);
+                messageBubble.appendChild(suggestionsDiv);
             }
             
             messageContainer.appendChild(messageBubble);

@@ -73,33 +73,42 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def home(request: Request):
     return FileResponse("static/index.html")
 
-@app.get("/demo")
+# Serve widget/demo from docs folder
+@app.get("/{path:path}")
 @limiter.limit("100/minute")
-def demo(request: Request):
-    return FileResponse("docs/index.html")
-
-@app.get("/widget")
-@limiter.limit("100/minute")
-def widget(request: Request):
-    return FileResponse("docs/index.html")
+def serve_widget(request: Request, path: str):
+    # Serve widget for /demo and /widget paths
+    if path in ["demo", "widget"]:
+        return FileResponse("docs/index.html")
+    # 404 for other paths
+    return JSONResponse({"error": "Not found"}, status_code=404)
 
 @app.websocket("/chat")
 async def websocket_endpoint(ws: WebSocket):
     await ws.accept()
     print("Client connected to websocket")
-    history = []
+    
+    # Enhanced conversation state management
+    conversation_state = {
+        "history": [],
+        "last_topic": None,
+        "failed_queries": [],
+        "context": {},
+        "message_count": 0,
+        "user_satisfaction": None
+    }
+    
     greetings = ["hi", "hello", "hey", "hii", "heyy", "how are you", "how r u", "how are you doing"]
     
-    # Create a task to send periodic pings to keep connection alive
+    # Keep ping task for connection stability (but enhance with context)
     async def send_pings():
         try:
             while True:
-                await asyncio.sleep(15)  # Send ping every 15 seconds
+                await asyncio.sleep(30)  # Reduced frequency - only for connection keep-alive
                 try:
                     await ws.send_json({"type": "ping"})
-                    print("💓 Sent ping to client")
                 except Exception as e:
-                    print(f"Failed to send ping: {e}")
+                    print(f"Connection lost: {e}")
                     break
         except asyncio.CancelledError:
             pass
@@ -110,9 +119,19 @@ async def websocket_endpoint(ws: WebSocket):
         while True:
             data = await ws.receive_json()
             
-            # Handle heartbeat ping
+            # Handle heartbeat ping (minimal overhead)
             if data.get("type") == "ping":
                 await ws.send_json({"type": "pong"})
+                continue
+            
+            # Handle feedback
+            if data.get("type") == "feedback":
+                conversation_state["user_satisfaction"] = data.get("helpful")
+                print(f"📊 User feedback: {'👍 Helpful' if data.get('helpful') else '👎 Not helpful'}")
+                await ws.send_json({
+                    "type": "feedback_received",
+                    "message": "Thank you for your feedback! 🙏"
+                })
                 continue
             
             question = data.get("message", "")
@@ -120,12 +139,24 @@ async def websocket_endpoint(ws: WebSocket):
             # Sanitize input
             question = sanitize_input(question)
             
+            # Intelligent error handling with context
             if not question:
+                # Provide contextual help based on history
+                if conversation_state["message_count"] == 0:
+                    help_msg = "👋 Welcome! Ask me about TKRCET admissions, courses, placements, fees, facilities, or faculty."
+                else:
+                    help_msg = "I didn't catch that. Could you rephrase your question?"
+                    if conversation_state["last_topic"]:
+                        help_msg += f" Or continue asking about {conversation_state['last_topic']}."
+                
                 await ws.send_json({
                     "type": "error",
-                    "message": "I didn't receive a question. Please try again."
+                    "message": help_msg,
+                    "suggestions": ["Tell me about CSE department", "What are the fees?", "Placement records"]
                 })
                 continue
+            
+            conversation_state["message_count"] += 1
             
             # Normalize question for greeting check
             normalized_question = question.lower().strip(" ?!.")
@@ -167,10 +198,13 @@ async def websocket_endpoint(ws: WebSocket):
                     })
                     continue
                 
-                # Get the answer with a timeout
+                # Get the answer with a timeout, passing conversation history for context
                 try:
+                    # Use last 10 turns for context (prevent token overflow)
+                    recent_history = conversation_state["history"][-10:] if conversation_state["history"] else []
+                    
                     result = await asyncio.wait_for(
-                        asyncio.to_thread(rag_answer, question=question, lang=lang, history=history),
+                        asyncio.to_thread(rag_answer, question=question, lang=lang, history=recent_history),
                         timeout=30.0
                     )
                     
@@ -209,16 +243,38 @@ async def websocket_endpoint(ws: WebSocket):
                 # Cache the response
                 response_cache.set(question, {"answer": answer, "sources": sources})
                 
-                # Append the interaction to history
-                history.append({"role": "user", "parts": [question]})
-                history.append({"role": "model", "parts": [answer]})
+                # Append to conversation history for context
+                conversation_state["history"].append({"role": "user", "parts": [question]})
+                conversation_state["history"].append({"role": "model", "parts": [answer]})
                 
-                # Send response to client (check if connection is still open)
+                # Detect topic for contextual help and generate smart suggestions
+                suggestions = []
+                if "cse" in question.lower() or "computer science" in question.lower():
+                    conversation_state["last_topic"] = "CSE department"
+                    suggestions = ["HOD contact", "CSE placements", "CSE labs", "Course curriculum"]
+                elif "placement" in question.lower():
+                    conversation_state["last_topic"] = "placements"
+                    suggestions = ["Top recruiters", "Placement statistics", "Training programs", "Internship opportunities"]
+                elif "fee" in question.lower():
+                    conversation_state["last_topic"] = "fees"
+                    suggestions = ["Scholarship options", "Fee payment schedule", "Hostel fees", "Financial aid"]
+                elif "admission" in question.lower():
+                    conversation_state["last_topic"] = "admissions"
+                    suggestions = ["Eligibility criteria", "Application process", "Important dates", "Contact admissions"]
+                elif "hod" in question.lower() or "head" in question.lower():
+                    suggestions = ["CSE HOD", "ECE HOD", "EEE HOD", "MECH HOD"]
+                else:
+                    # Default suggestions based on common queries
+                    suggestions = ["Department info", "Placement records", "Campus facilities", "Contact details"]
+                
+                # Send response with context-aware suggestions
                 try:
                     await ws.send_json({
                         "type": "response",
                         "message": answer,
-                        "sources": sources
+                        "sources": sources,
+                        "suggestions": suggestions,
+                        "show_feedback": True  # Prompt for feedback
                     })
                 except Exception as send_error:
                     print(f"[WARNING] Failed to send response - client likely disconnected: {send_error}")
