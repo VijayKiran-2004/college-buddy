@@ -3,1046 +3,1317 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Buddy Widget - TKRCET</title>
+    <title>College Buddy Chat Widget</title>
+    <!-- Load Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* Custom styles for the chat box transition and depth */
+        #chat-window {
+            /* Ensures 'all' properties transition over 0.3s with an ease-in-out curve */
+            transition: all 0.3s ease-in-out; 
+            transform-origin: bottom right;
         }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
-            margin: 0;
-            padding: 0;
+        .shadow-chat {
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23);
         }
-
-        /* Chat Widget Button */
-        .chat-button {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            cursor: pointer;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 1000;
-        }
-
-        .chat-button:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
-        }
-
-        .chat-button:active {
-            transform: scale(0.95);
-        }
-
-        .chat-button svg {
-            width: 32px;
-            height: 32px;
-        }
-
-        .chat-button.hide {
-            display: none;
-        }
-
-        /* Notification Badge */
-        .notification-badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 20px;
-            height: 20px;
-            background: #ef4444;
-            border-radius: 50%;
-            border: 2px solid white;
-            display: none;
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 0.8;
+        /* Mobile adjustments for the chat window */
+        @media (max-width: 640px) {
+            #chat-window {
+                width: 90vw; /* Take up most of the screen width on mobile */
+                height: 75vh; /* Increase height for better visibility on mobile */
+                max-width: none;
+                max-height: none;
             }
         }
 
-        /* Chat Window */
-        .chat-window {
-            position: fixed;
-            bottom: 100px;
-            right: 24px;
-            width: 400px;
-            max-width: calc(100vw - 48px);
-            height: 600px;
-            max-height: calc(100vh - 140px);
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
-            display: none;
-            flex-direction: column;
-            z-index: 999;
-            opacity: 0;
-            transform: translateY(20px) scale(0.95);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .chat-window.open {
-            display: flex;
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-
-        /* Header */
-        .chat-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 20px;
-            border-radius: 20px 20px 0 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .chat-header-content {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .chat-avatar {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        .chat-header-text h3 {
-            margin: 0;
-            font-size: 16px;
-            font-weight: 600;
-        }
-
-        .chat-header-text p {
-            margin: 0;
-            font-size: 12px;
-            opacity: 0.9;
-            margin-top: 2px;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .settings-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-
-        .settings-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .settings-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .close-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            cursor: pointer;
-            padding: 8px;
-            display: flex;
-            align-items: center;
-            border-radius: 8px;
-            transition: background 0.2s;
-        }
-
-        .close-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .close-btn svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        /* Messages Area */
-        .messages {
-            flex: 1;
-            padding: 20px;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-            background: #f8fafc;
-        }
-
-        .messages::-webkit-scrollbar {
+        /* Custom thin scrollbar for message area (vertical) */
+        #message-area::-webkit-scrollbar {
             width: 6px;
         }
 
-        .messages::-webkit-scrollbar-track {
-            background: transparent;
+        #message-area::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 10px;
         }
 
-        .messages::-webkit-scrollbar-thumb {
+        #message-area::-webkit-scrollbar-thumb {
             background: #cbd5e1;
             border-radius: 10px;
         }
 
-        .messages::-webkit-scrollbar-thumb:hover {
+        #message-area::-webkit-scrollbar-thumb:hover {
             background: #94a3b8;
         }
 
-        /* Message Styles */
-        .message {
-            max-width: 80%;
-            padding: 12px 16px;
-            border-radius: 16px;
-            word-wrap: break-word;
-            line-height: 1.5;
-            font-size: 14px;
-            animation: messageSlideIn 0.3s ease-out;
+        /* For Firefox */
+        #message-area {
+            scrollbar-width: thin;
+            scrollbar-color: #cbd5e1 #f1f5f9;
         }
 
-        @keyframes messageSlideIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
+        /* Voice animations */
+        @keyframes pulse-ring {
+            0% {
+                transform: scale(0.8);
                 opacity: 1;
-                transform: translateY(0);
             }
-        }
-
-        .user-message {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            align-self: flex-end;
-            margin-left: auto;
-            border-bottom-right-radius: 4px;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-        }
-
-        .bot-message {
-            background: white;
-            color: #1e293b;
-            align-self: flex-start;
-            border: 1px solid #e2e8f0;
-            border-bottom-left-radius: 4px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
-        
-        /* Typing Animation for Bot Message */
-        .bot-message.typing-animation {
-            animation: fadeIn 0.3s ease-in;
-        }
-        
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        
-        .bot-message .message-content {
-            opacity: 0;
-            animation: typeIn 0.5s ease-in forwards;
-        }
-        
-        @keyframes typeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-
-        .bot-message strong {
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .bot-message a {
-            color: #667eea;
-            text-decoration: underline;
-            transition: color 0.2s;
-        }
-
-        .bot-message a:hover {
-            color: #764ba2;
-        }
-
-        .bot-message ul, .bot-message ol {
-            margin: 8px 0;
-            padding-left: 20px;
-        }
-
-        .bot-message li {
-            margin-bottom: 6px;
-        }
-
-        .bot-message code {
-            background: #f1f5f9;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-        }
-
-        /* Quick Links (above response) */
-        .quick-links {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
-            margin-bottom: 8px;
-            padding: 8px 0;
-        }
-
-        .quick-link {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            color: #667eea;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .quick-link:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
-            border-color: rgba(102, 126, 234, 0.4);
-            transform: translateY(-1px);
-        }
-
-        .quick-link svg {
-            width: 12px;
-            height: 12px;
-        }
-
-        /* Reference Links (below response) */
-        .reference-links {
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .reference-title {
-            font-size: 11px;
-            font-weight: 600;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-
-        .reference-link {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 0;
-            color: #667eea;
-            text-decoration: none;
-            font-size: 13px;
-            transition: color 0.2s;
-        }
-
-        .reference-link:hover {
-            color: #764ba2;
-        }
-
-        .reference-link svg {
-            width: 14px;
-            height: 14px;
-            flex-shrink: 0;
-        }
-
-        /* Typing Indicator */
-        .typing {
-            display: none;
-            padding: 12px 16px;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 16px;
-            border-bottom-left-radius: 4px;
-            align-self: flex-start;
-            max-width: 70px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-        }
-
-        .typing.show {
-            display: block;
-        }
-
-        .typing-dots {
-            display: flex;
-            gap: 4px;
-        }
-
-        .typing-dots span {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #667eea;
-            animation: typing 1.4s infinite ease-in-out;
-        }
-
-        .typing-dots span:nth-child(1) {
-            animation-delay: 0s;
-        }
-
-        .typing-dots span:nth-child(2) {
-            animation-delay: 0.2s;
-        }
-
-        .typing-dots span:nth-child(3) {
-            animation-delay: 0.4s;
-        }
-
-        @keyframes typing {
-            0%, 60%, 100% {
-                transform: translateY(0);
-                opacity: 0.7;
+            50% {
+                transform: scale(1.2);
+                opacity: 0.5;
             }
-            30% {
-                transform: translateY(-8px);
+            100% {
+                transform: scale(0.8);
                 opacity: 1;
             }
         }
 
-        /* Input Area */
-        .input-area {
-            padding: 20px;
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            gap: 10px;
-            background: white;
-            border-radius: 0 0 20px 20px;
+        .animate-pulse-ring {
+            animation: pulse-ring 1.5s ease-in-out infinite;
         }
 
-        .input-area input {
-            flex: 1;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 14px;
-            outline: none;
-            transition: all 0.2s;
-            font-family: inherit;
+        /* Listening indicator */
+        .listening-indicator {
+            position: relative;
         }
 
-        .input-area input:focus {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        .input-area input::placeholder {
-            color: #94a3b8;
-        }
-
-        .send-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 14px;
-            transition: all 0.2s;
-            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
-        }
-
-        .send-btn:hover:not(:disabled) {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
-
-        .send-btn:active:not(:disabled) {
-            transform: translateY(0);
-        }
-
-        .send-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Connection Status */
-        .connection-status {
+        .listening-indicator::before {
+            content: '';
             position: absolute;
-            top: 8px;
-            right: 8px;
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: #10b981;
-            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 0.5rem;
+            background: linear-gradient(45deg, #ef4444, #f87171);
+            animation: pulse-ring 1.5s ease-in-out infinite;
+            z-index: -1;
         }
 
-        .connection-status.disconnected {
-            background: #ef4444;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        /* Recording wave animation */
+        @keyframes recording-wave {
+            0%, 100% {
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7),
+                           0 0 0 0 rgba(239, 68, 68, 0.5),
+                           0 0 0 0 rgba(239, 68, 68, 0.3);
+            }
+            50% {
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0),
+                           0 0 0 20px rgba(239, 68, 68, 0),
+                           0 0 0 30px rgba(239, 68, 68, 0);
+            }
         }
 
-        /* Powered By Footer */
-        .powered-by {
-            padding: 8px 20px;
-            text-align: center;
-            font-size: 11px;
-            color: #64748b;
-            background: #f8fafc;
-            border-top: 1px solid #e2e8f0;
+        .recording-animation {
+            animation: recording-wave 1.5s ease-in-out infinite;
         }
 
-        .powered-by a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: 500;
+        /* Popup animation */
+        @keyframes scale-in {
+            0% {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
         }
 
-        /* Mobile Responsive */
-        @media (max-width: 640px) {
-            .chat-button {
-                width: 56px;
-                height: 56px;
-                bottom: 20px;
-                right: 20px;
-            }
-
-            .chat-button svg {
-                width: 28px;
-                height: 28px;
-            }
-
-            .chat-window {
-                width: calc(100vw - 32px);
-                height: calc(100vh - 100px);
-                bottom: 88px;
-                right: 16px;
-                border-radius: 16px;
-            }
-
-            .chat-header {
-                padding: 16px;
-                border-radius: 16px 16px 0 0;
-            }
-
-            .messages {
-                padding: 16px;
-            }
-
-            .input-area {
-                padding: 16px;
-            }
+        .animate-scale-in {
+            animation: scale-in 0.3s ease-out;
         }
     </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'buddy-primary': '#4f46e5', // Indigo 600
+                        'buddy-light': '#eef2ff',   // Indigo 50
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body>
+<body class="font-sans min-h-screen">
 
-    <!-- Chat Button -->
-    <button class="chat-button" id="chatButton" onclick="toggleChat()" aria-label="Open chat">
-        <span class="notification-badge" id="notificationBadge"></span>
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-        </svg>
-    </button>
-
-    <!-- Chat Window -->
-    <div class="chat-window" id="chatWindow">
-        <div class="chat-header">
-            <div class="chat-header-content">
-                <div class="chat-avatar">🎓</div>
-                <div class="chat-header-text">
-                    <h3>College Buddy</h3>
-                    <p id="statusText">Online</p>
+    <!-- CHAT WIDGET CONTAINER -->
+    <div class="fixed bottom-4 right-4 z-50 flex flex-col items-end">
+        
+        <!-- Chat Window (Hidden by default) -->
+        <div id="chat-window" class="hidden w-[380px] h-[550px] bg-white rounded-xl shadow-chat mb-4 flex flex-col scale-0 opacity-0">
+            
+            <!-- Header -->
+            <div class="bg-buddy-primary text-white p-4 rounded-t-xl flex justify-between items-center shadow-lg">
+                <div class="flex items-center gap-3">
+                    <!-- Settings Dropdown -->
+                    <div class="relative">
+                        <button id="settings-button" class="text-white hover:text-indigo-200 p-1 transition duration-150 ease-in-out" aria-label="Settings">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                        </button>
+                        <!-- Dropdown Menu -->
+                        <div id="settings-menu" class="hidden absolute left-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
+                            <div class="p-2">
+                                <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase">Settings</div>
+                                <div class="px-3 py-2">
+                                    <label class="text-xs font-semibold text-gray-700 block mb-2">🎤 Voice Language</label>
+                                    <select id="voice-language" class="w-full text-base font-medium border-2 border-gray-400 rounded-lg px-3 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 bg-white cursor-pointer text-gray-900" style="min-height: 40px;">
+                                        <option value="en-US" style="font-size: 14px; padding: 8px;">🇺🇸 English</option>
+                                        <option value="te-IN" style="font-size: 14px; padding: 8px;">🇮🇳 Telugu (తెలుగు)</option>
+                                        <option value="hi-IN" style="font-size: 14px; padding: 8px;">🇮🇳 Hindi (हिंदी)</option>
+                                    </select>
+                                </div>
+                                <div class="px-3 py-2">
+                                    <label class="flex items-center justify-between text-sm text-gray-700 cursor-pointer">
+                                        <span class="flex items-center gap-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                                            </svg>
+                                            <span>Voice Response</span>
+                                        </span>
+                                        <input type="checkbox" id="voice-response" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                                    </label>
+                                </div>
+                                <div class="px-3 py-2">
+                                    <label class="text-xs font-semibold text-gray-700 block mb-2">🎚️ Voice Speed</label>
+                                    <div class="flex items-center gap-2">
+                                        <span class="text-xs text-gray-500">Slow</span>
+                                        <input type="range" id="voice-speed" min="0.7" max="1.5" step="0.1" value="1.0" class="flex-1 h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                        <span class="text-xs text-gray-500">Fast</span>
+                                    </div>
+                                    <div class="text-xs text-gray-500 text-center mt-1" id="speed-value">Speed: 1.0x</div>
+                                </div>
+                                <button onclick="clearChatHistory()" class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                    </svg>
+                                    <span>Clear History</span>
+                                </button>
+                                <button onclick="exportChatHistory()" class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                    </svg>
+                                    <span>Export Chat</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="text-xl font-semibold">College Buddy <span class="text-sm font-light opacity-80">(AI)</span></h2>
                 </div>
-            </div>
-            <div class="header-actions">
-                <button class="settings-btn" onclick="toggleSettings()" aria-label="Settings" title="Settings">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    </svg>
-                </button>
-                <button class="close-btn" onclick="toggleChat()" aria-label="Close chat">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <button id="close-chat" class="text-white hover:text-indigo-200 p-1 transition duration-150 ease-in-out" aria-label="Close Chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                     </svg>
                 </button>
             </div>
-        </div>
 
-        <div class="messages" id="messages">
-            <div class="bot-message message">
-                <strong>Hi! I'm College Buddy 👋</strong><br><br>
-                Ask me anything about <strong>TKRCET</strong>:<br>
-                • Admissions & Courses<br>
-                • Placements & Companies<br>
-                • Facilities & Infrastructure<br>
-                • Faculty & Departments<br>
-                • Fees & Scholarships
+            <!-- Message Area -->
+            <div id="message-area" class="flex-grow p-4 space-y-4 overflow-y-auto bg-buddy-light/30">
+                <!-- Messages will be appended here -->
+            </div>
+
+            <!-- Input Area -->
+            <div class="p-3 border-t border-gray-200 bg-white rounded-b-xl">
+                <div class="flex items-center space-x-2">
+                    <input type="text" id="chat-input" placeholder="Type your message..." class="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-buddy-primary focus:border-buddy-primary outline-none text-sm">
+                    <button id="voice-button" class="bg-gray-100 text-gray-700 p-2 rounded-lg hover:bg-gray-200 transition-all duration-150 ease-in-out relative" aria-label="Voice Input" title="Voice Search (Alt+V)">
+                        <svg id="mic-icon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                        </svg>
+                        <span id="voice-status" class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-gray-400 hidden"></span>
+                    </button>
+                    <button id="speaker-button" class="bg-gray-100 text-gray-700 p-2 rounded-lg hover:bg-gray-200 transition duration-150 ease-in-out hidden" aria-label="Stop Speaking" title="Stop Voice">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                        </svg>
+                    </button>
+                    <button id="send-button" class="bg-buddy-primary text-white p-2 rounded-lg hover:bg-indigo-700 transition duration-150 ease-in-out shadow-md" aria-label="Send Message">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
 
-        <div class="typing" id="typing">
-            <div class="typing-dots">
-                <span></span>
-                <span></span>
-                <span></span>
+        <!-- Microphone Permission Popup -->
+        <div id="mic-permission-popup" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[60] backdrop-blur-sm">
+            <div class="bg-white rounded-2xl shadow-2xl max-w-md w-full mx-4 overflow-hidden animate-scale-in">
+                <!-- Header -->
+                <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-6 text-white">
+                    <div class="flex items-center gap-4">
+                        <div class="bg-white bg-opacity-20 p-3 rounded-full">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold">Enable Voice Input</h3>
+                            <p class="text-indigo-100 text-sm">Grant microphone permission</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="p-6">
+                    <p class="text-gray-700 mb-4">
+                        To use voice search, we need access to your microphone. Your voice is processed locally in your browser - we don't store any audio.
+                    </p>
+
+                    <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-4 rounded">
+                        <p class="text-sm text-yellow-900 font-semibold mb-2">🔒 Privacy Notice:</p>
+                        <ul class="text-sm text-yellow-800 space-y-1 ml-4 list-disc">
+                            <li>Audio processed in your browser</li>
+                            <li>No recordings stored</li>
+                            <li>Only text sent to server</li>
+                        </ul>
+                    </div>
+
+                    <div class="space-y-2">
+                        <button id="grant-mic-permission" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-150 ease-in-out flex items-center justify-center gap-2 shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Enable Voice Input
+                        </button>
+                        <button id="cancel-mic-permission" class="w-full bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-3 px-4 rounded-lg transition duration-150 ease-in-out">
+                            Maybe Later
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-gray-500 text-center mt-4">
+                        You can change this anytime in browser settings
+                    </p>
+                </div>
             </div>
         </div>
 
-        <div class="input-area">
-            <input 
-                type="text" 
-                id="userInput" 
-                placeholder="Type your question..." 
-                autocomplete="off"
-                onkeypress="handleKeyPress(event)"
-            >
-            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                </svg>
-            </button>
-        </div>
-
-        <div class="powered-by">
-            Powered by <a href="https://tkrcet.ac.in" target="_blank">TKRCET AI</a>
-        </div>
+        <!-- Toggle Button -->
+        <button id="chat-toggle" class="w-16 h-16 bg-buddy-primary text-white rounded-full flex items-center justify-center text-2xl shadow-xl hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-105 focus:outline-none focus:ring-4 focus:ring-buddy-primary/50" aria-label="Toggle Chat">
+            <svg xmlns="http://www.w3.org/2000/svg" id="toggle-icon" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z" />
+            </svg>
+        </button>
     </div>
 
     <script>
-        // Global WebSocket management
+        const chatToggle = document.getElementById('chat-toggle');
+        const chatWindow = document.getElementById('chat-window');
+        const closeChat = document.getElementById('close-chat');
+        const toggleIcon = document.getElementById('toggle-icon');
+        const chatInput = document.getElementById('chat-input');
+        const sendButton = document.getElementById('send-button');
+        const messageArea = document.getElementById('message-area');
+
+        // FORCE clear any cached messages on page load
+        messageArea.innerHTML = '';
+        console.log('Cleared cached messages');
+        
+        // WebSocket connection
         let ws = null;
         let reconnectAttempts = 0;
-        let heartbeatInterval = null;
-        let responseTimeout = null; // Timeout for waiting for responses
-        const MAX_RECONNECT = 5;
-        let isConnected = false;
-        let isReconnecting = false;
-        let pendingMessages = []; // Queue for messages sent during processing
-        let isWaitingForResponse = false; // Flag to prevent closing while waiting
+        const MAX_RECONNECT_ATTEMPTS = 5;
+        let currentQuestion = '';
         
-        // Prevent browser from closing WebSocket during page lifecycle
-        window.collegebuddyWs = null; // Global reference
-
-        const chatWindow = document.getElementById('chatWindow');
-        const chatButton = document.getElementById('chatButton');
-        const messages = document.getElementById('messages');
-        const userInput = document.getElementById('userInput');
-        const sendBtn = document.getElementById('sendBtn');
-        const typing = document.getElementById('typing');
-        const statusText = document.getElementById('statusText');
-
-        function toggleChat() {
-            const isOpen = chatWindow.classList.toggle('open');
-            if (isOpen) {
-                userInput.focus();
-                if (!ws || ws.readyState !== WebSocket.OPEN) {
-                    connectWebSocket();
+        // Chat history persistence
+        function saveChatHistory() {
+            const messages = [];
+            messageArea.querySelectorAll('.flex.mb-4').forEach(msg => {
+                const bubble = msg.querySelector('div > div');
+                if (bubble) {
+                    messages.push({
+                        text: bubble.textContent || bubble.innerHTML,
+                        isUser: msg.classList.contains('justify-end')
+                    });
+                }
+            });
+            localStorage.setItem('chatHistory', JSON.stringify(messages.slice(-20))); // Keep last 20 messages
+        }
+        
+        function loadChatHistory() {
+            const history = localStorage.getItem('chatHistory');
+            if (history) {
+                try {
+                    const messages = JSON.parse(history);
+                    messages.forEach(msg => {
+                        displayMessage(msg.text, msg.isUser, []);
+                    });
+                } catch (e) {
+                    console.error('Failed to load chat history:', e);
                 }
             }
         }
-
-        function toggleSettings() {
-            // Settings functionality - can be expanded later
-            const options = [
-                'Clear Chat History',
-                'Export Conversation',
-                'Toggle Notifications',
-                'Close'
-            ];
-            
-            const choice = confirm('Settings\n\nWould you like to clear chat history?');
-            if (choice) {
-                // Clear messages except welcome message
-                const welcomeMsg = messages.querySelector('.bot-message');
-                messages.innerHTML = '';
-                messages.appendChild(welcomeMsg);
-                console.log('✅ Chat history cleared');
-            }
+        
+        function clearChatHistory() {
+            localStorage.removeItem('chatHistory');
+            messageArea.innerHTML = '';
+            displayMessage("Chat history cleared. How can I help you today?", false, []);
         }
-
-        function updateConnectionStatus(connected) {
-            isConnected = connected;
-            statusText.textContent = connected ? 'Online' : 'Connecting...';
+        
+        function exportChatHistory() {
+            const messages = [];
+            messageArea.querySelectorAll('.flex.mb-4').forEach(msg => {
+                const bubble = msg.querySelector('div > div');
+                const timestamp = msg.querySelector('.text-xs.text-gray-500');
+                if (bubble) {
+                    messages.push({
+                        text: bubble.textContent,
+                        isUser: msg.classList.contains('justify-end'),
+                        timestamp: timestamp ? timestamp.textContent : ''
+                    });
+                }
+            });
+            
+            // Create text format
+            let chatText = 'College Buddy Chat History\n';
+            chatText += '='.repeat(50) + '\n\n';
+            messages.forEach(msg => {
+                const sender = msg.isUser ? 'You' : 'College Buddy';
+                chatText += `[${msg.timestamp}] ${sender}:\n${msg.text}\n\n`;
+            });
+            
+            // Download as text file
+            const blob = new Blob([chatText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `chat-history-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            console.log('Chat history exported');
         }
 
         function connectWebSocket() {
-            // Prevent multiple simultaneous connection attempts
-            if (isReconnecting) {
-                console.log('⏳ Already reconnecting, skipping...');
-                return;
-            }
+            // Use localhost:8001 when opening file directly, otherwise use current host
+            const host = window.location.host || 'localhost:8001';
+            const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            const wsUrl = `${protocol}//${host}/chat`;
             
-            // Close existing connection if any
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                console.log('✅ Already connected');
-                return;
-            }
-            
-            isReconnecting = true;
-            const wsUrl = 'ws://localhost:8001/chat';
-            console.log('🔌 Connecting to:', wsUrl);
-            
-            // Create WebSocket with proper configuration
             ws = new WebSocket(wsUrl);
-            window.collegebuddyWs = ws; // Store global reference to prevent GC
-            ws.binaryType = 'blob'; // Ensure proper data handling
 
             ws.onopen = () => {
-                console.log('✅ Connected to College Buddy backend');
+                console.log('WebSocket connected');
                 reconnectAttempts = 0;
-                isReconnecting = false;
-                updateConnectionStatus(true);
-                
-                // Clear any existing heartbeat
-                if (heartbeatInterval) {
-                    clearInterval(heartbeatInterval);
-                }
-                
-                // Start heartbeat to keep connection alive (ping every 20 seconds)
-                // More frequent pings to prevent browser from closing idle connections
-                heartbeatInterval = setInterval(() => {
-                    if (ws && ws.readyState === WebSocket.OPEN) {
-                        try {
-                            ws.send(JSON.stringify({ type: 'ping' }));
-                            console.log('💓 Heartbeat sent');
-                        } catch (error) {
-                            console.error('❌ Heartbeat failed:', error);
-                            clearInterval(heartbeatInterval);
-                        }
-                    } else {
-                        console.log('⚠️ WebSocket not open, clearing heartbeat');
-                        clearInterval(heartbeatInterval);
-                    }
-                }, 20000); // Reduced from 30s to 20s
             };
 
             ws.onmessage = (event) => {
-                try {
-                    console.log('📥 Received message:', event.data);
-                    const data = JSON.parse(event.data);
+                const data = JSON.parse(event.data);
+                
+                if (data.type === 'response') {
+                    hideTypingIndicator();
+                    displayMessage(data.message, false, data.sources || []);
                     
-                    // Handle ping from server (respond with pong)
-                    if (data.type === 'ping') {
-                        console.log('💓 Ping received from server, sending pong');
-                        if (ws && ws.readyState === WebSocket.OPEN) {
-                            ws.send(JSON.stringify({ type: 'pong' }));
-                        }
-                        return;
+                    // Speak response if voice response is enabled - SYNCHRONIZED!
+                    if (voiceResponseCheckbox && voiceResponseCheckbox.checked) {
+                        // Calculate delay: wait for typing animation to complete
+                        const typingDelay = window.lastTypingDuration || 0;
+                        const extraDelay = 300; // Small pause after typing finishes
+                        const totalDelay = typingDelay + extraDelay;
+                        
+                        console.log(`🎬 Voice will start in ${(totalDelay/1000).toFixed(1)}s (after typing completes)`);
+                        setTimeout(() => speakResponse(data.message), totalDelay);
                     }
-                    
-                    // Handle pong response (don't hide typing or process as message)
-                    if (data.type === 'pong') {
-                        console.log('💓 Pong received');
-                        return;
-                    }
-                    
-                    // Clear response timeout since we got a response
-                    if (responseTimeout) {
-                        clearTimeout(responseTimeout);
-                        responseTimeout = null;
-                    }
-                    
-                    isWaitingForResponse = false;
-                    hideTyping();
-                    
-                    if (data.type === 'response') {
-                        console.log('✅ Processing response:', data.message?.substring(0, 100));
-                        addMessage('bot', data.message || 'No response received');
-                    } else if (data.type === 'error') {
-                        console.log('⚠️ Processing error:', data.message);
-                        addMessage('bot', `⚠️ ${data.message}`);
-                    } else {
-                        console.log('❓ Unknown message type:', data.type);
-                    }
-                    
-                    sendBtn.disabled = false;
-                    userInput.disabled = false;
-                } catch (error) {
-                    console.error('❌ Error processing message:', error);
-                    hideTyping();
-                    addMessage('bot', '⚠️ Error processing response. Please try again.');
-                    sendBtn.disabled = false;
-                    userInput.disabled = false;
+                } else if (data.type === 'error') {
+                    hideTypingIndicator();
+                    displayMessage(`Error: ${data.message}`, false, []);
                 }
             };
 
             ws.onerror = (error) => {
-                console.error('❌ WebSocket error:', error);
-                hideTyping();
-                updateConnectionStatus(false);
-                sendBtn.disabled = false;
-                userInput.disabled = false;
+                console.error('WebSocket error:', error);
+                hideTypingIndicator();
             };
 
-            ws.onclose = (event) => {
-                console.log('🔌 WebSocket closed. Code:', event.code, 'Reason:', event.reason || 'No reason provided');
-                console.log('   readyState was:', ws?.readyState);
-                console.log('   Was waiting for response:', isWaitingForResponse);
-                
-                updateConnectionStatus(false);
-                isReconnecting = false;
-                const closedWs = ws;
-                ws = null; // Clear the reference
-                
-                // Clear heartbeat
-                if (heartbeatInterval) {
-                    clearInterval(heartbeatInterval);
-                    heartbeatInterval = null;
-                }
-                
-                // Clear response timeout
-                if (responseTimeout) {
-                    clearTimeout(responseTimeout);
-                    responseTimeout = null;
-                }
-                
-                // If we were waiting for a response, show error
-                if (isWaitingForResponse) {
-                    isWaitingForResponse = false;
-                    hideTyping();
-                    addMessage('bot', '⚠️ Connection lost while waiting for response. Please try again.');
-                    sendBtn.disabled = false;
-                    userInput.disabled = false;
-                }
-                
-                // Only reconnect if chat is open and we haven't exceeded max attempts
-                if (chatWindow.classList.contains('open') && reconnectAttempts < MAX_RECONNECT) {
+            ws.onclose = () => {
+                console.log('WebSocket disconnected');
+                if (reconnectAttempts < MAX_RECONNECT_ATTEMPTS) {
                     reconnectAttempts++;
-                    const delay = Math.min(1000 * reconnectAttempts, 5000); // Max 5 second delay
-                    console.log(`🔄 Reconnecting in ${delay/1000}s... (Attempt ${reconnectAttempts}/${MAX_RECONNECT})`);
-                    setTimeout(connectWebSocket, delay);
-                } else if (reconnectAttempts >= MAX_RECONNECT) {
-                    console.log('❌ Max reconnection attempts reached');
-                    addMessage('bot', '⚠️ Connection lost. Please refresh the page or try again later.');
+                    setTimeout(connectWebSocket, 2000 * reconnectAttempts);
                 }
             };
         }
 
-        function addMessage(type, text, options = {}) {
-            const messageDiv = document.createElement('div');
-            messageDiv.className = `message ${type}-message`;
+        // Initialize WebSocket connection
+        connectWebSocket();
+
+        // --- Utility Functions ---
+
+        function submitFeedback(message, sentiment) {
+            fetch('/feedback', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    message: message,
+                    sentiment: sentiment,
+                    timestamp: new Date().toISOString()
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Feedback submitted:', sentiment);
+            })
+            .catch(error => {
+                console.error('Error submitting feedback:', error);
+            });
+        }
+
+        function scrollToBottom() {
+            messageArea.scrollTop = messageArea.scrollHeight;
+        }
+
+        function displayMessage(text, isUser = false, sources = [], elementId = null) {
+            const messageWrapper = document.createElement('div');
+            messageWrapper.className = `flex ${isUser ? 'justify-end' : 'justify-start'} mb-4`;
+            if (elementId) {
+                messageWrapper.id = elementId;
+            }
             
-            if (type === 'bot') {
-                // Add typing animation class
-                messageDiv.classList.add('typing-animation');
+            const messageContainer = document.createElement('div');
+            messageContainer.className = `max-w-[80%]`;
+            
+            const messageBubble = document.createElement('div');
+            const userClasses = 'bg-indigo-500 text-white rounded-t-xl rounded-bl-xl';
+            const botClasses = 'bg-gray-200 text-gray-800 rounded-t-xl rounded-br-xl';
+            
+            messageBubble.className = `p-3 shadow-md ${isUser ? userClasses : botClasses}`;
+            
+            if (!isUser) {
+                // Enhanced markdown to HTML converter with HTML sanitization
+                function convertMarkdownToHTML(markdown, removeLinks = false) {
+                    let html = markdown;
+                    
+                    // CRITICAL: Strip any stray HTML tags that might have slipped through
+                    // Remove all HTML tags before converting markdown
+                    html = html.replace(/<[^>]*>/g, '');
+                    
+                    // Convert bullet points (• or * or -) to styled list items
+                    html = html.replace(/^[•\*\-]\s+(.+)$/gm, '<div class="flex gap-2 my-1"><span class="text-indigo-600 font-bold">•</span><span>$1</span></div>');
+                    
+                    // Convert **bold** to <strong> (only if content exists between markers)
+                    html = html.replace(/\*\*(.+?)\*\*/g, '<strong class="font-semibold text-gray-900">$1</strong>');
+                    
+                    // If removeLinks is true, remove markdown links from text (they'll be shown in Quick Links)
+                    if (removeLinks) {
+                        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '');
+                    } else {
+                        // Convert [text](url) to links (only if both text and url exist)
+                        html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-medium">$1</a>');
+                    }
+                    
+                    // Convert line breaks (but not if they're part of bullet formatting)
+                    html = html.replace(/\n(?!<div class="flex)/g, '<br>');
+                    
+                    return html;
+                }
                 
-                // Extract reference links from text
-                const linkRegex = /\[(.+?)\]\((.+?)\)/g;
+                // Extract navigable links from message content FIRST
+                const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
                 const links = [];
                 let match;
                 while ((match = linkRegex.exec(text)) !== null) {
                     links.push({ text: match[1], url: match[2] });
                 }
                 
-                // Remove links from main text temporarily
-                const textWithoutLinks = text.replace(linkRegex, '');
-                
-                // Add quick links if provided
-                if (options.quickLinks && options.quickLinks.length > 0) {
-                    const quickLinksDiv = document.createElement('div');
-                    quickLinksDiv.className = 'quick-links';
-                    options.quickLinks.forEach(link => {
-                        const linkEl = document.createElement('a');
-                        linkEl.className = 'quick-link';
-                        linkEl.href = link.url;
-                        linkEl.target = '_blank';
-                        linkEl.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                            </svg>
-                            ${link.text}
-                        `;
-                        quickLinksDiv.appendChild(linkEl);
+                // Add Quick Links section FIRST if links exist
+                if (links.length > 0) {
+                    const navigableLinksDiv = document.createElement('div');
+                    navigableLinksDiv.className = 'mb-4 pb-3 border-b border-blue-200';
+                    navigableLinksDiv.innerHTML = '<div class="text-xs font-bold text-blue-600 mb-2.5 uppercase tracking-wide flex items-center gap-2"><span class="text-lg">🔗</span><span>Quick Links</span></div>';
+                    
+                    links.forEach((link, idx) => {
+                        const linkDiv = document.createElement('div');
+                        linkDiv.className = 'mb-2';
+                        linkDiv.innerHTML = `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 text-blue-700 hover:text-blue-900 font-semibold text-base transition-all duration-200 hover:gap-3 group"><span class="text-blue-500 group-hover:text-blue-700 transition-all">→</span><span class="underline decoration-2 underline-offset-2">${link.text}</span></a>`;
+                        navigableLinksDiv.appendChild(linkDiv);
                     });
-                    messageDiv.appendChild(quickLinksDiv);
+                    
+                    messageBubble.appendChild(navigableLinksDiv);
                 }
                 
-                // Add main content with typing animation
+                // Create content div for the message text
                 const contentDiv = document.createElement('div');
-                contentDiv.className = 'message-content';
+                messageBubble.appendChild(contentDiv);
                 
-                // Enhanced markdown-like formatting
-                let formattedText = textWithoutLinks;
-                formattedText = formattedText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-                formattedText = formattedText.replace(/`(.+?)`/g, '<code>$1</code>');
-                formattedText = formattedText.replace(/^[•·] (.+)$/gm, '<li>$1</li>');
-                formattedText = formattedText.replace(/(<li>.*<\/li>\s*)+/gs, '<ul>$&</ul>');
-                formattedText = formattedText.replace(/\n/g, '<br>');
+                const hasLinks = links.length > 0;
                 
-                contentDiv.innerHTML = formattedText;
-                messageDiv.appendChild(contentDiv);
-                
-                // Add reference links at the bottom
-                if (links.length > 0) {
-                    const refLinksDiv = document.createElement('div');
-                    refLinksDiv.className = 'reference-links';
+                // Typing animation for bot messages
+                if (text.length > 100) {
+                    let index = 0;
+                    // Synchronize typing speed with voice speed for natural feel
+                    const voiceSpeed = voiceSpeedSlider ? parseFloat(voiceSpeedSlider.value) : 1.1;
+                    const baseTypingSpeed = 15; // Base speed in ms per character
+                    const typingSpeed = baseTypingSpeed / voiceSpeed; // Faster voice = faster typing
                     
-                    const refTitle = document.createElement('div');
-                    refTitle.className = 'reference-title';
-                    refTitle.textContent = '📚 Learn More';
-                    refLinksDiv.appendChild(refTitle);
+                    // Remove links from text if they'll be shown in Quick Links
+                    const html = convertMarkdownToHTML(text, hasLinks);
                     
-                    links.forEach(link => {
-                        const linkEl = document.createElement('a');
-                        linkEl.className = 'reference-link';
-                        linkEl.href = link.url;
-                        linkEl.target = '_blank';
-                        linkEl.innerHTML = `
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-                            </svg>
-                            ${link.text}
-                        `;
-                        refLinksDiv.appendChild(linkEl);
-                    });
+                    // Calculate total typing duration for voice synchronization
+                    const plainTextLength = text.replace(/[*#\[\]`]/g, '').length;
+                    const totalTypingDuration = plainTextLength * typingSpeed;
                     
-                    messageDiv.appendChild(refLinksDiv);
+                    // Store typing duration globally for voice sync
+                    window.lastTypingDuration = totalTypingDuration;
+                    window.isTypingAnimation = true;
+                    
+                    function typeCharacter() {
+                        if (index < html.length) {
+                            // Handle HTML tags properly
+                            if (html[index] === '<') {
+                                const tagEnd = html.indexOf('>', index);
+                                contentDiv.innerHTML += html.substring(index, tagEnd + 1);
+                                index = tagEnd + 1;
+                            } else {
+                                contentDiv.innerHTML += html[index];
+                                index++;
+                            }
+                            scrollToBottom();
+                            setTimeout(typeCharacter, typingSpeed);
+                        } else {
+                            // Typing animation completed
+                            window.isTypingAnimation = false;
+                        }
+                    }
+                    typeCharacter();
+                } else {
+                    // Short messages - display immediately (remove links if they'll be in Quick Links)
+                    contentDiv.innerHTML = convertMarkdownToHTML(text, hasLinks);
+                    window.lastTypingDuration = 0; // No typing animation
+                    window.isTypingAnimation = false;
                 }
             } else {
-                // User message - no formatting
-                messageDiv.textContent = text;
+                messageBubble.textContent = text;
+            }
+
+            // Add sources (references) INSIDE the message bubble at the BOTTOM
+            if (sources && sources.length > 0 && !isUser) {
+                const sourcesDiv = document.createElement('div');
+                sourcesDiv.className = 'mt-4 pt-3 border-t border-gray-300';
+                sourcesDiv.innerHTML = '<div class="text-xs font-bold text-gray-600 mb-2.5 uppercase tracking-wide flex items-center gap-2"><span class="text-base">📚</span><span>References</span></div>';
+                sources.slice(0, 3).forEach((source, idx) => {
+                    const sourceLink = document.createElement('div');
+                    sourceLink.className = 'mb-1.5';
+                    // Shorten display name - show only filename or last part
+                    let displayName = source;
+                    try {
+                        const url = new URL(source);
+                        const path = url.pathname;
+                        
+                        // If it's a PDF, show shortened filename (max 35 chars)
+                        if (path.toLowerCase().endsWith('.pdf')) {
+                            displayName = path.split('/').pop();
+                            // Remove common prefixes and make concise
+                            displayName = displayName.replace(/^TKRCET_|^MANDATORY-DISCLOSURE-|_main_c\.pdf$/g, '');
+                            if (displayName.length > 35) {
+                                displayName = displayName.substring(0, 32) + '...';
+                            }
+                        } 
+                        // For web pages, show last meaningful part only
+                        else {
+                            const pathParts = path.split('/').filter(p => p.length > 0);
+                            if (pathParts.length > 0) {
+                                displayName = pathParts[pathParts.length - 1].replace(/-/g, ' ');
+                                displayName = displayName.charAt(0).toUpperCase() + displayName.slice(1);
+                                if (displayName.length > 35) {
+                                    displayName = displayName.substring(0, 32) + '...';
+                                }
+                            } else {
+                                displayName = 'Source ' + (idx + 1);
+                            }
+                        }
+                    } catch (e) {
+                        displayName = 'Source ' + (idx + 1);
+                    }
+                    sourceLink.innerHTML = `<a href="${source}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1.5 text-gray-700 hover:text-indigo-700 text-xs transition-all duration-200 hover:gap-2.5 group"><span class="text-gray-500 group-hover:text-indigo-600 transition-all text-xs">▸</span><span class="hover:underline decoration-1 underline-offset-2">${displayName}</span></a>`;
+                    // Links open in new tab - chatbot stays accessible!
+                    sourcesDiv.appendChild(sourceLink);
+                });
+                // Append sources at the BOTTOM of the message bubble
+                messageBubble.appendChild(sourcesDiv);
             }
             
-            messages.appendChild(messageDiv);
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        function showTyping() {
-            typing.classList.add('show');
-            messages.scrollTop = messages.scrollHeight;
-        }
-
-        function hideTyping() {
-            typing.classList.remove('show');
-        }
-
-        function sendMessage() {
-            const message = userInput.value.trim();
-            
-            // Prevent empty messages
-            if (!message) {
-                console.log('⚠️ Empty message, ignoring');
-                return;
+            // Add feedback buttons (thumbs up/down) for bot messages
+            if (!isUser) {
+                const feedbackDiv = document.createElement('div');
+                feedbackDiv.className = 'mt-3 pt-3 border-t border-gray-200 flex items-center gap-3';
+                feedbackDiv.innerHTML = `
+                    <span class="text-xs text-gray-500">Was this helpful?</span>
+                    <button class="feedback-btn thumbs-up text-gray-400 hover:text-green-600 transition-colors duration-200" title="Helpful">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10h4.764a2 2 0 011.789 2.894l-3.5 7A2 2 0 0115.263 21h-4.017c-.163 0-.326-.02-.485-.06L7 20m7-10V5a2 2 0 00-2-2h-.095c-.5 0-.905.405-.905.905 0 .714-.211 1.412-.608 2.006L7 11v9m7-10h-2M7 20H5a2 2 0 01-2-2v-6a2 2 0 012-2h2.5" />
+                        </svg>
+                    </button>
+                    <button class="feedback-btn thumbs-down text-gray-400 hover:text-red-600 transition-colors duration-200" title="Not helpful">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14H5.236a2 2 0 01-1.789-2.894l3.5-7A2 2 0 018.736 3h4.018a2 2 0 01.485.06l3.76.94m-7 10v5a2 2 0 002 2h.096c.5 0 .905-.405.905-.904 0-.715.211-1.413.608-2.008L17 13V4m-7 10h2m5-10h2a2 2 0 012 2v6a2 2 0 01-2 2h-2.5" />
+                        </svg>
+                    </button>
+                `;
+                
+                // Add click handlers for feedback
+                const thumbsUp = feedbackDiv.querySelector('.thumbs-up');
+                const thumbsDown = feedbackDiv.querySelector('.thumbs-down');
+                
+                thumbsUp.addEventListener('click', () => {
+                    submitFeedback(message, 'positive');
+                    thumbsUp.classList.add('text-green-600');
+                    thumbsUp.classList.remove('text-gray-400');
+                    thumbsDown.disabled = true;
+                });
+                
+                thumbsDown.addEventListener('click', () => {
+                    submitFeedback(message, 'negative');
+                    thumbsDown.classList.add('text-red-600');
+                    thumbsDown.classList.remove('text-gray-400');
+                    thumbsUp.disabled = true;
+                });
+                
+                messageBubble.appendChild(feedbackDiv);
             }
             
-            // Prevent duplicate sends while waiting for response
-            if (isWaitingForResponse) {
-                console.log('⚠️ Already waiting for response, ignoring');
-                return;
-            }
+            messageContainer.appendChild(messageBubble);
             
-            if (!ws || ws.readyState !== WebSocket.OPEN) {
-                console.log('⚠️ WebSocket not connected');
-                addMessage('bot', '⚠️ Not connected. Reconnecting...');
-                if (!isReconnecting) {
-                    connectWebSocket();
+            // Add timestamp
+            const timestamp = document.createElement('div');
+            timestamp.className = `text-xs text-gray-500 mt-1 ${isUser ? 'text-right' : 'text-left'}`;
+            const now = new Date();
+            timestamp.textContent = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            messageContainer.appendChild(timestamp);
+            
+            messageWrapper.appendChild(messageContainer);
+            messageArea.appendChild(messageWrapper);
+            
+            // Save to localStorage
+            saveChatHistory();
+            
+            scrollToBottom();
+            return messageWrapper;
+        }
+
+        // --- Typing Indicator Logic ---
+
+        let typingIndicatorId = 'typing-indicator';
+
+        function showTypingIndicator() {
+            if (document.getElementById(typingIndicatorId)) return; 
+
+            const indicatorContainer = document.createElement('div');
+            indicatorContainer.id = typingIndicatorId;
+            indicatorContainer.className = 'flex justify-start';
+
+            const indicatorBubble = document.createElement('div');
+            indicatorBubble.className = 'p-3 max-w-[80%] shadow-md bg-gray-200 text-gray-500 rounded-t-xl rounded-br-xl italic text-sm animate-pulse';
+            indicatorBubble.textContent = 'College Buddy is typing...';
+
+            indicatorContainer.appendChild(indicatorBubble);
+            messageArea.appendChild(indicatorContainer);
+            scrollToBottom();
+            
+            sendButton.disabled = true;
+            chatInput.disabled = true;
+        }
+
+        function hideTypingIndicator() {
+            const indicator = document.getElementById(typingIndicatorId);
+            if (indicator) {
+                indicator.remove();
+            }
+            sendButton.disabled = false;
+            chatInput.disabled = false;
+        }
+
+        // --- Chat Toggling Logic ---
+
+        function toggleChat() {
+            const isOpen = chatWindow.classList.contains('scale-100');
+            const transitionDurationMs = 300;
+
+            if (isOpen) {
+                toggleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 4v-4z" />';
+                chatWindow.classList.add('scale-0', 'opacity-0');
+                chatWindow.classList.remove('scale-100', 'opacity-100');
+
+                setTimeout(() => {
+                    chatWindow.classList.add('hidden');
+                    chatWindow.classList.remove('flex');
+                }, transitionDurationMs); 
+
+            } else {
+                chatWindow.classList.remove('hidden');
+                chatWindow.classList.add('flex');
+                toggleIcon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />';
+
+                setTimeout(() => {
+                    chatWindow.classList.add('scale-100', 'opacity-100');
+                    chatWindow.classList.remove('scale-0', 'opacity-0');
+                    chatInput.focus();
+                    scrollToBottom();
+                }, 10);
+
+                if (messageArea.children.length === 0) {
+                     setTimeout(() => {
+                        displayMessage("Hi there! I'm College Buddy. I can help you with information about TKRCET - departments, HODs, faculty, placements, admissions, and more. What can I help you find today?", false, []);
+                    }, 100);
                 }
-                // Store message to retry after connection
-                userInput.value = message;
+            }
+        }
+
+        // --- Core Chat Logic ---
+
+        async function sendMessage() {
+            const userText = chatInput.value.trim();
+            if (userText === '') return;
+
+            if (!ws || ws.readyState !== WebSocket.OPEN) {
+                displayMessage("Connection lost. Reconnecting...", false, []);
+                connectWebSocket();
                 return;
             }
 
-            addMessage('user', message);
-            const messageToSend = message;
-            userInput.value = '';
-            
-            showTyping();
-            sendBtn.disabled = true;
-            userInput.disabled = true;
-            isWaitingForResponse = true; // Mark that we're waiting for a response
+            currentQuestion = userText;
+            displayMessage(userText, true, []);
+            chatInput.value = '';
+            showTypingIndicator();
 
             try {
-                console.log('📤 Sending message:', messageToSend);
-                ws.send(JSON.stringify({ message: messageToSend }));
-                
-                // Set a 60-second timeout for response
-                responseTimeout = setTimeout(() => {
-                    console.log('⏱️ Response timeout after 60s');
-                    if (isWaitingForResponse) {
-                        isWaitingForResponse = false;
-                        hideTyping();
-                        addMessage('bot', '⏱️ Request is taking longer than expected. The server might be processing your query. Please wait or try again.');
-                        sendBtn.disabled = false;
-                        userInput.disabled = false;
+                ws.send(JSON.stringify({
+                    type: 'query',
+                    message: userText
+                }));
+
+            } catch (error) {
+                hideTypingIndicator();
+                displayMessage("An unexpected error occurred. Please try again.", false, []);
+                console.error('Send Error:', error);
+            }
+        }
+
+        // --- Comprehensive Voice System ---
+        let recognition = null;
+        let synthesis = window.speechSynthesis;
+        let isListening = false;
+        let isSpeaking = false;
+        let currentUtterance = null;
+        let micPermissionGranted = false;
+
+        const voiceButton = document.getElementById('voice-button');
+        const speakerButton = document.getElementById('speaker-button');
+        const voiceStatus = document.getElementById('voice-status');
+        const voiceLanguageSelect = document.getElementById('voice-language');
+        const voiceResponseCheckbox = document.getElementById('voice-response');
+        const voiceSpeedSlider = document.getElementById('voice-speed');
+        const speedValueDisplay = document.getElementById('speed-value');
+        const micPermissionPopup = document.getElementById('mic-permission-popup');
+        const grantMicButton = document.getElementById('grant-mic-permission');
+        const cancelMicButton = document.getElementById('cancel-mic-permission');
+
+        // Check if permission was previously granted
+        async function checkMicrophonePermission() {
+            try {
+                const result = await navigator.permissions.query({ name: 'microphone' });
+                if (result.state === 'granted') {
+                    micPermissionGranted = true;
+                    localStorage.setItem('micPermissionAsked', 'true');
+                } else if (result.state === 'denied') {
+                    micPermissionGranted = false;
+                    localStorage.removeItem('micPermissionAsked');
+                }
+            } catch (error) {
+                // Fallback to localStorage if permissions API not available
+                if (localStorage.getItem('micPermissionAsked') === 'true') {
+                    micPermissionGranted = true;
+                }
+            }
+        }
+        
+        // Check permission on load
+        checkMicrophonePermission();
+        
+        // Voice speed slider handler
+        if (voiceSpeedSlider && speedValueDisplay) {
+            voiceSpeedSlider.addEventListener('input', (e) => {
+                const speed = parseFloat(e.target.value);
+                speedValueDisplay.textContent = `Speed: ${speed.toFixed(1)}x`;
+            });
+        }
+
+        // Voice commands for shortcuts
+        const voiceCommands = {
+            'repeat': 'repeat last response',
+            'clear': 'clear chat history',
+            'help': 'show available commands',
+            'timing': 'what are the college timings',
+            'principal': 'who is the principal',
+            'hod': 'who is the hod of cse'
+        };
+
+        // Initialize Speech Recognition
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SpeechRecognition();
+            recognition.continuous = false;
+            recognition.interimResults = true;
+            recognition.maxAlternatives = 5; // More alternatives for better accuracy
+            
+            // Enhanced settings for better accuracy
+            if ('webkitSpeechRecognition' in window) {
+                recognition.interimResults = true;
+            }
+
+            recognition.onstart = () => {
+                isListening = true;
+                voiceButton.classList.add('bg-red-500', 'text-white', 'recording-animation');
+                voiceButton.classList.remove('bg-gray-100', 'text-gray-700');
+                voiceStatus.classList.remove('hidden', 'bg-gray-400');
+                voiceStatus.classList.add('bg-red-500', 'animate-ping');
+                voiceButton.title = '🎤 Listening... (Click to stop)';
+            };
+
+            recognition.onresult = (event) => {
+                let interimTranscript = '';
+                let finalTranscript = '';
+                let confidence = 0;
+
+                for (let i = event.resultIndex; i < event.results.length; i++) {
+                    const result = event.results[i];
+                    const transcript = result[0].transcript;
+                    confidence = result[0].confidence;
+                    
+                    if (result.isFinal) {
+                        finalTranscript += transcript;
+                        console.log(`✅ Final transcript: "${transcript}" (confidence: ${(confidence * 100).toFixed(1)}%)`);
+                    } else {
+                        interimTranscript += transcript;
                     }
-                }, 60000); // 60 second timeout
+                }
+
+                // Show interim results with visual feedback
+                if (interimTranscript) {
+                    chatInput.value = interimTranscript.trim();
+                    chatInput.style.fontStyle = 'italic';
+                    chatInput.style.color = '#6b7280';
+                    chatInput.placeholder = 'Listening...';
+                }
+
+                if (finalTranscript) {
+                    chatInput.style.fontStyle = 'normal';
+                    chatInput.style.color = '#000';
+                    
+                    // Check for voice commands
+                    const lowerTranscript = finalTranscript.toLowerCase().trim();
+                    if (voiceCommands[lowerTranscript]) {
+                        chatInput.value = voiceCommands[lowerTranscript];
+                    } else {
+                        chatInput.value = finalTranscript.trim();
+                    }
+                    
+                    // Auto-send immediately after final transcript (reduced delay)
+                    setTimeout(() => {
+                        if (!isListening && chatInput.value.trim()) {
+                            sendButton.click();
+                        }
+                    }, 500); // Reduced from 1000ms to 500ms for faster response
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Speech recognition error:', event.error);
+                
+                let errorMsg = "Voice recognition error. ";
+                switch(event.error) {
+                    case 'no-speech':
+                        errorMsg += "No speech detected. Please try again.";
+                        break;
+                    case 'audio-capture':
+                        errorMsg += "Microphone not found. Check your device.";
+                        break;
+                    case 'not-allowed':
+                        errorMsg += "Microphone permission denied. Please allow access.";
+                        break;
+                    case 'network':
+                        errorMsg += "Network error. Check your connection.";
+                        break;
+                    default:
+                        errorMsg += "Please try again.";
+                }
+                
+                displayMessage(errorMsg, false);
+            };
+
+            recognition.onend = () => {
+                isListening = false;
+                voiceButton.classList.remove('bg-red-500', 'text-white', 'recording-animation');
+                voiceButton.classList.add('bg-gray-100', 'text-gray-700');
+                voiceStatus.classList.add('hidden');
+                voiceStatus.classList.remove('bg-red-500', 'animate-ping');
+                voiceButton.title = 'Voice Search (Alt+V)';
+                chatInput.style.fontStyle = 'normal';
+                chatInput.style.color = '#000';
+                chatInput.placeholder = 'Type your message...'; // Reset placeholder
+                console.log('🎤 Voice recognition ended');
+            };
+        }
+
+        // Voice language change handler
+        if (voiceLanguageSelect) {
+            voiceLanguageSelect.addEventListener('change', (e) => {
+                if (recognition) {
+                    recognition.lang = e.target.value;
+                    localStorage.setItem('voiceLanguage', e.target.value);
+                    console.log('Voice language changed to:', e.target.value);
+                }
+            });
+
+            // Load saved language preference
+            const savedLang = localStorage.getItem('voiceLanguage');
+            if (savedLang) {
+                voiceLanguageSelect.value = savedLang;
+                if (recognition) recognition.lang = savedLang;
+            }
+        }
+
+        // Voice response checkbox handler
+        if (voiceResponseCheckbox) {
+            voiceResponseCheckbox.checked = localStorage.getItem('voiceResponse') === 'true';
+            voiceResponseCheckbox.addEventListener('change', (e) => {
+                localStorage.setItem('voiceResponse', e.target.checked);
+                if (!e.target.checked && isSpeaking) {
+                    stopSpeaking();
+                }
+            });
+        }
+
+        // Show/hide permission popup
+        function showMicPermissionPopup() {
+            micPermissionPopup.classList.remove('hidden');
+        }
+
+        function hideMicPermissionPopup() {
+            micPermissionPopup.classList.add('hidden');
+        }
+
+        // Grant microphone permission
+        async function requestMicrophonePermission() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                // Permission granted!
+                stream.getTracks().forEach(track => track.stop());
+                micPermissionGranted = true;
+                localStorage.setItem('micPermissionAsked', 'true');
+                hideMicPermissionPopup();
+                
+                // Start voice recognition immediately
+                setTimeout(() => {
+                    startVoiceRecognition();
+                }, 500);
                 
             } catch (error) {
-                console.error('❌ Error sending message:', error);
-                hideTyping();
-                addMessage('bot', '⚠️ Failed to send message. Reconnecting...');
-                sendBtn.disabled = false;
-                userInput.disabled = false;
-                // Try to reconnect
-                if (!isReconnecting) {
-                    connectWebSocket();
+                console.error('Microphone permission error:', error);
+                hideMicPermissionPopup();
+                
+                if (error.name === 'NotAllowedError') {
+                    alert('🎤 Microphone Permission Denied\n\nTo enable voice input:\n1. Click the 🔒 lock icon in the address bar\n2. Find "Microphone" permission\n3. Select "Allow"\n4. Refresh the page and try again');
+                } else if (error.name === 'NotFoundError') {
+                    alert('🎤 No Microphone Found\n\nPlease connect a microphone to your device and try again.');
+                } else {
+                    alert('🎤 Microphone Access Error\n\nPlease check your browser settings and try again.');
                 }
             }
         }
 
-        function handleKeyPress(event) {
-            if (event.key === 'Enter' && !event.shiftKey) {
-                event.preventDefault();
-                sendMessage();
+        // Start voice recognition with enhanced settings
+        function startVoiceRecognition() {
+            if (!recognition) {
+                displayMessage("Voice recognition is not supported in your browser. Please use Chrome, Edge, or Safari.", false);
+                return;
+            }
+
+            try {
+                const selectedLang = voiceLanguageSelect ? voiceLanguageSelect.value : 'en-US';
+                recognition.lang = selectedLang;
+                
+                // Enhanced settings for better accuracy and speed
+                recognition.continuous = false; // Stop after speech ends
+                recognition.interimResults = true; // Show real-time transcription
+                recognition.maxAlternatives = 5; // Consider more alternatives for accuracy
+                
+                console.log(`🎤 Starting voice recognition with language: ${selectedLang}`);
+                recognition.start();
+            } catch (error) {
+                console.error('Failed to start recognition:', error);
+                
+                // Better error handling
+                if (error.name === 'InvalidStateError') {
+                    // Recognition already started, stop and restart
+                    recognition.stop();
+                    setTimeout(() => startVoiceRecognition(), 300);
+                } else {
+                    displayMessage("Could not start voice recognition. Please try again.", false);
+                }
             }
         }
 
-        // Don't auto-connect on page load - only connect when chat is opened
-        console.log('🚀 College Buddy Widget Initialized');
+        // Grant button handler
+        if (grantMicButton) {
+            grantMicButton.addEventListener('click', requestMicrophonePermission);
+        }
 
-        // Prevent page unload from closing WebSocket unexpectedly
-        window.addEventListener('beforeunload', (event) => {
-            if (ws && ws.readyState === WebSocket.OPEN) {
-                console.log('⚠️ Page unloading, keeping WebSocket open');
-                // Don't close the WebSocket - let the browser handle it
+        // Cancel button handler
+        if (cancelMicButton) {
+            cancelMicButton.addEventListener('click', () => {
+                hideMicPermissionPopup();
+                // No message needed - user can try again anytime by clicking mic button
+            });
+        }
+
+        // Voice button click handler
+        if (voiceButton) {
+            voiceButton.addEventListener('click', async () => {
+                if (!recognition) {
+                    displayMessage("Voice recognition is not supported in your browser. Please use Chrome, Edge, or Safari.", false);
+                    return;
+                }
+
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    // Re-check permission state
+                    await checkMicrophonePermission();
+                    
+                    // Check if permission already granted
+                    if (!micPermissionGranted) {
+                        showMicPermissionPopup();
+                    } else {
+                        startVoiceRecognition();
+                    }
+                }
+            });
+
+            // Keyboard shortcut: Alt+V
+            document.addEventListener('keydown', (e) => {
+                if (e.altKey && e.key === 'v') {
+                    e.preventDefault();
+                    voiceButton.click();
+                }
+            });
+        }
+
+        // Text-to-Speech function with perfect synchronization
+        function speakResponse(text) {
+            if (!voiceResponseCheckbox || !voiceResponseCheckbox.checked) return;
+            if (!synthesis) {
+                console.warn('Speech synthesis not supported');
+                return;
+            }
+
+            // Stop any ongoing speech
+            stopSpeaking();
+            
+            // PERFECT SYNC: Wait for typing animation to complete before speaking
+            const waitForTyping = () => {
+                if (window.isTypingAnimation) {
+                    // Still typing, check again in 50ms
+                    setTimeout(waitForTyping, 50);
+                    return;
+                }
+                
+                // Typing finished! Add natural pause then speak
+                const naturalPause = 300; // 300ms pause after typing completes
+                const typingDuration = window.lastTypingDuration || 0;
+                
+                console.log(`⏱️ Typing completed (${typingDuration.toFixed(0)}ms). Waiting ${naturalPause}ms before voice...`);
+                
+                setTimeout(() => {
+                    startSpeaking(text);
+                }, naturalPause);
+            };
+            
+            // Start the synchronization check
+            waitForTyping();
+        }
+        
+        // Separate function to actually start speaking
+        function startSpeaking(text) {
+
+            // Clean text for speech (remove markdown, links, etc.)
+            let cleanText = text
+                .replace(/\*\*/g, '') // Remove bold
+                .replace(/\*/g, '') // Remove italic
+                .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // Remove links but keep text
+                .replace(/#{1,6}\s/g, '') // Remove headers
+                .replace(/`{1,3}[^`]*`{1,3}/g, '') // Remove code
+                .replace(/^[-*+]\s/gm, '') // Remove list markers
+                .substring(0, 500); // Limit to 500 chars
+
+            currentUtterance = new SpeechSynthesisUtterance(cleanText);
+            
+            // Get appropriate voice for selected language
+            const selectedLang = voiceLanguageSelect ? voiceLanguageSelect.value : 'en-US';
+            const voices = synthesis.getVoices();
+            
+            // Find the best natural-sounding voice for each language
+            let voice = null;
+            
+            if (selectedLang === 'en-US') {
+                // Prefer Gemini-like high-quality English voices (Neural, Premium, Enhanced)
+                voice = voices.find(v => v.name.includes('Neural') || v.name.includes('Premium') || v.name.includes('Enhanced')) ||
+                        voices.find(v => v.name.includes('Google US English') || v.name.includes('Google UK English')) ||
+                        voices.find(v => v.name.includes('Samantha') || v.name.includes('Microsoft Zira Desktop')) ||
+                        voices.find(v => v.lang === 'en-US' && v.name.includes('Natural')) ||
+                        voices.find(v => v.lang === 'en-US' && v.name.includes('HD')) ||
+                        voices.find(v => v.lang === 'en-US' && v.localService === false) || // Cloud voices are usually better
+                        voices.find(v => v.lang === 'en-US');
+            } else if (selectedLang === 'te-IN') {
+                // Telugu voices
+                voice = voices.find(v => v.lang === 'te-IN' || v.lang.startsWith('te')) ||
+                        voices.find(v => v.name.includes('Telugu'));
+            } else if (selectedLang === 'hi-IN') {
+                // Hindi voices
+                voice = voices.find(v => v.lang === 'hi-IN' && v.name.includes('Natural')) ||
+                        voices.find(v => v.lang === 'hi-IN' || v.lang.startsWith('hi')) ||
+                        voices.find(v => v.name.includes('Hindi'));
+            }
+            
+            // Fallback to any matching language
+            if (!voice) {
+                voice = voices.find(v => v.lang === selectedLang) || 
+                        voices.find(v => v.lang.startsWith(selectedLang.split('-')[0]));
+            }
+            
+            if (voice) {
+                currentUtterance.voice = voice;
+                console.log('🎙️ Using voice:', voice.name, '| Lang:', voice.lang, '| Local:', voice.localService);
+            } else {
+                console.log('⚠️ No preferred voice found, using default');
+            }
+            
+            currentUtterance.lang = selectedLang;
+            
+            // Enhanced natural speech parameters
+            const userSpeed = voiceSpeedSlider ? parseFloat(voiceSpeedSlider.value) : 1.0; // Default to natural 1.0x
+            currentUtterance.rate = userSpeed;
+            
+            // Optimized pitch for natural, clear speech (like professional voice assistants)
+            // Slightly lower pitch sounds more natural and authoritative
+            const basePitch = 0.95; // Lower base pitch for more natural sound
+            const pitchVariation = (userSpeed - 1.0) * 0.08; // Subtle pitch adjustment based on speed
+            currentUtterance.pitch = Math.max(0.9, Math.min(1.1, basePitch - pitchVariation));
+            
+            currentUtterance.volume = 0.95; // Optimal volume for clarity
+            
+            console.log(`🎤 Voice settings: Speed=${userSpeed.toFixed(2)}x | Pitch=${currentUtterance.pitch.toFixed(2)} | Volume=${currentUtterance.volume}`);
+
+            currentUtterance.onstart = () => {
+                isSpeaking = true;
+                speakerButton.classList.remove('hidden');
+                speakerButton.title = '🔊 Speaking... (Click to stop)';
+                console.log('🔊 Voice started speaking');
+            };
+
+            currentUtterance.onend = () => {
+                isSpeaking = false;
+                speakerButton.classList.add('hidden');
+                currentUtterance = null;
+                console.log('✅ Voice completed');
+            };
+            
+            currentUtterance.onboundary = (event) => {
+                // Track word boundaries for smoother speech
+                if (event.name === 'word') {
+                    console.log(`📝 Speaking word at position ${event.charIndex}`);
+                }
+            };
+            
+            currentUtterance.onpause = () => {
+                console.log('Speech paused');
+            };
+            
+            currentUtterance.onresume = () => {
+                console.log('Speech resumed');
+            };
+
+            currentUtterance.onerror = (event) => {
+                console.error('Speech synthesis error:', event);
+                isSpeaking = false;
+                speakerButton.classList.add('hidden');
+            };
+
+            synthesis.speak(currentUtterance);
+        }
+
+        // Stop speaking function
+        function stopSpeaking() {
+            if (synthesis && isSpeaking) {
+                synthesis.cancel();
+                isSpeaking = false;
+                speakerButton.classList.add('hidden');
+                currentUtterance = null;
+            }
+        }
+
+        // Speaker button handler
+        if (speakerButton) {
+            speakerButton.addEventListener('click', stopSpeaking);
+        }
+
+        // Load voices when available
+        if (synthesis) {
+            synthesis.onvoiceschanged = () => {
+                const voices = synthesis.getVoices();
+                console.log('📢 Available voices:', voices.length);
+                
+                // Log high-quality voices for debugging
+                const highQualityVoices = voices.filter(v => 
+                    v.name.includes('Neural') || 
+                    v.name.includes('Premium') || 
+                    v.name.includes('Enhanced') ||
+                    v.name.includes('Natural') ||
+                    v.name.includes('Google') ||
+                    v.name.includes('HD')
+                );
+                
+                if (highQualityVoices.length > 0) {
+                    console.log('🌟 High-quality voices found:', highQualityVoices.map(v => v.name).join(', '));
+                }
+            };
+        }
+
+        // --- Settings Menu Toggle ---
+        const settingsButton = document.getElementById('settings-button');
+        const settingsMenu = document.getElementById('settings-menu');
+        
+        settingsButton.addEventListener('click', (e) => {
+            e.stopPropagation();
+            settingsMenu.classList.toggle('hidden');
+        });
+
+        // Close settings menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!settingsMenu.contains(e.target) && !settingsButton.contains(e.target)) {
+                settingsMenu.classList.add('hidden');
             }
         });
 
-        // Handle page visibility changes
-        document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && chatWindow.classList.contains('open') && !isConnected) {
-                console.log('🔄 Page visible, reconnecting...');
-                connectWebSocket();
-            } else if (document.visibilityState === 'hidden') {
-                console.log('📴 Page hidden, but keeping connection alive');
-                // Don't close connection when tab is hidden
+        // Event listeners
+        chatToggle.addEventListener('click', toggleChat);
+        closeChat.addEventListener('click', toggleChat);
+        sendButton.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                sendMessage();
             }
         });
     </script>
