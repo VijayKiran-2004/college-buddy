@@ -224,6 +224,13 @@ if __name__ == "__main__":
     try:
         port = int(os.environ.get("PORT", 8001))
         print(f"Starting server on port {port}")
-        uvicorn.run(app, host="0.0.0.0", port=port)
+        uvicorn.run(
+            app, 
+            host="0.0.0.0", 
+            port=port,
+            ws_ping_interval=20,  # Send ping every 20 seconds
+            ws_ping_timeout=60,   # Wait 60 seconds for pong
+            timeout_keep_alive=120  # Keep connection alive for 2 minutes
+        )
     except Exception as e:
         print(f"Failed to start server: {e}")

@@ -565,7 +565,9 @@
             const wsUrl = 'ws://localhost:8001/chat';
             console.log('🔌 Connecting to:', wsUrl);
             
+            // Create WebSocket with proper configuration
             ws = new WebSocket(wsUrl);
+            ws.binaryType = 'blob'; // Ensure proper data handling
 
             ws.onopen = () => {
                 console.log('✅ Connected to College Buddy backend');
@@ -578,7 +580,8 @@
                     clearInterval(heartbeatInterval);
                 }
                 
-                // Start heartbeat to keep connection alive (ping every 30 seconds)
+                // Start heartbeat to keep connection alive (ping every 20 seconds)
+                // More frequent pings to prevent browser from closing idle connections
                 heartbeatInterval = setInterval(() => {
                     if (ws && ws.readyState === WebSocket.OPEN) {
                         try {
@@ -586,15 +589,26 @@
                             console.log('💓 Heartbeat sent');
                         } catch (error) {
                             console.error('❌ Heartbeat failed:', error);
+                            clearInterval(heartbeatInterval);
                         }
+                    } else {
+                        console.log('⚠️ WebSocket not open, clearing heartbeat');
+                        clearInterval(heartbeatInterval);
                     }
-                }, 30000);
+                }, 20000); // Reduced from 30s to 20s
             };
 
             ws.onmessage = (event) => {
                 try {
                     console.log('📥 Received message:', event.data);
                     const data = JSON.parse(event.data);
+                    
+                    // Handle pong response (don't hide typing or process as message)
+                    if (data.type === 'pong') {
+                        console.log('💓 Pong received');
+                        return;
+                    }
+                    
                     hideTyping();
                     
                     if (data.type === 'response') {
