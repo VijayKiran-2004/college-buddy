@@ -73,15 +73,15 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 def home(request: Request):
     return FileResponse("static/index.html")
 
-# Serve widget/demo from docs folder
-@app.get("/{path:path}")
+@app.get("/demo")
 @limiter.limit("100/minute")
-def serve_widget(request: Request, path: str):
-    # Serve widget for /demo and /widget paths
-    if path in ["demo", "widget"]:
-        return FileResponse("docs/index.html")
-    # 404 for other paths
-    return JSONResponse({"error": "Not found"}, status_code=404)
+def demo(request: Request):
+    return FileResponse("docs/index.html")
+
+@app.get("/widget")
+@limiter.limit("100/minute")
+def widget(request: Request):
+    return FileResponse("docs/index.html")
 
 @app.websocket("/chat")
 async def websocket_endpoint(ws: WebSocket):
