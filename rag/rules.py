@@ -24,6 +24,23 @@ CONVERSATIONAL_RULES = [
         "answer": "Goodbye! Feel free to come back anytime you have questions about TKRCET."
     },
     {
+        "pattern": r"(is|does|has) tkr(cet)?.*(autonomous|autonomy)",
+        "answer": """**TKRCET Autonomy Status:**
+
+✅ TKRCET is **affiliated to JNTUH (Jawaharlal Nehru Technological University Hyderabad)** and operates under JNTUH regulations.
+
+**Accreditations & Recognition:**
+• ✓ AICTE Approved
+• ✓ JNTUH Affiliated  
+• ✓ NBA Accredited (National Board of Accreditation)
+• ✓ NAAC 'A+' Grade
+• ✓ Recognized under 2(f) and 12(B) of UGC Act 1956
+
+The college follows the JNTUH curriculum and examination system. For any changes in autonomy status, please check the official website or contact the administration.
+
+[Visit Official Website →](https://tkrcet.ac.in/)"""
+    },
+    {
         "pattern": r"(list of|all) (hod|hods|head of department|heads of department)",
         "answer": """Here are all the **Heads of Departments (HODs)** at TKRCET:
 

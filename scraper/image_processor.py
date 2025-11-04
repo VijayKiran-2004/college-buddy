@@ -18,7 +18,11 @@ logger = logging.getLogger(__name__)
 # Configure tesseract path for Windows (you may need to adjust this)
 # Download Tesseract from: https://github.com/UB-Mannheim/tesseract/wiki
 try:
-    pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    import os
+    if os.path.exists(r'C:\Program Files\Tesseract-OCR\tesseract.exe'):
+        pytesseract.pytesseract.tesseract_cmd = r'C:\Program Files\Tesseract-OCR\tesseract.exe'
+    else:
+        logger.warning("Tesseract not found at default location. Install from: https://github.com/UB-Mannheim/tesseract/wiki")
 except:
     pass  # Will use system PATH
 
