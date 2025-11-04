@@ -103,6 +103,84 @@ The college follows the JNTUH curriculum and examination system. For any changes
 [View Contact Information →](https://tkrcet.ac.in/contact-us/)"""
     },
     {
+        "pattern": r"(who is|hod of|head of department of|head of).*(cse|computer science)",
+        "answer": """**CSE Department HOD:**
+
+👨‍🏫 **Dr. A. Suresh Rao**
+- Position: Head of Department, CSE
+- Also: Vice Principal & Dean of Academics
+- Qualification: PhD from NIT Warangal
+- Experience: 22 years (20 in teaching, 2 in industry)
+
+📞 **Contact:** 8498085216
+📧 **Email:** cse@tkrcet.com
+
+**Profile:**
+Dr. A. Suresh Rao has guided 40+ UG projects and 20+ PG projects. Students won 3rd prize in Smart India Hackathon under his guidance. He has 22 international and national publications and holds a granted patent.
+
+[CSE Department →](https://tkrcet.ac.in/departments/computer-science-engineering/)"""
+    },
+    {
+        "pattern": r"(who is|hod of|head of department of|head of).*(ece|electronics|electronics communication)",
+        "answer": """**ECE Department HOD:**
+
+👨‍🏫 **Dr. M. Mahesh**
+- Position: Head of Department, Electronics & Communication Engineering
+
+📞 **Contact:** 8498085215
+📧 **Email:** ece@tkrcet.com
+
+[ECE Department →](https://tkrcet.ac.in/departments/electronics-communication-engineering/)"""
+    },
+    {
+        "pattern": r"(who is|hod of|head of department of|head of).*(eee|electrical|electrical electronics)",
+        "answer": """**EEE Department HOD:**
+
+👨‍🏫 **Dr. K. Raju**
+- Position: Head of Department, Electrical & Electronics Engineering
+
+📞 **Contact:** 8498085213
+📧 **Email:** eee@tkrcet.com
+
+[EEE Department →](https://tkrcet.ac.in/departments/electrical-electronics-engineering/)"""
+    },
+    {
+        "pattern": r"(who is|hod of|head of department of|head of).*(mech|mechanical)",
+        "answer": """**Mechanical Engineering HOD:**
+
+👨‍🏫 **Mr. D Rushi Kumar Reddy**
+- Position: Head of Department, Mechanical Engineering
+
+📞 **Contact:** 8498085214
+📧 **Email:** mech@tkrcet.com
+
+[Mechanical Department →](https://tkrcet.ac.in/departments/mechanical-engineering/)"""
+    },
+    {
+        "pattern": r"(who is|hod of|head of department of|head of).*(it|information technology)",
+        "answer": """**IT Department HOD:**
+
+👨‍🏫 **Dr. N. Satya Narayana**
+- Position: Head of Department, Information Technology
+
+📞 **Contact:** 8498085217
+📧 **Email:** it@tkrcet.com
+
+[IT Department →](https://tkrcet.ac.in/departments/information-technology/)"""
+    },
+    {
+        "pattern": r"(who is|hod of|head of department of|head of).*(civil)",
+        "answer": """**Civil Engineering HOD:**
+
+👨‍🏫 **Dr. K. Satya Sai**
+- Position: Head of Department, Civil Engineering
+
+📞 **Contact:** 8498085212
+📧 **Email:** civil@tkrcet.com
+
+[Civil Department →](https://tkrcet.ac.in/departments/civil-engineering/)"""
+    },
+    {
         "pattern": r"(about|info|tell|describe|what is|details?|information).*(cse|computer science|cs dept).*(dept|department)?",
         "answer": "department:cse"  # Special marker to trigger RAG with focused query
     },

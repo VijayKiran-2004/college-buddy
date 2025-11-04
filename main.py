@@ -87,6 +87,12 @@ async def websocket_endpoint(ws: WebSocket):
     try:
         while True:
             data = await ws.receive_json()
+            
+            # Handle heartbeat ping
+            if data.get("type") == "ping":
+                await ws.send_json({"type": "pong"})
+                continue
+            
             question = data.get("message", "")
             
             # Sanitize input
@@ -104,11 +110,14 @@ async def websocket_endpoint(ws: WebSocket):
             
             if normalized_question in greetings:
                 greeting_response = "Hello! I'm College-Buddy, here to help you with information about the college. You can ask me about admissions, courses, fees, and more."
-                await ws.send_json({
-                    "type": "response",
-                    "message": greeting_response,
-                    "sources": []
-                })
+                try:
+                    await ws.send_json({
+                        "type": "response",
+                        "message": greeting_response,
+                        "sources": []
+                    })
+                except Exception as send_error:
+                    print(f"[WARNING] Failed to send greeting - client disconnected: {send_error}")
                 continue
 
             try:
@@ -182,23 +191,30 @@ async def websocket_endpoint(ws: WebSocket):
                 history.append({"role": "user", "parts": [question]})
                 history.append({"role": "model", "parts": [answer]})
                 
-                # Send response to client IMMEDIATELY
-                await ws.send_json({
-                    "type": "response",
-                    "message": answer,
-                    "sources": sources
-                })
+                # Send response to client (check if connection is still open)
+                try:
+                    await ws.send_json({
+                        "type": "response",
+                        "message": answer,
+                        "sources": sources
+                    })
+                except Exception as send_error:
+                    print(f"[WARNING] Failed to send response - client likely disconnected: {send_error}")
+                    # Connection closed, but that's okay - just log and continue
                 
             except Exception as e:
                 import traceback
                 print(f"[ERROR] An error occurred while processing the question: {str(e)}")
                 traceback.print_exc()
                 
-                await ws.send_json({
-                    "type": "error",
-                    "message": "Oops! Something went wrong on my end. Could you please repeat your question?",
-                    "sources": []
-                })
+                try:
+                    await ws.send_json({
+                        "type": "error",
+                        "message": "Oops! Something went wrong on my end. Could you please repeat your question?",
+                        "sources": []
+                    })
+                except Exception as send_error:
+                    print(f"[WARNING] Failed to send error message - client disconnected: {send_error}")
     except WebSocketDisconnect:
         print("Client disconnected")
     except Exception as e:

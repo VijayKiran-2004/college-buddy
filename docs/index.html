@@ -413,63 +413,6 @@
             font-weight: 500;
         }
 
-        /* Quick Actions */
-        .quick-actions {
-            padding: 16px 20px;
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-            display: none;
-        }
-
-        .quick-actions.show {
-            display: block;
-        }
-
-        .quick-actions-title {
-            font-size: 12px;
-            font-weight: 600;
-            color: #64748b;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .quick-actions-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 8px;
-        }
-
-        .quick-action-btn {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
-            border: 1px solid rgba(102, 126, 234, 0.2);
-            color: #667eea;
-            padding: 10px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 500;
-            text-align: left;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .quick-action-btn:hover {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
-            border-color: rgba(102, 126, 234, 0.4);
-            transform: translateY(-1px);
-        }
-
-        .quick-action-btn:active {
-            transform: translateY(0);
-        }
-
-        .quick-action-btn .emoji {
-            font-size: 16px;
-        }
-
         /* Mobile Responsive */
         @media (max-width: 640px) {
             .chat-button {
@@ -546,36 +489,6 @@
             </div>
         </div>
 
-        <div class="quick-actions show" id="quickActions">
-            <div class="quick-actions-title">Quick Questions</div>
-            <div class="quick-actions-grid">
-                <button class="quick-action-btn" onclick="askQuestion('Tell me about CSE department')">
-                    <span class="emoji">💻</span>
-                    <span>CSE Department</span>
-                </button>
-                <button class="quick-action-btn" onclick="askQuestion('What companies visit for placements?')">
-                    <span class="emoji">🏢</span>
-                    <span>Placements</span>
-                </button>
-                <button class="quick-action-btn" onclick="askQuestion('What is the admission process?')">
-                    <span class="emoji">📝</span>
-                    <span>Admissions</span>
-                </button>
-                <button class="quick-action-btn" onclick="askQuestion('What are the fees?')">
-                    <span class="emoji">💰</span>
-                    <span>Fee Structure</span>
-                </button>
-                <button class="quick-action-btn" onclick="askQuestion('What facilities does the college have?')">
-                    <span class="emoji">🏫</span>
-                    <span>Facilities</span>
-                </button>
-                <button class="quick-action-btn" onclick="askQuestion('Is TKRCET autonomous?')">
-                    <span class="emoji">🎓</span>
-                    <span>Accreditation</span>
-                </button>
-            </div>
-        </div>
-
         <div class="typing" id="typing">
             <div class="typing-dots">
                 <span></span>
@@ -607,8 +520,10 @@
     <script>
         let ws = null;
         let reconnectAttempts = 0;
+        let heartbeatInterval = null;
         const MAX_RECONNECT = 5;
         let isConnected = false;
+        let isReconnecting = false;
 
         const chatWindow = document.getElementById('chatWindow');
         const chatButton = document.getElementById('chatButton');
@@ -617,7 +532,6 @@
         const sendBtn = document.getElementById('sendBtn');
         const typing = document.getElementById('typing');
         const statusText = document.getElementById('statusText');
-        const quickActions = document.getElementById('quickActions');
 
         function toggleChat() {
             const isOpen = chatWindow.classList.toggle('open');
@@ -629,23 +543,25 @@
             }
         }
 
-        function askQuestion(question) {
-            // Hide quick actions after first use
-            if (quickActions) {
-                quickActions.classList.remove('show');
-            }
-            
-            // Set the question and send it
-            userInput.value = question;
-            sendMessage();
-        }
-
         function updateConnectionStatus(connected) {
             isConnected = connected;
             statusText.textContent = connected ? 'Online' : 'Connecting...';
         }
 
         function connectWebSocket() {
+            // Prevent multiple simultaneous connection attempts
+            if (isReconnecting) {
+                console.log('⏳ Already reconnecting, skipping...');
+                return;
+            }
+            
+            // Close existing connection if any
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                console.log('✅ Already connected');
+                return;
+            }
+            
+            isReconnecting = true;
             const wsUrl = 'ws://localhost:8001/chat';
             console.log('🔌 Connecting to:', wsUrl);
             
@@ -654,21 +570,52 @@
             ws.onopen = () => {
                 console.log('✅ Connected to College Buddy backend');
                 reconnectAttempts = 0;
+                isReconnecting = false;
                 updateConnectionStatus(true);
+                
+                // Clear any existing heartbeat
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                }
+                
+                // Start heartbeat to keep connection alive (ping every 30 seconds)
+                heartbeatInterval = setInterval(() => {
+                    if (ws && ws.readyState === WebSocket.OPEN) {
+                        try {
+                            ws.send(JSON.stringify({ type: 'ping' }));
+                            console.log('💓 Heartbeat sent');
+                        } catch (error) {
+                            console.error('❌ Heartbeat failed:', error);
+                        }
+                    }
+                }, 30000);
             };
 
             ws.onmessage = (event) => {
-                const data = JSON.parse(event.data);
-                hideTyping();
-                
-                if (data.type === 'response') {
-                    addMessage('bot', data.message);
-                } else if (data.type === 'error') {
-                    addMessage('bot', `⚠️ ${data.message}`);
+                try {
+                    console.log('📥 Received message:', event.data);
+                    const data = JSON.parse(event.data);
+                    hideTyping();
+                    
+                    if (data.type === 'response') {
+                        console.log('✅ Processing response:', data.message?.substring(0, 100));
+                        addMessage('bot', data.message || 'No response received');
+                    } else if (data.type === 'error') {
+                        console.log('⚠️ Processing error:', data.message);
+                        addMessage('bot', `⚠️ ${data.message}`);
+                    } else {
+                        console.log('❓ Unknown message type:', data.type);
+                    }
+                    
+                    sendBtn.disabled = false;
+                    userInput.disabled = false;
+                } catch (error) {
+                    console.error('❌ Error processing message:', error);
+                    hideTyping();
+                    addMessage('bot', '⚠️ Error processing response. Please try again.');
+                    sendBtn.disabled = false;
+                    userInput.disabled = false;
                 }
-                
-                sendBtn.disabled = false;
-                userInput.disabled = false;
             };
 
             ws.onerror = (error) => {
@@ -677,25 +624,32 @@
                 updateConnectionStatus(false);
             };
 
-            ws.onclose = () => {
-                console.log('🔌 WebSocket closed');
+            ws.onclose = (event) => {
+                console.log('🔌 WebSocket closed. Code:', event.code, 'Reason:', event.reason || 'No reason provided');
                 updateConnectionStatus(false);
+                isReconnecting = false;
+                ws = null; // Clear the reference
                 
-                if (reconnectAttempts < MAX_RECONNECT && chatWindow.classList.contains('open')) {
+                // Clear heartbeat
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                    heartbeatInterval = null;
+                }
+                
+                // Only reconnect if chat is open and we haven't exceeded max attempts
+                if (chatWindow.classList.contains('open') && reconnectAttempts < MAX_RECONNECT) {
                     reconnectAttempts++;
-                    const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
+                    const delay = Math.min(1000 * reconnectAttempts, 5000); // Max 5 second delay
                     console.log(`🔄 Reconnecting in ${delay/1000}s... (Attempt ${reconnectAttempts}/${MAX_RECONNECT})`);
                     setTimeout(connectWebSocket, delay);
+                } else if (reconnectAttempts >= MAX_RECONNECT) {
+                    console.log('❌ Max reconnection attempts reached');
+                    addMessage('bot', '⚠️ Connection lost. Please refresh the page or try again later.');
                 }
             };
         }
 
         function addMessage(type, text) {
-            // Hide quick actions when messages start
-            if (quickActions && messages.children.length > 1) {
-                quickActions.classList.remove('show');
-            }
-
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}-message`;
             
@@ -731,12 +685,18 @@
             if (!message) return;
             
             if (!ws || ws.readyState !== WebSocket.OPEN) {
-                addMessage('bot', '⚠️ Not connected to server. Please wait while we reconnect...');
-                connectWebSocket();
+                console.log('⚠️ WebSocket not connected');
+                addMessage('bot', '⚠️ Not connected. Reconnecting...');
+                if (!isReconnecting) {
+                    connectWebSocket();
+                }
+                // Store message to retry after connection
+                userInput.value = message;
                 return;
             }
 
             addMessage('user', message);
+            const messageToSend = message;
             userInput.value = '';
             
             showTyping();
@@ -744,13 +704,18 @@
             userInput.disabled = true;
 
             try {
-                ws.send(JSON.stringify({ message: message }));
+                console.log('📤 Sending message:', messageToSend);
+                ws.send(JSON.stringify({ message: messageToSend }));
             } catch (error) {
-                console.error('Error sending message:', error);
+                console.error('❌ Error sending message:', error);
                 hideTyping();
-                addMessage('bot', '⚠️ Failed to send message. Please try again.');
+                addMessage('bot', '⚠️ Failed to send message. Reconnecting...');
                 sendBtn.disabled = false;
                 userInput.disabled = false;
+                // Try to reconnect
+                if (!isReconnecting) {
+                    connectWebSocket();
+                }
             }
         }
 
@@ -761,13 +726,13 @@
             }
         }
 
-        // Auto-connect when page loads
+        // Don't auto-connect on page load - only connect when chat is opened
         console.log('🚀 College Buddy Widget Initialized');
-        connectWebSocket();
 
         // Handle page visibility changes
         document.addEventListener('visibilitychange', () => {
-            if (document.visibilityState === 'visible' && !isConnected && chatWindow.classList.contains('open')) {
+            if (document.visibilityState === 'visible' && chatWindow.classList.contains('open') && !isConnected) {
+                console.log('🔄 Page visible, reconnecting...');
                 connectWebSocket();
             }
         });
