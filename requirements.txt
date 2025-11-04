@@ -25,3 +25,10 @@ websockets
 InstructorEmbedding
 slowapi
 python-multipart
+
+# Image and PDF processing for OCR
+Pillow
+pytesseract
+pdf2image
+PyMuPDF
+opencv-python
