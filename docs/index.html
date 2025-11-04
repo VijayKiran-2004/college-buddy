@@ -196,6 +196,12 @@
                                     </svg>
                                     <span>Clear History</span>
                                 </button>
+                                <button onclick="clearResponseCache()" class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                    <span>Clear Cache <span id="cache-count" class="text-xs text-gray-400">(0)</span></span>
+                                </button>
                                 <button onclick="exportChatHistory()" class="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded flex items-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
@@ -394,6 +400,112 @@
             console.log('Chat history exported');
         }
 
+        // Response caching with 24hr expiry
+        const CACHE_EXPIRY_MS = 24 * 60 * 60 * 1000; // 24 hours
+        
+        function getCachedResponse(question) {
+            try {
+                const cache = JSON.parse(localStorage.getItem('responseCache') || '{}');
+                const normalizedQuestion = question.toLowerCase().trim();
+                const cached = cache[normalizedQuestion];
+                
+                if (cached && cached.timestamp) {
+                    const age = Date.now() - cached.timestamp;
+                    if (age < CACHE_EXPIRY_MS) {
+                        console.log(`💾 Cache hit for: "${question.substring(0, 50)}..." (age: ${(age/1000/60).toFixed(0)}m)`);
+                        return cached.response;
+                    } else {
+                        console.log(`⏰ Cache expired for: "${question.substring(0, 50)}..."`);
+                        delete cache[normalizedQuestion];
+                        localStorage.setItem('responseCache', JSON.stringify(cache));
+                    }
+                }
+            } catch (e) {
+                console.error('Cache read error:', e);
+            }
+            return null;
+        }
+        
+        function setCachedResponse(question, response) {
+            try {
+                const cache = JSON.parse(localStorage.getItem('responseCache') || '{}');
+                const normalizedQuestion = question.toLowerCase().trim();
+                
+                cache[normalizedQuestion] = {
+                    response: response,
+                    timestamp: Date.now()
+                };
+                
+                // Limit cache size to 100 entries
+                const entries = Object.entries(cache);
+                if (entries.length > 100) {
+                    // Remove oldest entries
+                    entries.sort((a, b) => (a[1].timestamp || 0) - (b[1].timestamp || 0));
+                    const newCache = Object.fromEntries(entries.slice(-100));
+                    localStorage.setItem('responseCache', JSON.stringify(newCache));
+                    console.log('🗑️ Cache pruned to 100 entries');
+                } else {
+                    localStorage.setItem('responseCache', JSON.stringify(cache));
+                }
+                
+                console.log(`💾 Cached response for: "${question.substring(0, 50)}..."`);
+            } catch (e) {
+                console.error('Cache write error:', e);
+            }
+        }
+        
+        function clearExpiredCache() {
+            try {
+                const cache = JSON.parse(localStorage.getItem('responseCache') || '{}');
+                let removed = 0;
+                
+                for (const [key, value] of Object.entries(cache)) {
+                    if (value.timestamp && (Date.now() - value.timestamp) >= CACHE_EXPIRY_MS) {
+                        delete cache[key];
+                        removed++;
+                    }
+                }
+                
+                if (removed > 0) {
+                    localStorage.setItem('responseCache', JSON.stringify(cache));
+                    console.log(`🗑️ Cleared ${removed} expired cache entries`);
+                }
+            } catch (e) {
+                console.error('Cache cleanup error:', e);
+            }
+        }
+        
+        // Clear expired cache on startup
+        clearExpiredCache();
+        
+        function clearResponseCache() {
+            try {
+                localStorage.removeItem('responseCache');
+                updateCacheCount();
+                console.log('🗑️ Response cache cleared');
+                alert('Response cache cleared successfully! ✅');
+            } catch (e) {
+                console.error('Failed to clear cache:', e);
+            }
+        }
+        
+        function updateCacheCount() {
+            try {
+                const cache = JSON.parse(localStorage.getItem('responseCache') || '{}');
+                const count = Object.keys(cache).length;
+                const cacheCountEl = document.getElementById('cache-count');
+                if (cacheCountEl) {
+                    cacheCountEl.textContent = `(${count})`;
+                }
+            } catch (e) {
+                console.error('Failed to update cache count:', e);
+            }
+        }
+        
+        // Update cache count on load and periodically
+        updateCacheCount();
+        setInterval(updateCacheCount, 5000); // Update every 5 seconds
+
         function connectWebSocket() {
             // Use localhost:8001 when opening file directly, otherwise use current host
             const host = window.location.host || 'localhost:8001';
@@ -413,6 +525,15 @@
                 if (data.type === 'response') {
                     hideTypingIndicator();
                     displayMessage(data.message, false, data.sources || [], data.suggestions || []);
+                    
+                    // Cache the response
+                    if (currentQuestion) {
+                        setCachedResponse(currentQuestion, {
+                            message: data.message,
+                            sources: data.sources || [],
+                            suggestions: data.suggestions || []
+                        });
+                    }
                     
                     // Speak response if voice response is enabled - SYNCHRONIZED!
                     if (voiceResponseCheckbox && voiceResponseCheckbox.checked) {
@@ -823,6 +944,20 @@
             currentQuestion = userText;
             displayMessage(userText, true, []);
             chatInput.value = '';
+            
+            // Check cache first
+            const cachedResponse = getCachedResponse(userText);
+            if (cachedResponse) {
+                // Display cached response immediately
+                displayMessage(cachedResponse.message, false, cachedResponse.sources || [], cachedResponse.suggestions || []);
+                
+                // Speak cached response if voice is enabled
+                if (voiceResponseCheckbox && voiceResponseCheckbox.checked) {
+                    setTimeout(() => speakResponse(cachedResponse.message), 300);
+                }
+                return;
+            }
+            
             showTypingIndicator();
 
             try {
