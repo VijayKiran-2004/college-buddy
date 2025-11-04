@@ -41,6 +41,48 @@ The college follows the JNTUH curriculum and examination system. For any changes
 [Visit Official Website →](https://tkrcet.ac.in/)"""
     },
     {
+        "pattern": r"(what|which|list|name).*(compan|recruit|visit|plac).*(tkr|college)|placement.*(compan|recruit)|compan.*(visit|recruit|plac)",
+        "answer": """**Top Recruiting Companies at TKRCET:**
+
+**🏢 Major IT & Tech Companies:**
+• TCS (Tata Consultancy Services)
+• Infosys
+• Wipro
+• Tech Mahindra
+• Capgemini
+• Cognizant
+• Accenture
+• HCL Technologies
+• IBM
+• Microsoft
+
+**💼 Core & Other Sectors:**
+• Deloitte
+• Amazon
+• Google
+• Qualcomm
+• Oracle
+• SAP Labs
+• Hyundai
+• L&T (Larsen & Toubro)
+• Vedanta
+• BHEL
+
+**📊 Placement Highlights:**
+• 100+ companies visit annually
+• Strong placement record across all branches
+• Core companies for Mechanical, Civil, EEE, ECE
+• IT giants for CSE, IT departments
+• Competitive packages offered
+
+**Contact Placement Cell:**
+📧 placements@tkrcet.com
+📞 8919956963 / 9966559298
+
+[View Placements →](https://tkrcet.ac.in/placements/)
+[Placed Students List →](https://tkrcet.ac.in/placement-news/student-placement-details)"""
+    },
+    {
         "pattern": r"(list of|all) (hod|hods|head of department|heads of department)",
         "answer": """Here are all the **Heads of Departments (HODs)** at TKRCET:
 
