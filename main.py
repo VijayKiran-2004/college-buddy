@@ -76,7 +76,12 @@ def home(request: Request):
 @app.get("/demo")
 @limiter.limit("100/minute")
 def demo(request: Request):
-    return FileResponse("static/demo-page.html")
+    return FileResponse("docs/index.html")
+
+@app.get("/widget")
+@limiter.limit("100/minute")
+def widget(request: Request):
+    return FileResponse("docs/index.html")
 
 @app.websocket("/chat")
 async def websocket_endpoint(ws: WebSocket):
