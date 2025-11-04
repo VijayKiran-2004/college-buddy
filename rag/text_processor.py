@@ -102,7 +102,14 @@ ABBREVIATIONS = {
     "dept": "Department",
     "prof": "Professor",
     "asst": "Assistant",
-    "assoc": "Associate"
+    "assoc": "Associate",
+    "cs": "Computer Science",
+    "ec": "Electronics Communication",
+    "ee": "Electrical Electronics",
+    "me": "Mechanical",
+    "ce": "Civil",
+    "aiml": "Artificial Intelligence Machine Learning",
+    "ds": "Data Science"
 }
 
 def preprocess_query(query: str) -> str:

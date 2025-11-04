@@ -101,6 +101,34 @@ The college follows the JNTUH curriculum and examination system. For any changes
 • **Humanities & Sciences** - Dr. D.V.S.R. Anil Kumar | 📞 8498085221 | 📧 anilkumar@tkrcet.com
 
 [View Contact Information →](https://tkrcet.ac.in/contact-us/)"""
+    },
+    {
+        "pattern": r"(about|info|tell|describe|what is|details?|information).*(cse|computer science|cs dept).*(dept|department)?",
+        "answer": "department:cse"  # Special marker to trigger RAG with focused query
+    },
+    {
+        "pattern": r"(about|info|tell|describe|what is|details?|information).*(ece|electronics|ec dept|electronics communication).*(dept|department)?",
+        "answer": "department:ece"
+    },
+    {
+        "pattern": r"(about|info|tell|describe|what is|details?|information).*(eee|electrical|ee dept|electrical electronics).*(dept|department)?",
+        "answer": "department:eee"
+    },
+    {
+        "pattern": r"(about|info|tell|describe|what is|details?|information).*(mech|mechanical|me dept).*(dept|department)?",
+        "answer": "department:mech"
+    },
+    {
+        "pattern": r"(about|info|tell|describe|what is|details?|information).*(civil|ce dept).*(dept|department)?",
+        "answer": "department:civil"
+    },
+    {
+        "pattern": r"(about|info|tell|describe|what is|details?|information).*(it|information technology).*(dept|department)?",
+        "answer": "department:it"
+    },
+    {
+        "pattern": r"(about|info|tell|describe|what is|details?|information).*(mba|management).*(dept|department)?",
+        "answer": "department:mba"
     }
 ]
 

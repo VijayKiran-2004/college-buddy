@@ -749,8 +749,25 @@ def rag_answer(question: str, history: Optional[list] = None, lang: str = "engli
         # Check conversational rules first (for placement, contact, etc.)
         conversational_answer = find_conversational_rule(question_lower)
         if conversational_answer:
-            log_interaction(question, conversational_answer)
-            return {"answer": conversational_answer, "sources": []}
+            # Check if it's a department marker
+            if conversational_answer.startswith("department:"):
+                dept_code = conversational_answer.split(":")[1]
+                dept_map = {
+                    "cse": "Computer Science and Engineering CSE department",
+                    "ece": "Electronics and Communication Engineering ECE department",
+                    "eee": "Electrical and Electronics Engineering EEE department",
+                    "mech": "Mechanical Engineering department",
+                    "civil": "Civil Engineering department",
+                    "it": "Information Technology IT department",
+                    "mba": "MBA Management department"
+                }
+                # Rewrite question for better retrieval
+                question = dept_map.get(dept_code, question)
+                processed_question = preprocess_query(question)
+                logger.info(f"Department query detected: {dept_code} -> {question}")
+            else:
+                log_interaction(question, conversational_answer)
+                return {"answer": conversational_answer, "sources": []}
 
         # Check for basic definitions first
         if any(phrase in question_lower for phrase in [
@@ -784,7 +801,7 @@ def rag_answer(question: str, history: Optional[list] = None, lang: str = "engli
 
         # Get relevant documents
         try:
-            source_docs = get_docs(question, history, k=2)  # Reduced from k=10 for faster response
+            source_docs = get_docs(question, history, k=5)  # Increased from k=2 for better coverage
 
             if not source_docs:
                 logger.info(f"No documents found for query")
