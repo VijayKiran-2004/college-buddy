@@ -128,7 +128,7 @@ def extract_text_from_pdf_url(pdf_url: str, timeout: int = 30) -> Optional[str]:
         for page_num in range(len(pdf_document)):
             page = pdf_document[page_num]
             text = page.get_text()
-            if text.strip():
+            if text and isinstance(text, str) and text.strip():
                 extracted_text.append(text)
         
         pdf_document.close()
@@ -164,7 +164,7 @@ def extract_text_from_pdf_file(pdf_path: str) -> Optional[str]:
         for page_num in range(len(pdf_document)):
             page = pdf_document[page_num]
             text = page.get_text()
-            if text.strip():
+            if text and isinstance(text, str) and text.strip():
                 extracted_text.append(text)
         
         pdf_document.close()
