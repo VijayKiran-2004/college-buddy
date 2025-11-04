@@ -6,8 +6,14 @@
     <title>College Buddy Widget - TKRCET</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
             margin: 0;
             padding: 0;
         }
@@ -15,106 +21,172 @@
         /* Chat Widget Button */
         .chat-button {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
+            bottom: 24px;
+            right: 24px;
+            width: 64px;
+            height: 64px;
             border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: transform 0.3s ease;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 1000;
         }
 
         .chat-button:hover {
             transform: scale(1.1);
+            box-shadow: 0 12px 32px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-button:active {
+            transform: scale(0.95);
         }
 
         .chat-button svg {
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
+        }
+
+        .chat-button.hide {
+            display: none;
+        }
+
+        /* Notification Badge */
+        .notification-badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+            display: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 0.8;
+            }
         }
 
         /* Chat Window */
         .chat-window {
             position: fixed;
-            bottom: 90px;
-            right: 20px;
-            width: 380px;
-            height: 550px;
+            bottom: 100px;
+            right: 24px;
+            width: 400px;
+            max-width: calc(100vw - 48px);
+            height: 600px;
+            max-height: calc(100vh - 140px);
             background: white;
-            border-radius: 16px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
             display: none;
             flex-direction: column;
             z-index: 999;
             opacity: 0;
-            transform: scale(0.8);
-            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(20px) scale(0.95);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         .chat-window.open {
             display: flex;
             opacity: 1;
-            transform: scale(1);
+            transform: translateY(0) scale(1);
         }
 
         /* Header */
         .chat-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 16px;
-            border-radius: 16px 16px 0 0;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
 
-        .chat-header h3 {
+        .chat-header-content {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .chat-header-text h3 {
             margin: 0;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 600;
         }
 
-        .chat-header p {
+        .chat-header-text p {
             margin: 0;
             font-size: 12px;
             opacity: 0.9;
+            margin-top: 2px;
         }
 
         .close-btn {
-            background: none;
+            background: rgba(255, 255, 255, 0.2);
             border: none;
             color: white;
             cursor: pointer;
-            padding: 4px;
+            padding: 8px;
             display: flex;
             align-items: center;
+            border-radius: 8px;
+            transition: background 0.2s;
         }
 
         .close-btn:hover {
-            opacity: 0.8;
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .close-btn svg {
+            width: 20px;
+            height: 20px;
         }
 
         /* Messages Area */
         .messages {
             flex: 1;
-            padding: 16px;
+            padding: 20px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            background: #f9fafb;
+            gap: 16px;
+            background: #f8fafc;
         }
 
         .messages::-webkit-scrollbar {
             width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-track {
+            background: transparent;
         }
 
         .messages::-webkit-scrollbar-thumb {
@@ -122,37 +194,63 @@
             border-radius: 10px;
         }
 
+        .messages::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        /* Message Styles */
         .message {
-            max-width: 75%;
-            padding: 10px 14px;
-            border-radius: 12px;
+            max-width: 80%;
+            padding: 12px 16px;
+            border-radius: 16px;
             word-wrap: break-word;
             line-height: 1.5;
+            font-size: 14px;
+            animation: messageSlideIn 0.3s ease-out;
+        }
+
+        @keyframes messageSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .user-message {
-            background: #667eea;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             align-self: flex-end;
             margin-left: auto;
             border-bottom-right-radius: 4px;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .bot-message {
             background: white;
-            color: #1f2937;
+            color: #1e293b;
             align-self: flex-start;
-            border: 1px solid #e5e7eb;
+            border: 1px solid #e2e8f0;
             border-bottom-left-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
         .bot-message strong {
             font-weight: 600;
+            color: #0f172a;
         }
 
         .bot-message a {
             color: #667eea;
             text-decoration: underline;
+            transition: color 0.2s;
+        }
+
+        .bot-message a:hover {
+            color: #764ba2;
         }
 
         .bot-message ul, .bot-message ol {
@@ -161,84 +259,120 @@
         }
 
         .bot-message li {
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+        }
+
+        .bot-message code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
         }
 
         /* Typing Indicator */
         .typing {
             display: none;
-            padding: 10px 14px;
+            padding: 12px 16px;
             background: white;
-            border: 1px solid #e5e7eb;
-            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
             align-self: flex-start;
-            max-width: 60px;
+            max-width: 70px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
         }
 
-        .typing span {
-            display: inline-block;
+        .typing.show {
+            display: block;
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dots span {
             width: 8px;
             height: 8px;
             border-radius: 50%;
             background: #667eea;
-            margin-right: 4px;
-            animation: typing 1.4s infinite;
+            animation: typing 1.4s infinite ease-in-out;
         }
 
-        .typing span:nth-child(2) {
+        .typing-dots span:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .typing-dots span:nth-child(2) {
             animation-delay: 0.2s;
         }
 
-        .typing span:nth-child(3) {
+        .typing-dots span:nth-child(3) {
             animation-delay: 0.4s;
         }
 
         @keyframes typing {
             0%, 60%, 100% {
                 transform: translateY(0);
+                opacity: 0.7;
             }
             30% {
-                transform: translateY(-10px);
+                transform: translateY(-8px);
+                opacity: 1;
             }
         }
 
         /* Input Area */
         .input-area {
-            padding: 16px;
-            border-top: 1px solid #e5e7eb;
+            padding: 20px;
+            border-top: 1px solid #e2e8f0;
             display: flex;
-            gap: 8px;
+            gap: 10px;
             background: white;
-            border-radius: 0 0 16px 16px;
+            border-radius: 0 0 20px 20px;
         }
 
         .input-area input {
             flex: 1;
-            padding: 10px 14px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
             font-size: 14px;
             outline: none;
+            transition: all 0.2s;
+            font-family: inherit;
         }
 
         .input-area input:focus {
             border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .input-area input::placeholder {
+            color: #94a3b8;
         }
 
         .send-btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            padding: 12px 24px;
+            border-radius: 12px;
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
-            transition: transform 0.2s;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
         }
 
         .send-btn:hover:not(:disabled) {
-            transform: scale(1.05);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+
+        .send-btn:active:not(:disabled) {
+            transform: translateY(0);
         }
 
         .send-btn:disabled {
@@ -246,13 +380,72 @@
             cursor: not-allowed;
         }
 
+        /* Connection Status */
+        .connection-status {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+
+        .connection-status.disconnected {
+            background: #ef4444;
+            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+        }
+
+        /* Powered By Footer */
+        .powered-by {
+            padding: 8px 20px;
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .powered-by a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 640px) {
-            .chat-window {
-                width: calc(100vw - 40px);
-                height: calc(100vh - 120px);
-                bottom: 90px;
+            .chat-button {
+                width: 56px;
+                height: 56px;
+                bottom: 20px;
                 right: 20px;
+            }
+
+            .chat-button svg {
+                width: 28px;
+                height: 28px;
+            }
+
+            .chat-window {
+                width: calc(100vw - 32px);
+                height: calc(100vh - 100px);
+                bottom: 88px;
+                right: 16px;
+                border-radius: 16px;
+            }
+
+            .chat-header {
+                padding: 16px;
+                border-radius: 16px 16px 0 0;
+            }
+
+            .messages {
+                padding: 16px;
+            }
+
+            .input-area {
+                padding: 16px;
             }
         }
     </style>
@@ -260,48 +453,67 @@
 <body>
 
     <!-- Chat Button -->
-    <button class="chat-button" id="chatButton" onclick="toggleChat()">
-        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+    <button class="chat-button" id="chatButton" onclick="toggleChat()" aria-label="Open chat">
+        <span class="notification-badge" id="notificationBadge"></span>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
         </svg>
     </button>
 
     <!-- Chat Window -->
     <div class="chat-window" id="chatWindow">
         <div class="chat-header">
-            <div>
-                <h3>🎓 College Buddy</h3>
-                <p>TKRCET AI Assistant</p>
+            <div class="chat-header-content">
+                <div class="chat-avatar">🎓</div>
+                <div class="chat-header-text">
+                    <h3>College Buddy</h3>
+                    <p id="statusText">Online</p>
+                </div>
             </div>
-            <button class="close-btn" onclick="toggleChat()">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            <button class="close-btn" onclick="toggleChat()" aria-label="Close chat">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
                 </svg>
             </button>
         </div>
 
         <div class="messages" id="messages">
             <div class="bot-message message">
-                Hi! I'm College Buddy 👋<br><br>
-                Ask me anything about <strong>TKRCET</strong> - admissions, courses, placements, facilities, and more!
+                <strong>Hi! I'm College Buddy 👋</strong><br><br>
+                Ask me anything about <strong>TKRCET</strong>:<br>
+                • Admissions & Courses<br>
+                • Placements & Companies<br>
+                • Facilities & Infrastructure<br>
+                • Faculty & Departments<br>
+                • Fees & Scholarships
             </div>
         </div>
 
         <div class="typing" id="typing">
-            <span></span>
-            <span></span>
-            <span></span>
+            <div class="typing-dots">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
         </div>
 
         <div class="input-area">
             <input 
                 type="text" 
                 id="userInput" 
-                placeholder="Ask me anything..." 
+                placeholder="Type your question..." 
                 autocomplete="off"
                 onkeypress="handleKeyPress(event)"
             >
-            <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="powered-by">
+            Powered by <a href="https://tkrcet.ac.in" target="_blank">TKRCET AI</a>
         </div>
     </div>
 
@@ -309,6 +521,7 @@
         let ws = null;
         let reconnectAttempts = 0;
         const MAX_RECONNECT = 5;
+        let isConnected = false;
 
         const chatWindow = document.getElementById('chatWindow');
         const chatButton = document.getElementById('chatButton');
@@ -316,10 +529,11 @@
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
         const typing = document.getElementById('typing');
+        const statusText = document.getElementById('statusText');
 
         function toggleChat() {
-            chatWindow.classList.toggle('open');
-            if (chatWindow.classList.contains('open')) {
+            const isOpen = chatWindow.classList.toggle('open');
+            if (isOpen) {
                 userInput.focus();
                 if (!ws || ws.readyState !== WebSocket.OPEN) {
                     connectWebSocket();
@@ -327,15 +541,21 @@
             }
         }
 
+        function updateConnectionStatus(connected) {
+            isConnected = connected;
+            statusText.textContent = connected ? 'Online' : 'Connecting...';
+        }
+
         function connectWebSocket() {
             const wsUrl = 'ws://localhost:8001/chat';
-            console.log('Connecting to:', wsUrl);
+            console.log('🔌 Connecting to:', wsUrl);
             
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
-                console.log('Connected to College Buddy backend');
+                console.log('✅ Connected to College Buddy backend');
                 reconnectAttempts = 0;
+                updateConnectionStatus(true);
             };
 
             ws.onmessage = (event) => {
@@ -345,24 +565,28 @@
                 if (data.type === 'response') {
                     addMessage('bot', data.message);
                 } else if (data.type === 'error') {
-                    addMessage('bot', `❌ ${data.message}`);
+                    addMessage('bot', `⚠️ ${data.message}`);
                 }
                 
                 sendBtn.disabled = false;
+                userInput.disabled = false;
             };
 
             ws.onerror = (error) => {
-                console.error('WebSocket error:', error);
+                console.error('❌ WebSocket error:', error);
                 hideTyping();
-                addMessage('bot', '⚠️ Connection error. Make sure the backend is running on port 8001.');
-                sendBtn.disabled = false;
+                updateConnectionStatus(false);
             };
 
             ws.onclose = () => {
-                console.log('WebSocket closed');
-                if (reconnectAttempts < MAX_RECONNECT) {
+                console.log('🔌 WebSocket closed');
+                updateConnectionStatus(false);
+                
+                if (reconnectAttempts < MAX_RECONNECT && chatWindow.classList.contains('open')) {
                     reconnectAttempts++;
-                    setTimeout(connectWebSocket, 2000 * reconnectAttempts);
+                    const delay = Math.min(1000 * Math.pow(2, reconnectAttempts), 10000);
+                    console.log(`🔄 Reconnecting in ${delay/1000}s... (Attempt ${reconnectAttempts}/${MAX_RECONNECT})`);
+                    setTimeout(connectWebSocket, delay);
                 }
             };
         }
@@ -372,11 +596,13 @@
             messageDiv.className = `message ${type}-message`;
             
             if (type === 'bot') {
-                // Format bot messages with markdown-like styling
+                // Enhanced markdown-like formatting
                 text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-                text = text.replace(/^• (.+)$/gm, '<li>$1</li>');
-                text = text.replace(/(<li>.*<\/li>\n?)+/gs, '<ul>$&</ul>');
+                text = text.replace(/`(.+?)`/g, '<code>$1</code>');
+                text = text.replace(/^[•·] (.+)$/gm, '<li>$1</li>');
+                text = text.replace(/(<li>.*<\/li>\s*)+/gs, '<ul>$&</ul>');
                 text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
+                text = text.replace(/\n/g, '<br>');
                 messageDiv.innerHTML = text;
             } else {
                 messageDiv.textContent = text;
@@ -387,12 +613,12 @@
         }
 
         function showTyping() {
-            typing.style.display = 'block';
+            typing.classList.add('show');
             messages.scrollTop = messages.scrollHeight;
         }
 
         function hideTyping() {
-            typing.style.display = 'none';
+            typing.classList.remove('show');
         }
 
         function sendMessage() {
@@ -401,7 +627,7 @@
             if (!message) return;
             
             if (!ws || ws.readyState !== WebSocket.OPEN) {
-                addMessage('bot', '⚠️ Not connected. Reconnecting...');
+                addMessage('bot', '⚠️ Not connected to server. Please wait while we reconnect...');
                 connectWebSocket();
                 return;
             }
@@ -411,18 +637,36 @@
             
             showTyping();
             sendBtn.disabled = true;
+            userInput.disabled = true;
 
-            ws.send(JSON.stringify({ message: message }));
+            try {
+                ws.send(JSON.stringify({ message: message }));
+            } catch (error) {
+                console.error('Error sending message:', error);
+                hideTyping();
+                addMessage('bot', '⚠️ Failed to send message. Please try again.');
+                sendBtn.disabled = false;
+                userInput.disabled = false;
+            }
         }
 
         function handleKeyPress(event) {
-            if (event.key === 'Enter') {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
                 sendMessage();
             }
         }
 
         // Auto-connect when page loads
+        console.log('🚀 College Buddy Widget Initialized');
         connectWebSocket();
+
+        // Handle page visibility changes
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible' && !isConnected && chatWindow.classList.contains('open')) {
+                connectWebSocket();
+            }
+        });
     </script>
 </body>
 </html>
