@@ -395,8 +395,10 @@
         }
 
         function connectWebSocket() {
+            // Use localhost:8001 when opening file directly, otherwise use current host
+            const host = window.location.host || 'localhost:8001';
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            const wsUrl = `${protocol}//${window.location.host}/chat`;
+            const wsUrl = `${protocol}//${host}/chat`;
             
             ws = new WebSocket(wsUrl);
 

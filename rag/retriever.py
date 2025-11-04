@@ -173,111 +173,32 @@ def get_docs(query: str, history: Optional[list] = None, k: int = 3) -> List[Doc
                 else:
                     enhanced_query = f"{enhanced_query} {' '.join(terms)}"
         
-        # Comprehensive topic-specific expansions for intelligent retrieval
+        # OPTIMIZED: Simplified topic expansions - only essential terms for faster processing
         topic_expansions = {
-            'placement': [
-                'placement statistics', 'placement records', 'companies visited', 'recruitment', 
-                'campus placement', 'highest package', 'average package', 'placement cell', 
-                'job offers', 'student placement', 'placement training', 'placement drive',
-                'placement coordinator', 'placement percentage', 'top recruiters', 'salary packages',
-                'placement season', 'placement opportunities', 'corporate tie-ups', 'industry connections'
-            ],
-            'admission': [
-                'admission procedure', 'eligibility criteria', 'how to apply', 'admission process', 
-                'entrance exam', 'admission requirements', 'application form', 'admission dates',
-                'selection process', 'admission notification', 'document verification', 'seat allocation',
-                'counseling process', 'admission helpline', 'online admission', 'admission fee',
-                'last date to apply', 'reservation policy', 'admission guidelines', 'intake capacity'
-            ],
-            'faculty': [
-                'faculty members', 'teaching staff', 'professors', 'department head', 'hod name', 'head of department',
-                'faculty profile', 'faculty qualification', 'teaching experience', 'faculty expertise',
-                'faculty research', 'faculty publications', 'assistant professor', 'associate professor',
-                'visiting faculty', 'faculty achievements', 'faculty contact', 'faculty directory',
-                'HOD', 'Dr.', 'contact number', 'email', 'phone', 'department head contact',
-                'Satya Narayana', 'Suresh Rao', 'Mahesh', 'Satya Sai', 'Raju', 'contact information'
-            ],
-            'fee': [
-                'fee structure', 'tuition fee', 'course fee', 'total fee', 'fee payment',
-                'fee details', 'semester fee', 'annual fee', 'fee breakdown', 'fee concession',
-                'scholarship', 'financial aid', 'fee reimbursement', 'payment schedule',
-                'fee installments', 'hostel fee', 'transportation fee', 'examination fee',
-                'caution deposit', 'refund policy', 'fee waiver', 'fee components'
-            ],
-            'hostel': [
-                'hostel facilities', 'accommodation', 'hostel fee', 'room availability',
-                'hostel rules', 'hostel rooms', 'hostel admission', 'mess facility',
-                'hostel warden', 'hostel capacity', 'boys hostel', 'girls hostel',
-                'hostel amenities', 'room sharing', 'hostel food', 'hostel security',
-                'hostel infrastructure', 'residential facilities', 'staying arrangements'
-            ],
-            'timing': [
-                'college timing', 'class schedule', 'working hours', 'college hours', 'time table',
-                'academic calendar', 'semester schedule', 'class timings', 'office hours',
-                'working days', 'holidays', 'academic session', 'exam schedule',
-                'semester duration', 'daily schedule', 'break timings', 'library hours'
-            ],
-            'facility': [
-                'facilities', 'infrastructure', 'laboratory', 'library', 'sports',
-                'campus facilities', 'lab facilities', 'library resources', 'computer lab',
-                'workshop', 'seminar hall', 'auditorium', 'cafeteria', 'canteen',
-                'medical facilities', 'transport facility', 'bus facility', 'wifi',
-                'internet facility', 'smart classrooms', 'gym', 'playground', 'recreation',
-                'parking', 'banking facilities', 'ATM', 'stationary shop'
-            ],
-            'course': [
-                'course details', 'programs offered', 'branches', 'departments', 'curriculum',
-                'syllabus', 'course structure', 'degree programs', 'specialization', 'subjects',
-                'course duration', 'credit system', 'electives', 'core subjects', 'course content',
-                'academic programs', 'undergraduate courses', 'postgraduate courses', 'diploma courses',
-                'course objectives', 'course outcomes', 'course syllabus'
-            ],
-            'exam': [
-                'examination', 'exam schedule', 'exam pattern', 'exam results', 'grading system',
-                'internal exams', 'mid-term exams', 'semester exams', 'final exams', 'exam dates',
-                'exam hall', 'exam rules', 'exam eligibility', 'exam preparation', 'marks distribution',
-                'passing criteria', 'supplementary exams', 'revaluation', 'exam controller'
-            ],
-            'accreditation': [
-                'accreditation', 'NAAC', 'NBA', 'AICTE', 'UGC', 'approval', 'recognition',
-                'affiliation', 'certification', 'ranking', 'NIRF', 'rating', 'autonomous status',
-                'university affiliation', 'quality rating', 'institutional ranking'
-            ],
-            'events': [
-                'events', 'cultural activities', 'technical fest', 'cultural fest', 'workshops',
-                'seminars', 'guest lectures', 'conferences', 'symposium', 'competitions',
-                'hackathons', 'sports events', 'annual day', 'tech fest', 'cultural programs',
-                'extra-curricular activities', 'student activities', 'club activities'
-            ],
-            'research': [
-                'research', 'research projects', 'research facilities', 'research centers',
-                'research publications', 'research papers', 'innovation', 'patents', 'R&D',
-                'research scholars', 'PhD programs', 'research funding', 'research collaborations'
-            ],
-            'contact': [
-                'contact', 'address', 'phone number', 'email', 'location', 'contact details',
-                'how to reach', 'contact information', 'college address', 'office contact',
-                'helpline', 'principal contact', 'admission office contact', 'enquiry',
-                'department contact', 'HOD contact', 'faculty contact', 'phone', 'email id',
-                'contact number', 'mobile number', 'department phone', 'department email',
-                'Dr.', 'Professor', '@tkrcet.com', '8498085', 'contact us'
-            ]
+            'placement': ['placement statistics', 'companies', 'packages'],
+            'admission': ['admission procedure', 'eligibility', 'how to apply'],
+            'faculty': ['faculty', 'professor', 'HOD', 'head of department'],
+            'fee': ['fee structure', 'tuition fee', 'scholarship'],
+            'hostel': ['hostel facilities', 'accommodation'],
+            'timing': ['college timing', 'working hours', 'schedule'],
+            'facility': ['facilities', 'infrastructure', 'lab', 'library'],
+            'course': ['course details', 'programs', 'branches', 'curriculum'],
+            'exam': ['examination', 'exam schedule', 'results'],
+            'accreditation': ['accreditation', 'NAAC', 'NBA', 'AICTE'],
+            'events': ['events', 'fest', 'workshops', 'seminars'],
+            'research': ['research', 'projects', 'publications'],
+            'contact': ['contact', 'phone', 'email', '@tkrcet.com']
         }
         
-        # Smart expansion: Add topic-specific terms to enhance query
+        # Smart expansion: Add only 3 most relevant terms per topic for speed
         for topic in topics:
             if topic in topic_expansions:
-                # Add all expansion terms for comprehensive coverage
-                enhanced_query = f"{enhanced_query} {' '.join(topic_expansions[topic])}"
-                logger.info(f"Applied {topic} expansions for smarter retrieval")
+                # Take only first 3 expansion terms to keep query lightweight
+                enhanced_query = f"{enhanced_query} {' '.join(topic_expansions[topic][:3])}"
         
-        # Expand query with topic-specific terms
-        expanded_query = expand_query(enhanced_query, topics)
-        
-        # Extract and add key phrases
-        key_phrases = extract_key_phrases(query)
-        if key_phrases:
-            expanded_query = f"{expanded_query} {' '.join(key_phrases)}"
+        # OPTIMIZED: Skip expand_query and extract_key_phrases for faster processing
+        expanded_query = enhanced_query
+
             
         logger.info(f"Enhanced query: {expanded_query}")
         

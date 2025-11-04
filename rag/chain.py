@@ -249,43 +249,11 @@ def enhance_response_for_students(response: str, question: str) -> str:
     """
     Enhance any response (rule-based or RAG) to be more friendly and natural for students.
     Makes the language conversational, warm, and easy to understand.
-    """
-    if not gemini_model:
-        # If no Gemini available, return original response
-        return response
     
-    try:
-        enhancement_prompt = f"""You are a friendly college chatbot assistant helping students. Your job is to rewrite the following response to make it more natural, warm, and student-friendly.
-
-**Guidelines:**
-1. Use casual, friendly language (like talking to a friend)
-2. Add encouraging words and helpful suggestions
-3. Keep all important information (dates, names, links)
-4. Preserve all hyperlinks in markdown format [text](url)
-5. Use emojis sparingly (1-2 max) for warmth
-6. Keep it concise (3-5 sentences or 4-6 bullet points)
-7. Sound excited to help!
-
-**Student's Question:** {question}
-
-**Original Response:**
-{response}
-
-**Your Enhanced Response (friendly, natural, student-focused):**"""
-
-        enhanced = gemini_model(enhancement_prompt)
-        
-        if enhanced and len(enhanced.strip()) > 20:
-            # Ensure no HTML tags slipped through
-            enhanced = re.sub(r'<[^>]+>', '', enhanced)
-            logger.info("✨ Response enhanced for student-friendly tone")
-            return enhanced.strip()
-        else:
-            return response
-            
-    except Exception as e:
-        logger.warning(f"⚠️ Could not enhance response: {e}")
-        return response
+    NOTE: Currently disabled for performance - returns original response directly.
+    """
+    # Disabled for performance - skip Gemini enhancement to reduce latency
+    return response
 
 # Basic definitions
 BASIC_DEFINITIONS = {
@@ -817,7 +785,7 @@ def rag_answer(question: str, history: Optional[list] = None, lang: str = "engli
 
         # Get relevant documents
         try:
-            source_docs = get_docs(question, history, k=10)
+            source_docs = get_docs(question, history, k=2)  # Reduced from k=10 for faster response
 
             if not source_docs:
                 # Get detected topics for better error handling
