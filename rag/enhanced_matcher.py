@@ -6,7 +6,20 @@ import json
 from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 from difflib import SequenceMatcher
-from rag.retriever import ABBREVIATION_MAP
+
+# Define abbreviations locally
+ABBREVIATION_MAP: Dict[str, str] = {
+    "tkr": "Teegala Krishna Reddy",
+    "tkrcet": "Teegala Krishna Reddy College of Engineering and Technology",
+    "cse": "Computer Science and Engineering",
+    "ece": "Electronics and Communication Engineering",
+    "eee": "Electrical and Electronics Engineering",
+    "it": "Information Technology",
+    "ai": "Artificial Intelligence",
+    "ml": "Machine Learning",
+    "csd": "Computer Science and Design",
+    "mba": "Master of Business Administration"
+}
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
