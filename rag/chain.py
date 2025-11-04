@@ -8,7 +8,7 @@ from langchain_core.documents import Document
 import requests
 from bs4 import BeautifulSoup
 from rag.retriever import get_docs
-from rag.text_processor import preprocess_query, detect_topics
+from rag.text_processor import preprocess_query
 from rag.rules import find_conversational_rule
 from dotenv import load_dotenv
 import time
@@ -120,8 +120,7 @@ def log_interaction(query: str, response: str, error: Optional[str] = None):
             "timestamp": datetime.now().isoformat(),
             "query": query,
             "response": response,
-            "error": error,
-            "topics": detect_topics(query)
+            "error": error
         }
         logger.info(f"Interaction: {json.dumps(log_entry, indent=2)}")
     except Exception as e:
@@ -788,52 +787,8 @@ def rag_answer(question: str, history: Optional[list] = None, lang: str = "engli
             source_docs = get_docs(question, history, k=2)  # Reduced from k=10 for faster response
 
             if not source_docs:
-                # Get detected topics for better error handling
-                topics = detect_topics(question_lower)
-                logger.info(f"No documents found for topics: {topics}")
-
-                # Topic-specific guidance
-                topic_responses = {
-                    "fee": (
-                        "I apologize, but I couldn't find the current fee details. Please:\n"
-                        "1. Visit the college admission office\n"
-                        "2. Check the college website's admission section\n"
-                        "3. Contact the administrative office for the latest fee structure"
-                    ),
-                    "faculty": (
-                        "I apologize, but I couldn't find the faculty information you're looking for. Please:\n"
-                        "1. Visit the specific department's page on our website\n"
-                        "2. Contact the department office directly\n"
-                        "3. Check the college directory for contact details"
-                    ),
-                    "timing": (
-                        "I apologize, but I couldn't find the current timing information. Please:\n"
-                        "1. Contact the college office\n"
-                        "2. Check the college website\n"
-                        "3. Refer to your department notice board"
-                    ),
-                    "admission": (
-                        "I apologize, but I couldn't find the admission information you're looking for. Please:\n"
-                        "1. Visit the admissions office\n"
-                        "2. Check the college website's admission section\n"
-                        "3. Contact the administrative office"
-                    ),
-                    "facility": (
-                        "I apologize, but I couldn't find specific facility information. Please:\n"
-                        "1. Visit the relevant department\n"
-                        "2. Check the college website\n"
-                        "3. Contact the administrative office"
-                    )
-                }
-
-                # Find matching topic response
-                for topic in topics:
-                    if topic in topic_responses:
-                        response = topic_responses[topic]
-                        log_interaction(question, response)
-                        return {"answer": response, "sources": []}
-                
-                # Default response if no specific topic found
+                logger.info(f"No documents found for query")
+                # Default response if no docs found
                 response = handle_error_response("no_context")
                 log_interaction(question, response)
                 return {"answer": response, "sources": []}
