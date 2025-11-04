@@ -413,6 +413,63 @@
             font-weight: 500;
         }
 
+        /* Quick Actions */
+        .quick-actions {
+            padding: 16px 20px;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: none;
+        }
+
+        .quick-actions.show {
+            display: block;
+        }
+
+        .quick-actions-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+        }
+
+        .quick-action-btn {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            text-align: left;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quick-action-btn:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .quick-action-btn:active {
+            transform: translateY(0);
+        }
+
+        .quick-action-btn .emoji {
+            font-size: 16px;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 640px) {
             .chat-button {
@@ -489,6 +546,36 @@
             </div>
         </div>
 
+        <div class="quick-actions show" id="quickActions">
+            <div class="quick-actions-title">Quick Questions</div>
+            <div class="quick-actions-grid">
+                <button class="quick-action-btn" onclick="askQuestion('Tell me about CSE department')">
+                    <span class="emoji">💻</span>
+                    <span>CSE Department</span>
+                </button>
+                <button class="quick-action-btn" onclick="askQuestion('What companies visit for placements?')">
+                    <span class="emoji">🏢</span>
+                    <span>Placements</span>
+                </button>
+                <button class="quick-action-btn" onclick="askQuestion('What is the admission process?')">
+                    <span class="emoji">📝</span>
+                    <span>Admissions</span>
+                </button>
+                <button class="quick-action-btn" onclick="askQuestion('What are the fees?')">
+                    <span class="emoji">💰</span>
+                    <span>Fee Structure</span>
+                </button>
+                <button class="quick-action-btn" onclick="askQuestion('What facilities does the college have?')">
+                    <span class="emoji">🏫</span>
+                    <span>Facilities</span>
+                </button>
+                <button class="quick-action-btn" onclick="askQuestion('Is TKRCET autonomous?')">
+                    <span class="emoji">🎓</span>
+                    <span>Accreditation</span>
+                </button>
+            </div>
+        </div>
+
         <div class="typing" id="typing">
             <div class="typing-dots">
                 <span></span>
@@ -530,6 +617,7 @@
         const sendBtn = document.getElementById('sendBtn');
         const typing = document.getElementById('typing');
         const statusText = document.getElementById('statusText');
+        const quickActions = document.getElementById('quickActions');
 
         function toggleChat() {
             const isOpen = chatWindow.classList.toggle('open');
@@ -539,6 +627,17 @@
                     connectWebSocket();
                 }
             }
+        }
+
+        function askQuestion(question) {
+            // Hide quick actions after first use
+            if (quickActions) {
+                quickActions.classList.remove('show');
+            }
+            
+            // Set the question and send it
+            userInput.value = question;
+            sendMessage();
         }
 
         function updateConnectionStatus(connected) {
@@ -592,6 +691,11 @@
         }
 
         function addMessage(type, text) {
+            // Hide quick actions when messages start
+            if (quickActions && messages.children.length > 1) {
+                quickActions.classList.remove('show');
+            }
+
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}-message`;
             
