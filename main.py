@@ -83,6 +83,11 @@ def demo(request: Request):
 def widget(request: Request):
     return FileResponse("docs/index.html")
 
+@app.get("/embed")
+@limiter.limit("100/minute")
+def embed_demo(request: Request):
+    return FileResponse("static/embed-demo.html")
+
 @app.websocket("/chat")
 async def websocket_endpoint(ws: WebSocket):
     await ws.accept()

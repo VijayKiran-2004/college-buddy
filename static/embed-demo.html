@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Buddy - Embeddable Widget Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        
+        .header p {
+            font-size: 1.25rem;
+            opacity: 0.95;
+        }
+        
+        .content {
+            padding: 60px 40px;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+        }
+        
+        .section h2 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+        
+        .section h3 {
+            font-size: 1.5rem;
+            margin: 30px 0 15px;
+            color: #764ba2;
+        }
+        
+        .code-block {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+        
+        .code-block code {
+            font-family: 'Monaco', 'Menlo', 'Courier New', monospace;
+            font-size: 14px;
+            color: #2d3748;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s;
+        }
+        
+        .copy-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin: 30px 0;
+        }
+        
+        .feature-card {
+            background: #f7fafc;
+            padding: 24px;
+            border-radius: 12px;
+            border: 2px solid #e2e8f0;
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.15);
+            border-color: #667eea;
+        }
+        
+        .feature-card h4 {
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            color: #667eea;
+        }
+        
+        .feature-card p {
+            color: #4a5568;
+        }
+        
+        .btn {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .alert {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 16px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        th {
+            background: #f7fafc;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .footer {
+            background: #2d3748;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🤖 College Buddy Widget</h1>
+            <p>Embed an AI-powered chatbot on your website in seconds</p>
+        </div>
+        
+        <div class="content">
+            <!-- Quick Start -->
+            <div class="section">
+                <h2>🚀 Quick Start</h2>
+                <p>Add this single line of code to your website, just before the closing <code>&lt;/body&gt;</code> tag:</p>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('basic-install')">Copy</button>
+                    <code id="basic-install">&lt;script src="https://yourdomain.com/static/widget.js"&gt;&lt;/script&gt;</code>
+                </div>
+                
+                <p><strong>That's it!</strong> The chat widget will appear in the bottom-right corner of your page.</p>
+            </div>
+            
+            <!-- Features -->
+            <div class="section">
+                <h2>✨ Features</h2>
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <h4>🎨 Customizable</h4>
+                        <p>Configure position, theme, auto-open behavior, and more</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📱 Mobile Responsive</h4>
+                        <p>Automatically adapts to mobile screens with optimized UI</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>⚡ Lightweight</h4>
+                        <p>Loads asynchronously without blocking your page</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🔒 Secure</h4>
+                        <p>Sandboxed iframe with origin verification</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>📊 Analytics Ready</h4>
+                        <p>Built-in event tracking for user interactions</p>
+                    </div>
+                    <div class="feature-card">
+                        <h4>🎯 Easy Integration</h4>
+                        <p>Works with any website - HTML, WordPress, React, etc.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Configuration -->
+            <div class="section">
+                <h2>⚙️ Configuration</h2>
+                <p>Customize the widget by adding configuration before loading the script:</p>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('config-example')">Copy</button>
+                    <code id="config-example">&lt;script&gt;
+  // Configure widget before loading
+  window.COLLEGE_BUDDY_API = 'https://your-api-domain.com';
+  window.COLLEGE_BUDDY_THEME = 'indigo';
+  window.COLLEGE_BUDDY_POSITION = 'bottom-right';
+  window.COLLEGE_BUDDY_AUTO_OPEN = false;
+  window.COLLEGE_BUDDY_GREETING = 'Hi! How can I help you?';
+&lt;/script&gt;
+&lt;script src="https://yourdomain.com/static/widget.js"&gt;&lt;/script&gt;</code>
+                </div>
+                
+                <h3>Configuration Options</h3>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Option</th>
+                            <th>Type</th>
+                            <th>Default</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>COLLEGE_BUDDY_API</code></td>
+                            <td>string</td>
+                            <td>localhost:8001</td>
+                            <td>API server URL</td>
+                        </tr>
+                        <tr>
+                            <td><code>COLLEGE_BUDDY_THEME</code></td>
+                            <td>string</td>
+                            <td>indigo</td>
+                            <td>Color theme</td>
+                        </tr>
+                        <tr>
+                            <td><code>COLLEGE_BUDDY_POSITION</code></td>
+                            <td>string</td>
+                            <td>bottom-right</td>
+                            <td>Widget position (bottom-right, bottom-left, top-right, top-left)</td>
+                        </tr>
+                        <tr>
+                            <td><code>COLLEGE_BUDDY_AUTO_OPEN</code></td>
+                            <td>boolean</td>
+                            <td>false</td>
+                            <td>Auto-open widget on page load</td>
+                        </tr>
+                        <tr>
+                            <td><code>COLLEGE_BUDDY_GREETING</code></td>
+                            <td>string</td>
+                            <td>"Hi! How can..."</td>
+                            <td>Custom greeting message</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- JavaScript API -->
+            <div class="section">
+                <h2>🔌 JavaScript API</h2>
+                <p>Control the widget programmatically:</p>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('js-api')">Copy</button>
+                    <code id="js-api">// Open the widget
+CollegeBuddyWidget.open();
+
+// Close the widget
+CollegeBuddyWidget.close();
+
+// Toggle widget state
+CollegeBuddyWidget.toggle();
+
+// Check if widget is open
+if (CollegeBuddyWidget.isOpen()) {
+    console.log('Widget is currently open');
+}</code>
+                </div>
+                
+                <h3>Example: Open widget on button click</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('custom-trigger')">Copy</button>
+                    <code id="custom-trigger">&lt;button onclick="CollegeBuddyWidget.open()"&gt;
+  Need Help? Chat with us!
+&lt;/button&gt;</code>
+                </div>
+                
+                <button class="btn" onclick="demoAPI()">Try API Demo</button>
+            </div>
+            
+            <!-- Platform Examples -->
+            <div class="section">
+                <h2>🌐 Platform Examples</h2>
+                
+                <h3>WordPress</h3>
+                <p>Add to <code>footer.php</code> or use a plugin like "Insert Headers and Footers":</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('wordpress')">Copy</button>
+                    <code id="wordpress">&lt;script src="https://yourdomain.com/static/widget.js"&gt;&lt;/script&gt;</code>
+                </div>
+                
+                <h3>React</h3>
+                <p>Add to <code>public/index.html</code> or use <code>useEffect</code>:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('react')">Copy</button>
+                    <code id="react">useEffect(() => {
+  const script = document.createElement('script');
+  script.src = 'https://yourdomain.com/static/widget.js';
+  script.async = true;
+  document.body.appendChild(script);
+  
+  return () => {
+    document.body.removeChild(script);
+  };
+}, []);</code>
+                </div>
+                
+                <h3>HTML</h3>
+                <p>Add before closing <code>&lt;/body&gt;</code> tag:</p>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('html')">Copy</button>
+                    <code id="html">&lt;script src="https://yourdomain.com/static/widget.js"&gt;&lt;/script&gt;
+&lt;/body&gt;</code>
+                </div>
+            </div>
+            
+            <!-- Testing -->
+            <div class="section">
+                <h2>🧪 Testing Locally</h2>
+                <div class="alert">
+                    <strong>⚠️ For local development:</strong> Use <code>http://localhost:8001</code> as the API URL
+                </div>
+                
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode('local-test')">Copy</button>
+                    <code id="local-test">&lt;script&gt;
+  window.COLLEGE_BUDDY_API = 'http://localhost:8001';
+&lt;/script&gt;
+&lt;script src="http://localhost:8001/static/widget.js"&gt;&lt;/script&gt;</code>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>&copy; 2025 College Buddy. Built with ❤️ for better student support.</p>
+            <p style="margin-top: 10px; opacity: 0.8;">Questions? Contact support or check our documentation.</p>
+        </div>
+    </div>
+    
+    <script>
+        function copyCode(id) {
+            const code = document.getElementById(id).textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.textContent;
+                btn.textContent = 'Copied!';
+                btn.style.background = '#10b981';
+                setTimeout(() => {
+                    btn.textContent = originalText;
+                    btn.style.background = '#667eea';
+                }, 2000);
+            });
+        }
+        
+        function demoAPI() {
+            if (window.CollegeBuddyWidget) {
+                window.CollegeBuddyWidget.open();
+            } else {
+                alert('Widget not loaded yet. This is just a demo page.\n\nTo test the API, include the widget script on your page first!');
+            }
+        }
+    </script>
+    
+    <!-- Load the widget itself for demo purposes -->
+    <script>
+        window.COLLEGE_BUDDY_API = 'http://localhost:8001';
+        window.COLLEGE_BUDDY_POSITION = 'bottom-right';
+    </script>
+    <script src="http://localhost:8001/static/widget.js"></script>
+</body>
+</html>
