@@ -3,156 +3,331 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>College Buddy - TKRCET AI Chatbot</title>
+    <title>College Buddy Widget - TKRCET</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Chat Widget Button */
+        .chat-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 20px;
+            transition: transform 0.3s ease;
+            z-index: 1000;
         }
-        .container {
-            max-width: 1200px;
-            width: 100%;
+
+        .chat-button:hover {
+            transform: scale(1.1);
         }
-        .chat-container {
+
+        .chat-button svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        /* Chat Window */
+        .chat-window {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 380px;
+            height: 550px;
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            overflow: hidden;
-            display: grid;
-            grid-template-rows: auto 1fr auto;
-            height: 600px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: none;
+            flex-direction: column;
+            z-index: 999;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.3s ease, transform 0.3s ease;
         }
-        .header {
+
+        .chat-window.open {
+            display: flex;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* Header */
+        .chat-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 20px;
-            text-align: center;
+            padding: 16px;
+            border-radius: 16px 16px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
+
+        .chat-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .chat-header p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .close-btn:hover {
+            opacity: 0.8;
+        }
+
+        /* Messages Area */
         .messages {
-            padding: 20px;
+            flex: 1;
+            padding: 16px;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 15px;
+            gap: 12px;
+            background: #f9fafb;
         }
+
+        .messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .messages::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
         .message {
-            max-width: 70%;
-            padding: 12px 16px;
+            max-width: 75%;
+            padding: 10px 14px;
             border-radius: 12px;
             word-wrap: break-word;
+            line-height: 1.5;
         }
+
         .user-message {
             background: #667eea;
             color: white;
             align-self: flex-end;
             margin-left: auto;
+            border-bottom-right-radius: 4px;
         }
+
         .bot-message {
-            background: #f3f4f6;
+            background: white;
             color: #1f2937;
             align-self: flex-start;
+            border: 1px solid #e5e7eb;
+            border-bottom-left-radius: 4px;
         }
-        .input-area {
-            padding: 20px;
-            border-top: 1px solid #e5e7eb;
-            display: flex;
-            gap: 10px;
-        }
-        input {
-            flex: 1;
-            padding: 12px;
-            border: 2px solid #e5e7eb;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-        input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 10px;
-            cursor: pointer;
+
+        .bot-message strong {
             font-weight: 600;
-            transition: transform 0.2s;
         }
-        button:hover {
-            transform: scale(1.05);
-        }
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 10px;
-            color: #667eea;
-        }
+
         .bot-message a {
             color: #667eea;
             text-decoration: underline;
         }
+
         .bot-message ul, .bot-message ol {
-            margin-left: 20px;
-            margin-top: 8px;
+            margin: 8px 0;
+            padding-left: 20px;
         }
+
         .bot-message li {
             margin-bottom: 4px;
         }
-        .bot-message strong {
+
+        /* Typing Indicator */
+        .typing {
+            display: none;
+            padding: 10px 14px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            align-self: flex-start;
+            max-width: 60px;
+        }
+
+        .typing span {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #667eea;
+            margin-right: 4px;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-10px);
+            }
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 16px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            gap: 8px;
+            background: white;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .input-area input {
+            flex: 1;
+            padding: 10px 14px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .input-area input:focus {
+            border-color: #667eea;
+        }
+
+        .send-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
             font-weight: 600;
+            font-size: 14px;
+            transition: transform 0.2s;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 640px) {
+            .chat-window {
+                width: calc(100vw - 40px);
+                height: calc(100vh - 120px);
+                bottom: 90px;
+                right: 20px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="chat-container">
-            <div class="header">
-                <h1 class="text-2xl font-bold">🎓 College Buddy</h1>
-                <p class="text-sm opacity-90">TKRCET AI Chatbot</p>
+
+    <!-- Chat Button -->
+    <button class="chat-button" id="chatButton" onclick="toggleChat()">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+        </svg>
+    </button>
+
+    <!-- Chat Window -->
+    <div class="chat-window" id="chatWindow">
+        <div class="chat-header">
+            <div>
+                <h3>🎓 College Buddy</h3>
+                <p>TKRCET AI Assistant</p>
             </div>
-            
-            <div class="messages" id="messages">
-                <div class="bot-message message">
-                    Hi! I'm College Buddy, your TKRCET assistant. Ask me anything about admissions, courses, facilities, placements, and more! 🚀
-                </div>
+            <button class="close-btn" onclick="toggleChat()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+            </button>
+        </div>
+
+        <div class="messages" id="messages">
+            <div class="bot-message message">
+                Hi! I'm College Buddy 👋<br><br>
+                Ask me anything about <strong>TKRCET</strong> - admissions, courses, placements, facilities, and more!
             </div>
-            
-            <div class="loading" id="loading">
-                <div>Thinking...</div>
-            </div>
-            
-            <div class="input-area">
-                <input 
-                    type="text" 
-                    id="userInput" 
-                    placeholder="Ask me anything about TKRCET..." 
-                    autocomplete="off"
-                >
-                <button onclick="sendMessage()" id="sendBtn">Send</button>
-            </div>
+        </div>
+
+        <div class="typing" id="typing">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="input-area">
+            <input 
+                type="text" 
+                id="userInput" 
+                placeholder="Ask me anything..." 
+                autocomplete="off"
+                onkeypress="handleKeyPress(event)"
+            >
+            <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
         </div>
     </div>
 
     <script>
         let ws = null;
-        const messagesDiv = document.getElementById('messages');
+        let reconnectAttempts = 0;
+        const MAX_RECONNECT = 5;
+
+        const chatWindow = document.getElementById('chatWindow');
+        const chatButton = document.getElementById('chatButton');
+        const messages = document.getElementById('messages');
         const userInput = document.getElementById('userInput');
         const sendBtn = document.getElementById('sendBtn');
-        const loading = document.getElementById('loading');
+        const typing = document.getElementById('typing');
+
+        function toggleChat() {
+            chatWindow.classList.toggle('open');
+            if (chatWindow.classList.contains('open')) {
+                userInput.focus();
+                if (!ws || ws.readyState !== WebSocket.OPEN) {
+                    connectWebSocket();
+                }
+            }
+        }
 
         function connectWebSocket() {
-            // Use localhost:8001 for backend connection
             const wsUrl = 'ws://localhost:8001/chat';
             console.log('Connecting to:', wsUrl);
             
@@ -160,17 +335,17 @@
 
             ws.onopen = () => {
                 console.log('Connected to College Buddy backend');
-                addMessage('bot', 'Connected! Ready to answer your questions. 😊');
+                reconnectAttempts = 0;
             };
 
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
-                loading.style.display = 'none';
+                hideTyping();
                 
                 if (data.type === 'response') {
                     addMessage('bot', data.message);
                 } else if (data.type === 'error') {
-                    addMessage('bot', `Error: ${data.message}`);
+                    addMessage('bot', `❌ ${data.message}`);
                 }
                 
                 sendBtn.disabled = false;
@@ -178,14 +353,17 @@
 
             ws.onerror = (error) => {
                 console.error('WebSocket error:', error);
-                loading.style.display = 'none';
-                addMessage('bot', '⚠️ Connection error. Please check if the backend server is running.');
+                hideTyping();
+                addMessage('bot', '⚠️ Connection error. Make sure the backend is running on port 8001.');
                 sendBtn.disabled = false;
             };
 
             ws.onclose = () => {
-                console.log('Disconnected from backend');
-                setTimeout(connectWebSocket, 3000);
+                console.log('WebSocket closed');
+                if (reconnectAttempts < MAX_RECONNECT) {
+                    reconnectAttempts++;
+                    setTimeout(connectWebSocket, 2000 * reconnectAttempts);
+                }
             };
         }
 
@@ -193,21 +371,28 @@
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}-message`;
             
-            // Simple markdown-like formatting for bot messages
             if (type === 'bot') {
-                // Convert **bold** to <strong>
+                // Format bot messages with markdown-like styling
                 text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-                // Convert bullet points to list items
                 text = text.replace(/^• (.+)$/gm, '<li>$1</li>');
-                // Wrap lists
                 text = text.replace(/(<li>.*<\/li>\n?)+/gs, '<ul>$&</ul>');
+                text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
                 messageDiv.innerHTML = text;
             } else {
                 messageDiv.textContent = text;
             }
             
-            messagesDiv.appendChild(messageDiv);
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function showTyping() {
+            typing.style.display = 'block';
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        function hideTyping() {
+            typing.style.display = 'none';
         }
 
         function sendMessage() {
@@ -216,7 +401,7 @@
             if (!message) return;
             
             if (!ws || ws.readyState !== WebSocket.OPEN) {
-                addMessage('bot', '⚠️ Not connected to server. Reconnecting...');
+                addMessage('bot', '⚠️ Not connected. Reconnecting...');
                 connectWebSocket();
                 return;
             }
@@ -224,21 +409,19 @@
             addMessage('user', message);
             userInput.value = '';
             
-            loading.style.display = 'block';
+            showTyping();
             sendBtn.disabled = true;
 
-            ws.send(JSON.stringify({
-                message: message
-            }));
+            ws.send(JSON.stringify({ message: message }));
         }
 
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
                 sendMessage();
             }
-        });
+        }
 
-        // Connect when page loads
+        // Auto-connect when page loads
         connectWebSocket();
     </script>
 </body>
