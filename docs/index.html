@@ -149,6 +149,33 @@
             margin-top: 2px;
         }
 
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .settings-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .settings-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .settings-btn svg {
+            width: 20px;
+            height: 20px;
+        }
+
         .close-btn {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -236,6 +263,27 @@
             border: 1px solid #e2e8f0;
             border-bottom-left-radius: 4px;
             box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+        
+        /* Typing Animation for Bot Message */
+        .bot-message.typing-animation {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .bot-message .message-content {
+            opacity: 0;
+            animation: typeIn 0.5s ease-in forwards;
+        }
+        
+        @keyframes typeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
         .bot-message strong {
@@ -268,6 +316,78 @@
             border-radius: 4px;
             font-family: 'Courier New', monospace;
             font-size: 13px;
+        }
+
+        /* Quick Links (above response) */
+        .quick-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 8px;
+            padding: 8px 0;
+        }
+
+        .quick-link {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.08) 0%, rgba(118, 75, 162, 0.08) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            color: #667eea;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .quick-link:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-color: rgba(102, 126, 234, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .quick-link svg {
+            width: 12px;
+            height: 12px;
+        }
+
+        /* Reference Links (below response) */
+        .reference-links {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .reference-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .reference-link {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 0;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .reference-link:hover {
+            color: #764ba2;
+        }
+
+        .reference-link svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
         }
 
         /* Typing Indicator */
@@ -470,11 +590,19 @@
                     <p id="statusText">Online</p>
                 </div>
             </div>
-            <button class="close-btn" onclick="toggleChat()" aria-label="Close chat">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-                </svg>
-            </button>
+            <div class="header-actions">
+                <button class="settings-btn" onclick="toggleSettings()" aria-label="Settings" title="Settings">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                </button>
+                <button class="close-btn" onclick="toggleChat()" aria-label="Close chat">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
         </div>
 
         <div class="messages" id="messages">
@@ -547,6 +675,25 @@
                 if (!ws || ws.readyState !== WebSocket.OPEN) {
                     connectWebSocket();
                 }
+            }
+        }
+
+        function toggleSettings() {
+            // Settings functionality - can be expanded later
+            const options = [
+                'Clear Chat History',
+                'Export Conversation',
+                'Toggle Notifications',
+                'Close'
+            ];
+            
+            const choice = confirm('Settings\n\nWould you like to clear chat history?');
+            if (choice) {
+                // Clear messages except welcome message
+                const welcomeMsg = messages.querySelector('.bot-message');
+                messages.innerHTML = '';
+                messages.appendChild(welcomeMsg);
+                console.log('✅ Chat history cleared');
             }
         }
 
@@ -708,20 +855,88 @@
             };
         }
 
-        function addMessage(type, text) {
+        function addMessage(type, text, options = {}) {
             const messageDiv = document.createElement('div');
             messageDiv.className = `message ${type}-message`;
             
             if (type === 'bot') {
+                // Add typing animation class
+                messageDiv.classList.add('typing-animation');
+                
+                // Extract reference links from text
+                const linkRegex = /\[(.+?)\]\((.+?)\)/g;
+                const links = [];
+                let match;
+                while ((match = linkRegex.exec(text)) !== null) {
+                    links.push({ text: match[1], url: match[2] });
+                }
+                
+                // Remove links from main text temporarily
+                const textWithoutLinks = text.replace(linkRegex, '');
+                
+                // Add quick links if provided
+                if (options.quickLinks && options.quickLinks.length > 0) {
+                    const quickLinksDiv = document.createElement('div');
+                    quickLinksDiv.className = 'quick-links';
+                    options.quickLinks.forEach(link => {
+                        const linkEl = document.createElement('a');
+                        linkEl.className = 'quick-link';
+                        linkEl.href = link.url;
+                        linkEl.target = '_blank';
+                        linkEl.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                            </svg>
+                            ${link.text}
+                        `;
+                        quickLinksDiv.appendChild(linkEl);
+                    });
+                    messageDiv.appendChild(quickLinksDiv);
+                }
+                
+                // Add main content with typing animation
+                const contentDiv = document.createElement('div');
+                contentDiv.className = 'message-content';
+                
                 // Enhanced markdown-like formatting
-                text = text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-                text = text.replace(/`(.+?)`/g, '<code>$1</code>');
-                text = text.replace(/^[•·] (.+)$/gm, '<li>$1</li>');
-                text = text.replace(/(<li>.*<\/li>\s*)+/gs, '<ul>$&</ul>');
-                text = text.replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2" target="_blank">$1</a>');
-                text = text.replace(/\n/g, '<br>');
-                messageDiv.innerHTML = text;
+                let formattedText = textWithoutLinks;
+                formattedText = formattedText.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+                formattedText = formattedText.replace(/`(.+?)`/g, '<code>$1</code>');
+                formattedText = formattedText.replace(/^[•·] (.+)$/gm, '<li>$1</li>');
+                formattedText = formattedText.replace(/(<li>.*<\/li>\s*)+/gs, '<ul>$&</ul>');
+                formattedText = formattedText.replace(/\n/g, '<br>');
+                
+                contentDiv.innerHTML = formattedText;
+                messageDiv.appendChild(contentDiv);
+                
+                // Add reference links at the bottom
+                if (links.length > 0) {
+                    const refLinksDiv = document.createElement('div');
+                    refLinksDiv.className = 'reference-links';
+                    
+                    const refTitle = document.createElement('div');
+                    refTitle.className = 'reference-title';
+                    refTitle.textContent = '📚 Learn More';
+                    refLinksDiv.appendChild(refTitle);
+                    
+                    links.forEach(link => {
+                        const linkEl = document.createElement('a');
+                        linkEl.className = 'reference-link';
+                        linkEl.href = link.url;
+                        linkEl.target = '_blank';
+                        linkEl.innerHTML = `
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                            </svg>
+                            ${link.text}
+                        `;
+                        refLinksDiv.appendChild(linkEl);
+                    });
+                    
+                    messageDiv.appendChild(refLinksDiv);
+                }
             } else {
+                // User message - no formatting
                 messageDiv.textContent = text;
             }
             
