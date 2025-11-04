@@ -84,6 +84,23 @@ async def websocket_endpoint(ws: WebSocket):
     print("Client connected to websocket")
     history = []
     greetings = ["hi", "hello", "hey", "hii", "heyy", "how are you", "how r u", "how are you doing"]
+    
+    # Create a task to send periodic pings to keep connection alive
+    async def send_pings():
+        try:
+            while True:
+                await asyncio.sleep(15)  # Send ping every 15 seconds
+                try:
+                    await ws.send_json({"type": "ping"})
+                    print("💓 Sent ping to client")
+                except Exception as e:
+                    print(f"Failed to send ping: {e}")
+                    break
+        except asyncio.CancelledError:
+            pass
+    
+    ping_task = asyncio.create_task(send_pings())
+    
     try:
         while True:
             data = await ws.receive_json()
@@ -219,6 +236,13 @@ async def websocket_endpoint(ws: WebSocket):
         print("Client disconnected")
     except Exception as e:
         print(f"An error occurred in the websocket: {e}")
+    finally:
+        # Cancel the ping task when connection closes
+        ping_task.cancel()
+        try:
+            await ping_task
+        except asyncio.CancelledError:
+            pass
 
 if __name__ == "__main__":
     try:

@@ -518,13 +518,19 @@
     </div>
 
     <script>
+        // Global WebSocket management
         let ws = null;
         let reconnectAttempts = 0;
         let heartbeatInterval = null;
+        let responseTimeout = null; // Timeout for waiting for responses
         const MAX_RECONNECT = 5;
         let isConnected = false;
         let isReconnecting = false;
         let pendingMessages = []; // Queue for messages sent during processing
+        let isWaitingForResponse = false; // Flag to prevent closing while waiting
+        
+        // Prevent browser from closing WebSocket during page lifecycle
+        window.collegebuddyWs = null; // Global reference
 
         const chatWindow = document.getElementById('chatWindow');
         const chatButton = document.getElementById('chatButton');
@@ -568,6 +574,7 @@
             
             // Create WebSocket with proper configuration
             ws = new WebSocket(wsUrl);
+            window.collegebuddyWs = ws; // Store global reference to prevent GC
             ws.binaryType = 'blob'; // Ensure proper data handling
 
             ws.onopen = () => {
@@ -604,12 +611,28 @@
                     console.log('📥 Received message:', event.data);
                     const data = JSON.parse(event.data);
                     
+                    // Handle ping from server (respond with pong)
+                    if (data.type === 'ping') {
+                        console.log('💓 Ping received from server, sending pong');
+                        if (ws && ws.readyState === WebSocket.OPEN) {
+                            ws.send(JSON.stringify({ type: 'pong' }));
+                        }
+                        return;
+                    }
+                    
                     // Handle pong response (don't hide typing or process as message)
                     if (data.type === 'pong') {
                         console.log('💓 Pong received');
                         return;
                     }
                     
+                    // Clear response timeout since we got a response
+                    if (responseTimeout) {
+                        clearTimeout(responseTimeout);
+                        responseTimeout = null;
+                    }
+                    
+                    isWaitingForResponse = false;
                     hideTyping();
                     
                     if (data.type === 'response') {
@@ -644,6 +667,8 @@
             ws.onclose = (event) => {
                 console.log('🔌 WebSocket closed. Code:', event.code, 'Reason:', event.reason || 'No reason provided');
                 console.log('   readyState was:', ws?.readyState);
+                console.log('   Was waiting for response:', isWaitingForResponse);
+                
                 updateConnectionStatus(false);
                 isReconnecting = false;
                 const closedWs = ws;
@@ -653,6 +678,21 @@
                 if (heartbeatInterval) {
                     clearInterval(heartbeatInterval);
                     heartbeatInterval = null;
+                }
+                
+                // Clear response timeout
+                if (responseTimeout) {
+                    clearTimeout(responseTimeout);
+                    responseTimeout = null;
+                }
+                
+                // If we were waiting for a response, show error
+                if (isWaitingForResponse) {
+                    isWaitingForResponse = false;
+                    hideTyping();
+                    addMessage('bot', '⚠️ Connection lost while waiting for response. Please try again.');
+                    sendBtn.disabled = false;
+                    userInput.disabled = false;
                 }
                 
                 // Only reconnect if chat is open and we haven't exceeded max attempts
@@ -721,10 +761,24 @@
             showTyping();
             sendBtn.disabled = true;
             userInput.disabled = true;
+            isWaitingForResponse = true; // Mark that we're waiting for a response
 
             try {
                 console.log('📤 Sending message:', messageToSend);
                 ws.send(JSON.stringify({ message: messageToSend }));
+                
+                // Set a 60-second timeout for response
+                responseTimeout = setTimeout(() => {
+                    console.log('⏱️ Response timeout after 60s');
+                    if (isWaitingForResponse) {
+                        isWaitingForResponse = false;
+                        hideTyping();
+                        addMessage('bot', '⏱️ Request is taking longer than expected. The server might be processing your query. Please wait or try again.');
+                        sendBtn.disabled = false;
+                        userInput.disabled = false;
+                    }
+                }, 60000); // 60 second timeout
+                
             } catch (error) {
                 console.error('❌ Error sending message:', error);
                 hideTyping();
