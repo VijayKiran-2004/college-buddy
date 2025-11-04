@@ -524,6 +524,7 @@
         const MAX_RECONNECT = 5;
         let isConnected = false;
         let isReconnecting = false;
+        let pendingMessages = []; // Queue for messages sent during processing
 
         const chatWindow = document.getElementById('chatWindow');
         const chatButton = document.getElementById('chatButton');
@@ -636,12 +637,16 @@
                 console.error('❌ WebSocket error:', error);
                 hideTyping();
                 updateConnectionStatus(false);
+                sendBtn.disabled = false;
+                userInput.disabled = false;
             };
 
             ws.onclose = (event) => {
                 console.log('🔌 WebSocket closed. Code:', event.code, 'Reason:', event.reason || 'No reason provided');
+                console.log('   readyState was:', ws?.readyState);
                 updateConnectionStatus(false);
                 isReconnecting = false;
+                const closedWs = ws;
                 ws = null; // Clear the reference
                 
                 // Clear heartbeat
@@ -743,11 +748,22 @@
         // Don't auto-connect on page load - only connect when chat is opened
         console.log('🚀 College Buddy Widget Initialized');
 
+        // Prevent page unload from closing WebSocket unexpectedly
+        window.addEventListener('beforeunload', (event) => {
+            if (ws && ws.readyState === WebSocket.OPEN) {
+                console.log('⚠️ Page unloading, keeping WebSocket open');
+                // Don't close the WebSocket - let the browser handle it
+            }
+        });
+
         // Handle page visibility changes
         document.addEventListener('visibilitychange', () => {
             if (document.visibilityState === 'visible' && chatWindow.classList.contains('open') && !isConnected) {
                 console.log('🔄 Page visible, reconnecting...');
                 connectWebSocket();
+            } else if (document.visibilityState === 'hidden') {
+                console.log('📴 Page hidden, but keeping connection alive');
+                // Don't close connection when tab is hidden
             }
         });
     </script>
