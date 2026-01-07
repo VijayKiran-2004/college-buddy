@@ -115,26 +115,34 @@ college-buddy/
 ## Component Details
 
 ### 1. RAG System (`app/services/rag_system.py`)
-The heart of the chatbot. It orchestrates:
-- **Hybrid Search**: Combines dense vector search (FAISS) with sparse keyword search (BM25).
-- **Reranking**: Uses a Cross-Encoder to re-score top results for higher relevance.
-- **Generation**: Sends context + query to the Ollama LLM.
+The core engine that powers the chatbot's intelligence. It uses a multi-stage retrieval process:
+- **Hybrid Search**: 
+  - **Dense Retrieval**: Uses `all-MiniLM-L6-v2` embeddings with FAISS to find semantically similar concepts (e.g., "fees" matches "tuition").
+  - **Sparse Retrieval**: Uses BM25 to find exact keyword matches (e.g., specific names like "Dr. Suresh Rao").
+- **Reranking**: The top 10 results from hybrid search are re-scored using a Cross-Encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`). This ensures that the most contextually relevant documents appear at the top, filtering out noise.
+- **Generation**: The top 5 reranked chunks are injected into a prompt and sent to the `gemma3:1b` LLM via Ollama for final answer synthesis.
 
 ### 2. Fallback Mechanism (`app/services/chain.py`)
-Ensures reliability when the LLM is offline or fails.
-- Uses `SimpleRAGResponder` to generate answers directly from retrieved documents.
-- Implements "Chain of Thought" logic to extract key information without an LLM.
+A robust safety net that ensures the chatbot works even if the LLM fails (e.g., connection timeout or 500 error).
+- **Trigger**: Automatically activates if Ollama is unreachable or returns an error.
+- **Logic**: Uses a deterministic "Chain of Thought" approach to analyze retrieved documents.
+- **Extraction**: Scans text for specific patterns (e.g., "Dr.", "Professor", dates, times) to construct a coherent answer without generating new text.
+- **Benefit**: Guarantees zero hallucinations and high availability.
 
 ### 3. Vector Store (`app/database/vectordb/unified_vectors.json`)
-A massive JSON file acting as the central knowledge base. It contains:
-- Text content
-- Vector embeddings (384 dimensions)
-- Metadata (Source URL, Title, Type)
+The centralized knowledge base of the application.
+- **Structure**: A large JSON array where each object represents a text chunk.
+- **Content**: 
+  - `text`: The actual content from the college website.
+  - `embedding`: A 384-dimensional vector representation of the text.
+  - `metadata`: Source URL, page title, and chunk ID.
+- **Loading**: On startup, embeddings are loaded into a FAISS index for sub-millisecond similarity search, while text is kept in memory for retrieval.
 
 ### 4. Prompt Engineering (`app/services/prompt_construction.py`)
-Dynamically builds prompts based on query type:
-- **Person Queries**: Enforces strict anti-hallucination rules.
-- **General Queries**: Optimizes for helpfulness and breadth.
+The module responsible for communicating with the LLM. It dynamically builds prompts to maximize accuracy and minimize hallucinations.
+- **Person Queries**: Detects questions about staff (HODs, Principals). Adds strict instructions: *"ONLY use names from context. DO NOT invent names."* This prevents the LLM from hallucinating fake names.
+- **General Queries**: Uses a more relaxed prompt structure to encourage helpful, conversational responses about campus life and facilities.
+- **Context Injection**: Automatically formats retrieved documents into bullet points (`•`) to help the LLM distinguish between separate pieces of information.
 
 ## Team Roles
 - **Vijay Kiran**: RAG Architecture & System Integration
