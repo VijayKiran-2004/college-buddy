@@ -115,34 +115,42 @@ college-buddy/
 ## Component Details
 
 ### 1. RAG System (`app/services/rag_system.py`)
-The core engine that powers the chatbot's intelligence. It uses a multi-stage retrieval process:
-- **Hybrid Search**: 
-  - **Dense Retrieval**: Uses `all-MiniLM-L6-v2` embeddings with FAISS to find semantically similar concepts (e.g., "fees" matches "tuition").
-  - **Sparse Retrieval**: Uses BM25 to find exact keyword matches (e.g., specific names like "Dr. Suresh Rao").
-- **Reranking**: The top 10 results from hybrid search are re-scored using a Cross-Encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`). This ensures that the most contextually relevant documents appear at the top, filtering out noise.
-- **Generation**: The top 5 reranked chunks are injected into a prompt and sent to the `gemma3:1b` LLM via Ollama for final answer synthesis.
+The core engine uses a sophisticated **Hybrid Retrieval Pipeline**:
+- **Step 1: Query Processing**: The user's query is analyzed for clarity. If vague, the system asks for clarification.
+- **Step 2: Hybrid Search**:
+  - **Dense Vector Search**: Uses `sentence-transformers/all-MiniLM-L6-v2` to encode the query into a 384-dimensional vector. FAISS (`IndexFlatL2`) performs a nearest-neighbor search to retrieve the top 5 semantic matches.
+  - **Sparse Keyword Search**: Uses `rank_bm25` (Okapi BM25) to retrieve the top 5 exact keyword matches.
+- **Step 3: Reciprocal Rank Fusion (RRF)**: Results from FAISS and BM25 are combined to ensure both semantic understanding and keyword precision.
+- **Step 4: Reranking**: The top 10 fused results are passed to a Cross-Encoder (`cross-encoder/ms-marco-MiniLM-L-6-v2`), which scores each document-query pair. The top 5 highest-scoring chunks are selected for the context window.
 
 ### 2. Fallback Mechanism (`app/services/chain.py`)
-A robust safety net that ensures the chatbot works even if the LLM fails (e.g., connection timeout or 500 error).
-- **Trigger**: Automatically activates if Ollama is unreachable or returns an error.
-- **Logic**: Uses a deterministic "Chain of Thought" approach to analyze retrieved documents.
-- **Extraction**: Scans text for specific patterns (e.g., "Dr.", "Professor", dates, times) to construct a coherent answer without generating new text.
-- **Benefit**: Guarantees zero hallucinations and high availability.
+A deterministic backup system designed for **100% reliability** when the LLM is unavailable.
+- **Query Classification**: Uses keyword matching to categorize queries into `person`, `timing`, `admission`, `contact`, or `general`.
+- **Pattern Extraction**:
+  - **Person Queries**: Scans for honorifics (`Dr.`, `Prof.`) and titles (`HOD`, `Principal`, `Dean`). It extracts full sentences containing these patterns to ensure context is preserved.
+  - **Timing/Contact**: Looks for specific markers like `:`, `am`, `pm`, `@`, `phone`.
+- **Response Generation**: Assembles extracted facts into a bulleted list, bypassing the generative model entirely.
 
 ### 3. Vector Store (`app/database/vectordb/unified_vectors.json`)
-The centralized knowledge base of the application.
-- **Structure**: A large JSON array where each object represents a text chunk.
-- **Content**: 
-  - `text`: The actual content from the college website.
-  - `embedding`: A 384-dimensional vector representation of the text.
-  - `metadata`: Source URL, page title, and chunk ID.
-- **Loading**: On startup, embeddings are loaded into a FAISS index for sub-millisecond similarity search, while text is kept in memory for retrieval.
+The centralized knowledge repository.
+- **Storage Format**: A 35MB+ JSON file containing over 2,000 text chunks.
+- **Schema**:
+  ```json
+  {
+    "chunk_id": "chunk_001",
+    "text": "Dr. A. Suresh Rao is the HOD of CSE...",
+    "embedding": [-0.023, 0.145, ...], // 384 floats
+    "metadata": { "source": "tkrcet.ac.in", "title": "Faculty" }
+  }
+  ```
+- **Performance**: Embeddings are loaded into a FAISS index in RAM for O(1) search complexity, while text is indexed by ID for O(1) retrieval.
 
 ### 4. Prompt Engineering (`app/services/prompt_construction.py`)
-The module responsible for communicating with the LLM. It dynamically builds prompts to maximize accuracy and minimize hallucinations.
-- **Person Queries**: Detects questions about staff (HODs, Principals). Adds strict instructions: *"ONLY use names from context. DO NOT invent names."* This prevents the LLM from hallucinating fake names.
-- **General Queries**: Uses a more relaxed prompt structure to encourage helpful, conversational responses about campus life and facilities.
-- **Context Injection**: Automatically formats retrieved documents into bullet points (`•`) to help the LLM distinguish between separate pieces of information.
+Uses **Dynamic Context Injection** to control LLM behavior.
+- **Anti-Hallucination Protocol**: For "Who is" queries, the system injects a strict system prompt:
+  > "CRITICAL: ONLY use names that appear in the context. DO NOT invent names. If you don't see a name, say you don't have that information."
+- **Context Formatting**: Retrieved chunks are formatted as bullet points with explicit separation to prevent information bleeding.
+- **Tone Control**: Instructions guide the LLM to be "friendly and conversational" for general queries, but "direct and factual" for official inquiries.
 
 ## Team Roles
 - **Vijay Kiran**: RAG Architecture & System Integration
