@@ -53,17 +53,64 @@ python terminal_chat.py
 ```
 
 ## Project Structure
+
+The project is organized into modular components for scalability and maintainability:
+
 ```
 college-buddy/
 ├── app/
-│   ├── services/         # RAG, Chain, Prompt Construction
-│   └── database/         # Vector DB & SQLite
-├── data/                 # Raw & Processed Data
-├── docs/                 # Documentation
-├── terminal_chat.py      # Main Entry Point
-├── unified_vectors.json  # Vector Store
-└── requirements.txt      # Dependencies
+│   ├── services/
+│   │   ├── rag_system.py         # Core RAG pipeline (Search + Rerank + Generate)
+│   │   ├── chain.py              # Fallback logic & Chain of Thought generator
+│   │   ├── prompt_construction.py # Context-aware prompt engineering
+│   │   └── bm25_cache.py         # Caching for BM25 search index
+│   ├── database/
+│   │   └── vectordb/             # FAISS index & BM25 index files
+│   └── scraper/                  # Web scraping utilities
+│
+├── data/
+│   ├── chunks/                   # JSON files containing text chunks
+│   ├── embeddings/               # Pre-computed vector embeddings
+│   ├── scraped_data/             # Raw HTML/Text from college website
+│   └── datasets/                 # Cleaned and structured datasets
+│
+├── scripts/
+│   └── clean_webdata.py          # Data cleaning & preprocessing scripts
+│
+├── docs/                         # Technical documentation
+│   ├── rag.md                    # RAG architecture details
+│   └── vector_db.md              # Vector database schema
+│
+├── terminal_chat.py              # Main Entry Point (Run this to start)
+├── unified_vectors.json          # Master vector store (Text + Embeddings + Metadata)
+├── students.db                   # SQLite database for student records
+├── run_data_pipeline.py          # Script to rebuild indices and process data
+└── requirements.txt              # Python dependencies
 ```
+
+## Component Details
+
+### 1. RAG System (`app/services/rag_system.py`)
+The heart of the chatbot. It orchestrates:
+- **Hybrid Search**: Combines dense vector search (FAISS) with sparse keyword search (BM25).
+- **Reranking**: Uses a Cross-Encoder to re-score top results for higher relevance.
+- **Generation**: Sends context + query to the Ollama LLM.
+
+### 2. Fallback Mechanism (`app/services/chain.py`)
+Ensures reliability when the LLM is offline or fails.
+- Uses `SimpleRAGResponder` to generate answers directly from retrieved documents.
+- Implements "Chain of Thought" logic to extract key information without an LLM.
+
+### 3. Vector Store (`unified_vectors.json`)
+A massive JSON file acting as the central knowledge base. It contains:
+- Text content
+- Vector embeddings (384 dimensions)
+- Metadata (Source URL, Title, Type)
+
+### 4. Prompt Engineering (`app/services/prompt_construction.py`)
+Dynamically builds prompts based on query type:
+- **Person Queries**: Enforces strict anti-hallucination rules.
+- **General Queries**: Optimizes for helpfulness and breadth.
 
 ## Team Roles
 - **Vijay Kiran**: RAG Architecture & System Integration
