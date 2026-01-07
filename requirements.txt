@@ -1,15 +1,9 @@
-sentence-transformers
-transformers
-torch
-accelerate
-sentencepiece
-langchain
-langchain-community
-requests
-beautifulsoup4
-urllib3
-openai
-chromadb>=0.4.22
-numpy>=1.24
-tqdm>=4.66
-pandas
+# Core ML & NLP
+sentence-transformers==3.0.0  # For generating text embeddings
+faiss-cpu>=1.7.4              # Vector similarity search (CPU version)
+rank-bm25==0.2.2              # Keyword search for hybrid retrieval
+numpy>=1.24.0                 # Numerical operations
+
+# Utilities
+requests>=2.31.0              # For API calls to Ollama
+tqdm>=4.66.0                  # Progress bars

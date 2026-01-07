@@ -18,6 +18,16 @@ College Buddy is an intelligent conversational AI designed to assist students, f
 - **Reranker**: Cross-Encoder (ms-marco-MiniLM-L-6-v2)
 - **Backend**: Custom RAG Pipeline
 
+## Prerequisites
+
+- **OS**: Windows, Linux, or macOS
+- **Python**: 3.8, 3.9, 3.10, or 3.11 (Python 3.12+ may have issues with some ML libraries)
+- **RAM**: Minimum 8GB (16GB recommended)
+- **Disk Space**: ~2GB for models and data
+- **Software**: 
+  - [Ollama](https://ollama.com/) (Required for LLM)
+  - [Git](https://git-scm.com/)
+
 ## Setup Instructions
 
 ### 1. Clone the Repository
@@ -27,11 +37,14 @@ cd college-buddy
 ```
 
 ### 2. Create Virtual Environment
+It's critical to use a virtual environment to avoid conflicts.
 ```bash
-python -m venv .venv
 # Windows
+python -m venv .venv
 .venv\Scripts\activate
+
 # Linux/Mac
+python3 -m venv .venv
 source .venv/bin/activate
 ```
 
@@ -40,17 +53,38 @@ source .venv/bin/activate
 pip install -r requirements.txt
 ```
 
-### 4. Install Ollama & Model
-1. Download and install [Ollama](https://ollama.com/)
-2. Pull the required model:
-```bash
-ollama pull gemma3:1b
-```
+### 4. Configure Ollama (Critical Step)
+The chatbot relies on Ollama running locally.
+1. Download and install [Ollama](https://ollama.com/).
+2. Open a terminal and pull the optimized model:
+   ```bash
+   ollama pull gemma3:1b
+   ```
+3. Keep Ollama running in the background.
 
 ### 5. Run the Chatbot
 ```bash
 python terminal_chat.py
 ```
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| **ConnectionRefusedError** | Ensure Ollama is running (`ollama serve` or check system tray). |
+| **Model not found** | Run `ollama pull gemma3:1b` to download the model. |
+| **Out of Memory** | Close other apps. The `gemma3:1b` model uses ~800MB RAM. |
+| **ImportError: DLL load failed** | Install MSVC runtime or reinstall `faiss-cpu`. |
+
+## Data Flow
+1. **User Query** → `terminal_chat.py`
+2. **Hybrid Search** (`rag_system.py`):
+   - **Vector Search**: Finds semantically similar chunks (FAISS).
+   - **Keyword Search**: Finds exact matches (BM25).
+3. **Reranking**: Top 10 results are re-scored using a Cross-Encoder.
+4. **Prompt Building**: Best 5 chunks are formatted into a prompt.
+5. **Generation**: Prompt sent to Ollama (`gemma3:1b`) for final answer.
+
 
 ## Project Structure
 
