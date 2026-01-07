@@ -1,0 +1,542 @@
+[
+  {
+    "question": "What is the full name of the college?",
+    "answer": "TKR College of Engineering and Technology (TKRCET)",
+    "combined_text": "What is the full name of the college? | ANSWER: TKR College of Engineering and Technology (TKRCET)"
+  },
+  {
+    "question": "Where is college located?",
+    "answer": "Meerpet, Balapur, Saroornagar, Hyderabad – 500097, Telangana",
+    "combined_text": "Where is college located? | ANSWER: Meerpet, Balapur, Saroornagar, Hyderabad – 500097, Telangana"
+  },
+  {
+    "question": "What is the official website of the college?",
+    "answer": "https://tkrcet.ac.in",
+    "combined_text": "What is the official website of the college? | ANSWER: https://tkrcet.ac.in"
+  },
+  {
+    "question": "What is the contact number of the college?",
+    "answer": "+91 9849477550",
+    "combined_text": "What is the contact number of the college? | ANSWER: +91 9849477550"
+  },
+  {
+    "question": "What is the email ID of the college?",
+    "answer": "info@tkrcet.ac.in",
+    "combined_text": "What is the email ID of the college? | ANSWER: info@tkrcet.ac.in"
+  },
+  {
+    "question": "What are the college working hours?",
+    "answer": "The college typically works from 9:40 to 4:20(Monday -Saturday)",
+    "combined_text": "What are the college working hours? | ANSWER: The college typically works from 9:40 to 4:20(Monday -Saturday)"
+  },
+  {
+    "question": "Who is the principal of the college?",
+    "answer": "Dr. D. V. Ravi Shankar",
+    "combined_text": "Who is the principal of the college? | ANSWER: Dr. D. V. Ravi Shankar"
+  },
+  {
+    "question": "When was the college established?",
+    "answer": "2002",
+    "combined_text": "When was the college established? | ANSWER: 2002"
+  },
+  {
+    "question": "Is the college approved by AICTE/UGC?",
+    "answer": "Approved by AICTE, New Delhi & State Government of Telangana",
+    "combined_text": "Is the college approved by AICTE/UGC? | ANSWER: Approved by AICTE, New Delhi & State Government of Telangana"
+  },
+  {
+    "question": "Is the college affiliated to any university?",
+    "answer": "Affiliated to Jawaharlal Nehru Technological University, Hyderabad (JNTUH)",
+    "combined_text": "Is the college affiliated to any university? | ANSWER: Affiliated to Jawaharlal Nehru Technological University, Hyderabad (JNTUH)"
+  },
+  {
+    "question": "What undergraduate programs are offered?",
+    "answer": "B.Tech – Civil, EEE, CSE, ECE, Mechanical, IT, CSE (AI & ML), CSE (Data Science)",
+    "combined_text": "What undergraduate programs are offered? | ANSWER: B.Tech – Civil, EEE, CSE, ECE, Mechanical, IT, CSE (AI & ML), CSE (Data Science)"
+  },
+  {
+    "question": "What postgraduate programs are offered?",
+    "answer": "M.Tech (CSE, Power Electronics, Production Engineering), MBA",
+    "combined_text": "What postgraduate programs are offered? | ANSWER: M.Tech (CSE, Power Electronics, Production Engineering), MBA"
+  },
+  {
+    "question": "What diploma  courses are available?",
+    "answer": "Polytechnic Diploma – Civil, EEE, MECH, ECE, CSE",
+    "combined_text": "What diploma  courses are available? | ANSWER: Polytechnic Diploma – Civil, EEE, MECH, ECE, CSE"
+  },
+  {
+    "question": "What departments are available in the college?",
+    "answer": "Civil, EEE, ECE, CSE, CSE (AI & ML), CSE (Data Science), IT, MBA, Humanities & Sciences",
+    "combined_text": "What departments are available in the college? | ANSWER: Civil, EEE, ECE, CSE, CSE (AI & ML), CSE (Data Science), IT, MBA, Humanities & Sciences"
+  },
+  {
+    "question": "Do the college have a research center?",
+    "answer": "Yes – TKR Centre for Research & Innovation",
+    "combined_text": "Do the college have a research center? | ANSWER: Yes – TKR Centre for Research & Innovation"
+  },
+  {
+    "question": "Does the college have a library?",
+    "answer": "Yes",
+    "combined_text": "Does the college have a library? | ANSWER: Yes"
+  },
+  {
+    "question": "Does the college have hostel facilities?",
+    "answer": "Yes – Separate hostels for boys and girls",
+    "combined_text": "Does the college have hostel facilities? | ANSWER: Yes – Separate hostels for boys and girls"
+  },
+  {
+    "question": "Is transport/bus facility available?",
+    "answer": "Yes – Bus facility available",
+    "combined_text": "Is transport/bus facility available? | ANSWER: Yes – Bus facility available"
+  },
+  {
+    "question": "Does the college have a canteen?",
+    "answer": "Yes",
+    "combined_text": "Does the college have a canteen? | ANSWER: Yes"
+  },
+  {
+    "question": "Does the college have sports facilities?",
+    "answer": "Yes – 5-acre playground, cricket, basketball, indoor & outdoor games",
+    "combined_text": "Does the college have sports facilities? | ANSWER: Yes – 5-acre playground, cricket, basketball, indoor & outdoor games"
+  },
+  {
+    "question": "Does the college provide Wi-Fi on campus?",
+    "answer": "Yes",
+    "combined_text": "Does the college provide Wi-Fi on campus? | ANSWER: Yes"
+  },
+  {
+    "question": "Does the college have a medical facility?",
+    "answer": "Yes",
+    "combined_text": "Does the college have a medical facility? | ANSWER: Yes"
+  },
+  {
+    "question": "Is there a computer lab available?",
+    "answer": "Yes – Computer labs in each department",
+    "combined_text": "Is there a computer lab available? | ANSWER: Yes – Computer labs in each department"
+  },
+  {
+    "question": "What student clubs are available in the college?",
+    "answer": "NCC, NSS, Entrepreneurship Cell, Cultural & Technical Clubs",
+    "combined_text": "What student clubs are available in the college? | ANSWER: NCC, NSS, Entrepreneurship Cell, Cultural & Technical Clubs"
+  },
+  {
+    "question": "Does the college conduct cultural events?",
+    "answer": "Yes",
+    "combined_text": "Does the college conduct cultural events? | ANSWER: Yes"
+  },
+  {
+    "question": "Does the college conduct technical fests?",
+    "answer": "Yes",
+    "combined_text": "Does the college conduct technical fests? | ANSWER: Yes"
+  },
+  {
+    "question": "What extracurricular activities are available?",
+    "answer": "Sports, cultural, NCC, NSS, hackathons, entrepreneurship programs",
+    "combined_text": "What extracurricular activities are available? | ANSWER: Sports, cultural, NCC, NSS, hackathons, entrepreneurship programs"
+  },
+  {
+    "question": "What is the admission helpline number?",
+    "answer": "+91 9849477550",
+    "combined_text": "What is the admission helpline number? | ANSWER: +91 9849477550"
+  },
+  {
+    "question": "What is the email for admission queries?",
+    "answer": "info@tkrcet.ac.in",
+    "combined_text": "What is the email for admission queries? | ANSWER: info@tkrcet.ac.in"
+  },
+  {
+    "question": "Does the college have a management quota?",
+    "answer": "Yes – 30% seats reserved for Management/NRI quota",
+    "combined_text": "Does the college have a management quota? | ANSWER: Yes – 30% seats reserved for Management/NRI quota"
+  },
+  {
+    "question": "Is there a hostel facility for new students?",
+    "answer": "Yes",
+    "combined_text": "Is there a hostel facility for new students? | ANSWER: Yes"
+  },
+  {
+    "question": "Does the college provide scholarships?",
+    "answer": "Yes – as per government and institutional norms",
+    "combined_text": "Does the college provide scholarships? | ANSWER: Yes – as per government and institutional norms"
+  },
+  {
+    "question": "Does the college have an alumni association?",
+    "answer": "Yes – Alumni Association established in 2008 (ID 322/2008)",
+    "combined_text": "Does the college have an alumni association? | ANSWER: Yes – Alumni Association established in 2008 (ID 322/2008)"
+  },
+  {
+    "question": "Who is the Secretary of TKRCET?",
+    "answer": "Dr. T. Harinath Reddy",
+    "combined_text": "Who is the Secretary of TKRCET? | ANSWER: Dr. T. Harinath Reddy"
+  },
+  {
+    "question": "What is the vision of the college?",
+    "answer": "To impart quality education with ethical values, making students technically competent, self-reliant, and globally recognized.",
+    "combined_text": "What is the vision of the college? | ANSWER: To impart quality education with ethical values, making students technically competent, self-reliant, and globally recognized."
+  },
+  {
+    "question": "Does the college have NBA accreditation?",
+    "answer": "Yes – departments like IT and EEE have NBA accreditation.",
+    "combined_text": "Does the college have NBA accreditation? | ANSWER: Yes – departments like IT and EEE have NBA accreditation."
+  },
+  {
+    "question": "Are online courses encouraged?",
+    "answer": "Yes, students are encouraged to take NPTEL/Swayam courses.",
+    "combined_text": "Are online courses encouraged? | ANSWER: Yes, students are encouraged to take NPTEL/Swayam courses."
+  },
+  {
+    "question": "Who is the Dean of R&D?",
+    "answer": "Dr. B. Rajini Kanth",
+    "combined_text": "Who is the Dean of R&D? | ANSWER: Dr. B. Rajini Kanth"
+  },
+  {
+    "question": "Has TKRCET faculty published research?",
+    "answer": "Yes – 30+ international journal papers, patents, and funded projects.",
+    "combined_text": "Has TKRCET faculty published research? | ANSWER: Yes – 30+ international journal papers, patents, and funded projects."
+  },
+  {
+    "question": "Is Wi-Fi available in hostels?",
+    "answer": "Yes, Wi-Fi is provided across campus and in hostels.",
+    "combined_text": "Is Wi-Fi available in hostels? | ANSWER: Yes, Wi-Fi is provided across campus and in hostels."
+  },
+  {
+    "question": "Does the college have an auditorium?",
+    "answer": "Yes – both a mini auditorium and an open-air auditorium.",
+    "combined_text": "Does the college have an auditorium? | ANSWER: Yes – both a mini auditorium and an open-air auditorium."
+  },
+  {
+    "question": "Does TKRCET support NCC activities?",
+    "answer": "Yes, with Naval Unit (Secunderabad Group, Troop No. 03).",
+    "combined_text": "Does TKRCET support NCC activities? | ANSWER: Yes, with Naval Unit (Secunderabad Group, Troop No. 03)."
+  },
+  {
+    "question": "Are scholarships available for NCC/NSS students?",
+    "answer": "Yes – government scholarships and incentives apply.",
+    "combined_text": "Are scholarships available for NCC/NSS students? | ANSWER: Yes – government scholarships and incentives apply."
+  },
+  {
+    "question": "Does the Placement Cell provide training before drives?",
+    "answer": "Yes – training in aptitude, communication, and technical skills.",
+    "combined_text": "Does the Placement Cell provide training before drives? | ANSWER: Yes – training in aptitude, communication, and technical skills."
+  },
+  {
+    "question": "Has TKRCET students achieved national-level recognition?",
+    "answer": "Yes – students won prizes in Smart India Hackathon and represented India in sports.",
+    "combined_text": "Has TKRCET students achieved national-level recognition? | ANSWER: Yes – students won prizes in Smart India Hackathon and represented India in sports."
+  },
+  {
+    "question": "Who is the Founder Chairman of TKRCET?",
+    "answer": "Sri T. Krishna Reddy",
+    "combined_text": "Who is the Founder Chairman of TKRCET? | ANSWER: Sri T. Krishna Reddy"
+  },
+  {
+    "question": "Who is the Vice Principal of TKRCET?",
+    "answer": "Dr. A. Suresh Rao (also HoD of CSE & Dean Academics)",
+    "combined_text": "Who is the Vice Principal of TKRCET? | ANSWER: Dr. A. Suresh Rao (also HoD of CSE & Dean Academics)"
+  },
+  {
+    "question": "Who is the Dean of Research & Development?",
+    "answer": "Dr. B. Rajini Kanth",
+    "combined_text": "Who is the Dean of Research & Development? | ANSWER: Dr. B. Rajini Kanth"
+  },
+  {
+    "question": "How big is the college campus?",
+    "answer": "20 acres (lush green campus at Meerpet, Hyderabad)",
+    "combined_text": "How big is the college campus? | ANSWER: 20 acres (lush green campus at Meerpet, Hyderabad)"
+  },
+  {
+    "question": "What is the eligibility for admission into B.Tech at TKRCET?",
+    "answer": "Pass in Intermediate (10+2) with MPC subjects + TS EAMCET rank (70% seats via EAMCET, 30% Management/NRI).",
+    "combined_text": "What is the eligibility for admission into B.Tech at TKRCET? | ANSWER: Pass in Intermediate (10+2) with MPC subjects + TS EAMCET rank (70% seats via EAMCET, 30% Management/NRI)."
+  },
+  {
+    "question": "Does TKRCET have lateral entry for diploma students?",
+    "answer": "Yes, diploma holders can enter directly into 2nd year through ECET (10% of intake).",
+    "combined_text": "Does TKRCET have lateral entry for diploma students? | ANSWER: Yes, diploma holders can enter directly into 2nd year through ECET (10% of intake)."
+  },
+  {
+    "question": "What is the eligibility for M.Tech admission?",
+    "answer": "B.E/B.Tech degree with GATE/PGECET rank (or sponsorship with 2+ years’ work experience).",
+    "combined_text": "What is the eligibility for M.Tech admission? | ANSWER: B.E/B.Tech degree with GATE/PGECET rank (or sponsorship with 2+ years’ work experience)."
+  },
+  {
+    "question": "What is the intake capacity for MBA?",
+    "answer": "60 seats.",
+    "combined_text": "What is the intake capacity for MBA? | ANSWER: 60 seats."
+  },
+  {
+    "question": "Does the college provide updated syllabus and regulations online?",
+    "answer": "Yes – syllabus, regulations, and academic calendar are available on tkrcet.ac.in",
+    "combined_text": "Does the college provide updated syllabus and regulations online? | ANSWER: Yes – syllabus, regulations, and academic calendar are available on tkrcet.ac.in"
+  },
+  {
+    "question": "Does TKRCET have a Research & Innovation Cell?",
+    "answer": "Yes, TKR Centre for Research & Innovation with 21,000 sq.ft area, focusing on innovation, prototyping, and entrepreneurship.",
+    "combined_text": "Does TKRCET have a Research & Innovation Cell? | ANSWER: Yes, TKR Centre for Research & Innovation with 21,000 sq.ft area, focusing on innovation, prototyping, and entrepreneurship."
+  },
+  {
+    "question": "Has TKRCET received any patents or projects?",
+    "answer": "Yes – multiple patents, funded projects (DST, MSME), and over 51 student projects submitted.",
+    "combined_text": "Has TKRCET received any patents or projects? | ANSWER: Yes – multiple patents, funded projects (DST, MSME), and over 51 student projects submitted."
+  },
+  {
+    "question": "Does TKRCET support student startups?",
+    "answer": "Yes, through its Entrepreneurship Development Cell (EDC), established in 2007.",
+    "combined_text": "Does TKRCET support student startups? | ANSWER: Yes, through its Entrepreneurship Development Cell (EDC), established in 2007."
+  },
+  {
+    "question": "How big is the library?",
+    "answer": "1,740 sq.m. carpet area, 94,760+ volumes, 12,086 titles, 6,230 e-journals.",
+    "combined_text": "How big is the library? | ANSWER: 1,740 sq.m. carpet area, 94,760+ volumes, 12,086 titles, 6,230 e-journals."
+  },
+  {
+    "question": "Does the college provide hostel facilities?",
+    "answer": "Yes – separate hostels for boys and girls.",
+    "combined_text": "Does the college provide hostel facilities? | ANSWER: Yes – separate hostels for boys and girls."
+  },
+  {
+    "question": "What kind of sports facilities are available?",
+    "answer": "5-acre playground, cricket, football, basketball, badminton, table tennis, caroms, chess.",
+    "combined_text": "What kind of sports facilities are available? | ANSWER: 5-acre playground, cricket, football, basketball, badminton, table tennis, caroms, chess."
+  },
+  {
+    "question": "Does TKRCET have Virtual Labs?",
+    "answer": "Yes, virtual labs are available to support digital learning.",
+    "combined_text": "Does TKRCET have Virtual Labs? | ANSWER: Yes, virtual labs are available to support digital learning."
+  },
+  {
+    "question": "What clubs/activities can students join?",
+    "answer": "NCC, NSS, Entrepreneurship Cell, Technical clubs, Cultural clubs, Sports clubs.",
+    "combined_text": "What clubs/activities can students join? | ANSWER: NCC, NSS, Entrepreneurship Cell, Technical clubs, Cultural clubs, Sports clubs."
+  },
+  {
+    "question": "Does the college conduct hackathons?",
+    "answer": "Yes, TKRCET students participated and even won in Smart India Hackathon.",
+    "combined_text": "Does the college conduct hackathons? | ANSWER: Yes, TKRCET students participated and even won in Smart India Hackathon."
+  },
+  {
+    "question": "Are there opportunities for cultural exposure?",
+    "answer": "Yes – cultural fests, seminars, technical symposiums, and annual day celebrations.",
+    "combined_text": "Are there opportunities for cultural exposure? | ANSWER: Yes – cultural fests, seminars, technical symposiums, and annual day celebrations."
+  },
+  {
+    "question": "Is there an Alumni Association?",
+    "answer": "Yes – Established in 2008 (Reg. ID 322/2008).",
+    "combined_text": "Is there an Alumni Association? | ANSWER: Yes – Established in 2008 (Reg. ID 322/2008)."
+  },
+  {
+    "question": "Does TKRCET have a Placement Cell?",
+    "answer": "Yes – Placement & Training Cell headed by Mr. A. Balakrishna Reddy.",
+    "combined_text": "Does TKRCET have a Placement Cell? | ANSWER: Yes – Placement & Training Cell headed by Mr. A. Balakrishna Reddy."
+  },
+  {
+    "question": "What kind of companies recruit from TKRCET?",
+    "answer": "Both IT and Core sector companies visit regularly. Recruiter details are available on the website.",
+    "combined_text": "What kind of companies recruit from TKRCET? | ANSWER: Both IT and Core sector companies visit regularly. Recruiter details are available on the website."
+  },
+  {
+    "question": "Are students trained before placements?",
+    "answer": "Yes – soft skills, technical training, mock interviews, and aptitude sessions are conducted.",
+    "combined_text": "Are students trained before placements? | ANSWER: Yes – soft skills, technical training, mock interviews, and aptitude sessions are conducted."
+  },
+  {
+    "question": "Does the college provide transportation for day scholars?",
+    "answer": "Yes – the college has a bus/transport facility covering major parts of Hyderabad.",
+    "combined_text": "Does the college provide transportation for day scholars? | ANSWER: Yes – the college has a bus/transport facility covering major parts of Hyderabad."
+  },
+  {
+    "question": "Is there a dress code or uniform policy in the college?",
+    "answer": "Yes – students are expected to follow dress code guidelines; formal attire is generally recommended.",
+    "combined_text": "Is there a dress code or uniform policy in the college? | ANSWER: Yes – students are expected to follow dress code guidelines; formal attire is generally recommended."
+  },
+  {
+    "question": "Does the college conduct orientation programs for new students?",
+    "answer": "Yes – orientation/induction programs are organized at the beginning of the academic year.",
+    "combined_text": "Does the college conduct orientation programs for new students? | ANSWER: Yes – orientation/induction programs are organized at the beginning of the academic year."
+  },
+  {
+    "question": "What kind of medical facilities are available on campus?",
+    "answer": "The campus has a medical facility with first aid and tie-ups with nearby hospitals.",
+    "combined_text": "What kind of medical facilities are available on campus? | ANSWER: The campus has a medical facility with first aid and tie-ups with nearby hospitals."
+  },
+  {
+    "question": "Does the college support internships and industry collaborations?",
+    "answer": "Yes – the Placement Cell and departments help students with internships and industry projects.",
+    "combined_text": "Does the college support internships and industry collaborations? | ANSWER: Yes – the Placement Cell and departments help students with internships and industry projects."
+  },
+  {
+    "question": "What are the procedures for applying for leave?",
+    "answer": "Students need to submit a leave application to their class advisor/HoD for approval.",
+    "combined_text": "What are the procedures for applying for leave? | ANSWER: Students need to submit a leave application to their class advisor/HoD for approval."
+  },
+  {
+    "question": "How do students access their academic timetable?",
+    "answer": "Timetables are shared by the Exam Branch and respective departments via notice boards/website.",
+    "combined_text": "How do students access their academic timetable? | ANSWER: Timetables are shared by the Exam Branch and respective departments via notice boards/website."
+  },
+  {
+    "question": "Are there grievance redressal mechanisms for students?",
+    "answer": "Yes – the college has a grievance redressal system and online complaint cell.",
+    "combined_text": "Are there grievance redressal mechanisms for students? | ANSWER: Yes – the college has a grievance redressal system and online complaint cell."
+  },
+  {
+    "question": "Does the college provide placement training programs?",
+    "answer": "Yes – soft skills, aptitude, technical training, and mock interviews are provided before placements.",
+    "combined_text": "Does the college provide placement training programs? | ANSWER: Yes – soft skills, aptitude, technical training, and mock interviews are provided before placements."
+  },
+  {
+    "question": "Are there any international collaborations or exchange programs?",
+    "answer": "Some MoUs exist for research/academic exchange; opportunities are published on the website.",
+    "combined_text": "Are there any international collaborations or exchange programs? | ANSWER: Some MoUs exist for research/academic exchange; opportunities are published on the website."
+  },
+  {
+    "question": "What kind of canteen and food facilities are available?",
+    "answer": "The college canteen provides hygienic food, snacks, and beverages at subsidized rates.",
+    "combined_text": "What kind of canteen and food facilities are available? | ANSWER: The college canteen provides hygienic food, snacks, and beverages at subsidized rates."
+  },
+  {
+    "question": "How are internal marks calculated in the college?",
+    "answer": "As per JNTUH norms, internal marks include mid exams, assignments, and attendance.",
+    "combined_text": "How are internal marks calculated in the college? | ANSWER: As per JNTUH norms, internal marks include mid exams, assignments, and attendance."
+  },
+  {
+    "question": "Are parents regularly updated about student performance?",
+    "answer": "Yes – through parent-teacher meetings and online result updates.",
+    "combined_text": "Are parents regularly updated about student performance? | ANSWER: Yes – through parent-teacher meetings and online result updates."
+  },
+  {
+    "question": "Does the college have an anti-ragging cell?",
+    "answer": "Yes – anti-ragging committee is active, with emergency contact numbers displayed on campus.",
+    "combined_text": "Does the college have an anti-ragging cell? | ANSWER: Yes – anti-ragging committee is active, with emergency contact numbers displayed on campus."
+  },
+  {
+    "question": "Are seminars, guest lectures, and workshops conducted frequently?",
+    "answer": "Yes – departments regularly conduct workshops, seminars, and expert lectures.",
+    "combined_text": "Are seminars, guest lectures, and workshops conducted frequently? | ANSWER: Yes – departments regularly conduct workshops, seminars, and expert lectures."
+  },
+  {
+    "question": "What are the college’s working hours and contact details?",
+    "answer": "The college typically works from 9:40 AM to 4:20 PM (Monday–Saturday).\n+91 9849477550\ninfo@tkrcet.ac.in\ntkrcet.ac.in",
+    "combined_text": "What are the college’s working hours and contact details?  | ANSWER: The college typically works from 9:40 AM to 4:20 PM (Monday–Saturday).\n+91 9849477550\ninfo@tkrcet.ac.in\ntkrcet.ac.in"
+  },
+  {
+    "question": "How do I apply for admission and what documents are needed?",
+    "answer": "For B.Tech – Apply through TS EAMCET counselling (70% seats) or Management/NRI quota (30%).\nFor M.Tech – Admission via GATE/PGECET or sponsored category.\nFor MBA – Through ICET or equivalent test.\n10th & 12th marksheets, TC, EAMCET/ECET/PGECET rank card, caste/income certificate (if applicable), ID proof, passport-size photos.",
+    "combined_text": "How do I apply for admission and what documents are needed? | ANSWER: For B.Tech – Apply through TS EAMCET counselling (70% seats) or Management/NRI quota (30%).\nFor M.Tech – Admission via GATE/PGECET or sponsored category.\nFor MBA – Through ICET or equivalent test.\n10th & 12th marksheets, TC, EAMCET/ECET/PGECET rank card, caste/income certificate (if applicable), ID proof, passport-size photos."
+  },
+  {
+    "question": "What courses and programs does the college offer?",
+    "answer": "UG (B.Tech): Civil, EEE, CSE, ECE, Mechanical, IT, CSE (AI & ML), CSE (Data Science).\nPG: M.Tech (CSE, Power Electronics, Production Engineering), MBA.\nDiploma: Polytechnic – Civil, EEE, MECH, ECE, CSE.",
+    "combined_text": "What courses and programs does the college offer? | ANSWER: UG (B.Tech): Civil, EEE, CSE, ECE, Mechanical, IT, CSE (AI & ML), CSE (Data Science).\nPG: M.Tech (CSE, Power Electronics, Production Engineering), MBA.\nDiploma: Polytechnic – Civil, EEE, MECH, ECE, CSE."
+  },
+  {
+    "question": "What are the fee structures for various programs?",
+    "answer": "Fee structures are regulated by TAFRC & Govt. of Telangana (varies by program). Updated fee details are published on the official website during admission.",
+    "combined_text": "What are the fee structures for various programs? | ANSWER: Fee structures are regulated by TAFRC & Govt. of Telangana (varies by program). Updated fee details are published on the official website during admission."
+  },
+  {
+    "question": "How do I apply for scholarships and financial aid?",
+    "answer": "Students can apply for:\nGovernment scholarships (SC/ST/BC/EBC/Minority).\nMerit-based scholarships through the college.\nFinancial aid is processed via online state government portals.",
+    "combined_text": "How do I apply for scholarships and financial aid? | ANSWER: Students can apply for:\nGovernment scholarships (SC/ST/BC/EBC/Minority).\nMerit-based scholarships through the college.\nFinancial aid is processed via online state government portals."
+  },
+  {
+    "question": "What are the library timings and rules?",
+    "answer": "The library usually operates during college hours (9:40 AM – 5:30 PM). Borrowing limits depend on the student’s program. Books must be returned on time; late returns attract a fine.",
+    "combined_text": "What are the library timings and rules?  | ANSWER: The library usually operates during college hours (9:40 AM – 5:30 PM). Borrowing limits depend on the student’s program. Books must be returned on time; late returns attract a fine."
+  },
+  {
+    "question": "How do I get a student ID card?",
+    "answer": "After admission confirmation, the college issues ID cards through the administrative office.",
+    "combined_text": "How do I get a student ID card?  | ANSWER: After admission confirmation, the college issues ID cards through the administrative office."
+  },
+  {
+    "question": "What are the hostel rules and accommodation facilities?",
+    "answer": "Separate hostels for boys and girls. Rules include maintaining discipline, fixed entry/exit timings, and prohibition of ragging/alcohol.",
+    "combined_text": "What are the hostel rules and accommodation facilities?  | ANSWER: Separate hostels for boys and girls. Rules include maintaining discipline, fixed entry/exit timings, and prohibition of ragging/alcohol."
+  },
+  {
+    "question": "How can I contact academic advisors or departments?",
+    "answer": "Each department has a Head of Department (HoD) and faculty advisors. Students can approach them during office hours or via departmental email.",
+    "combined_text": "How can I contact academic advisors or departments?  | ANSWER: Each department has a Head of Department (HoD) and faculty advisors. Students can approach them during office hours or via departmental email."
+  },
+  {
+    "question": "What extracurricular clubs and activities are available?",
+    "answer": "NCC, NSS, Entrepreneurship Development Cell, Cultural clubs, Technical clubs, Sports clubs.",
+    "combined_text": "What extracurricular clubs and activities are available?  | ANSWER: NCC, NSS, Entrepreneurship Development Cell, Cultural clubs, Technical clubs, Sports clubs."
+  },
+  {
+    "question": "How is attendance calculated and what is the minimum requirement?",
+    "answer": "Attendance is calculated per subject. Generally, 75% attendance is mandatory as per JNTUH norms.",
+    "combined_text": "How is attendance calculated and what is the minimum requirement?  | ANSWER: Attendance is calculated per subject. Generally, 75% attendance is mandatory as per JNTUH norms."
+  },
+  {
+    "question": "What is the college’s examination schedule and result policy?",
+    "answer": "Exams are conducted as per the academic calendar. Results are published on the official website (autonomous portals).",
+    "combined_text": "What is the college’s examination schedule and result policy?  | ANSWER: Exams are conducted as per the academic calendar. Results are published on the official website (autonomous portals)."
+  },
+  {
+    "question": "How do I access online learning resources or study materials?",
+    "answer": "Through college LMS, digital library, NPTEL/SWAYAM courses, and department portals.",
+    "combined_text": "How do I access online learning resources or study materials?  | ANSWER: Through college LMS, digital library, NPTEL/SWAYAM courses, and department portals."
+  },
+  {
+    "question": "What is the process for submitting assignments or project reports?",
+    "answer": "Assignments are submitted to respective faculty (hardcopy or online). Final project reports must follow JNTUH guidelines and be submitted through the department.",
+    "combined_text": "What is the process for submitting assignments or project reports?  | ANSWER: Assignments are submitted to respective faculty (hardcopy or online). Final project reports must follow JNTUH guidelines and be submitted through the department."
+  },
+  {
+    "question": "How do I get academic counseling or support services?",
+    "answer": "Students can approach their faculty advisors, HoDs, or counseling cell for academic or personal support.",
+    "combined_text": "How do I get academic counseling or support services?  | ANSWER: Students can approach their faculty advisors, HoDs, or counseling cell for academic or personal support."
+  },
+  {
+    "question": "What are the rules for discipline and code of conduct?",
+    "answer": "Students are expected to follow the college code of conduct, maintain discipline, wear ID cards, avoid ragging, and behave responsibly on campus.",
+    "combined_text": "What are the rules for discipline and code of conduct?  | ANSWER: Students are expected to follow the college code of conduct, maintain discipline, wear ID cards, avoid ragging, and behave responsibly on campus."
+  },
+  {
+    "question": "How and when do I withdraw or transfer from the college?",
+    "answer": "A written application must be submitted to the principal/administrative office, along with required documents. Approvals depend on JNTUH/AICTE norms.",
+    "combined_text": "How and when do I withdraw or transfer from the college?  | ANSWER: A written application must be submitted to the principal/administrative office, along with required documents. Approvals depend on JNTUH/AICTE norms."
+  },
+  {
+    "question": "What are the library borrowing limits and penalties?",
+    "answer": "Typically, 2–4 books per student for 2–3 weeks. Late return incurs a fine per day.",
+    "combined_text": "What are the library borrowing limits and penalties?  | ANSWER: Typically, 2–4 books per student for 2–3 weeks. Late return incurs a fine per day."
+  },
+  {
+    "question": "Are there facilities for differently-abled students?",
+    "answer": "Yes – ramps, accessible toilets, and exam support (extra time/scribes) are provided as per government guidelines.",
+    "combined_text": "Are there facilities for differently-abled students?  | ANSWER: Yes – ramps, accessible toilets, and exam support (extra time/scribes) are provided as per government guidelines."
+  },
+  {
+    "question": "What are the safety and emergency protocols on campus?",
+    "answer": "Emergency contacts are displayed on campus. The college has a medical facility, anti-ragging committee, fire safety measures, and security guards.",
+    "combined_text": "What are the safety and emergency protocols on campus? | ANSWER: Emergency contacts are displayed on campus. The college has a medical facility, anti-ragging committee, fire safety measures, and security guards."
+  },
+  {
+    "question": "hi",
+    "answer": "Hello!, How can I help you today?",
+    "combined_text": "hi | ANSWER: Hello!, How can I help you today?"
+  },
+  {
+    "question": "How many books are there in library",
+    "answer": "The college has central library with 94,760+ volumes",
+    "combined_text": "How many books are there in library | ANSWER: The college has central library with 94,760+ volumes"
+  },
+  {
+    "question": "hello",
+    "answer": "Hello!, How can I help you today?",
+    "combined_text": "hello | ANSWER: Hello!, How can I help you today?"
+  },
+  {
+    "question": "hey",
+    "answer": "Hello!, How can I help you today?",
+    "combined_text": "hey | ANSWER: Hello!, How can I help you today?"
+  },
+  {
+    "question": "Do college have ground",
+    "answer": "Yes",
+    "combined_text": "Do college have ground | ANSWER: Yes"
+  }
+]

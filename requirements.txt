@@ -1,0 +1,15 @@
+sentence-transformers
+transformers
+torch
+accelerate
+sentencepiece
+langchain
+langchain-community
+requests
+beautifulsoup4
+urllib3
+openai
+chromadb>=0.4.22
+numpy>=1.24
+tqdm>=4.66
+pandas
