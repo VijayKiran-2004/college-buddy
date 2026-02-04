@@ -205,3 +205,14 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Custom specific ignores
+*_log.txt
+debug_*.txt
+status_log.txt
+diff_log.txt
+*backup*
+login_fail.html
+login_result.html
+debug_page.html
+login_page_debug.html

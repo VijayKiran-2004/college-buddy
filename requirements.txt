@@ -1,9 +1,24 @@
-# Core ML & NLP
-sentence-transformers==3.0.0  # For generating text embeddings
-faiss-cpu>=1.7.4              # Vector similarity search (CPU version)
-rank-bm25==0.2.2              # Keyword search for hybrid retrieval
-numpy>=1.24.0                 # Numerical operations
+# Core Dependencies
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+pandas>=2.0.0
+numpy>=1.24.0
 
-# Utilities
-requests>=2.31.0              # For API calls to Ollama
-tqdm>=4.66.0                  # Progress bars
+# Database
+# sqlite3  # Built-in with Python
+
+# Web Framework (for admin dashboard)
+flask>=3.0.0
+
+# Optional: Translation (if using Google Translate API)
+# googletrans==4.0.0rc1
+
+# Optional: For better performance
+# lxml>=4.9.0
+
+# Development
+# pytest>=7.4.0
+# black>=23.0.0
+
+# CORS support
+flask-cors>=4.0.0

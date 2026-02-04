@@ -35,10 +35,8 @@ def build_context_prompt(query, documents, history_context=""):
     if history_context:
         history_text = f"\nRecent conversation:\n{history_context}\n"
 
-    # Relaxed prompt - more helpful, less strict
-    prompt = f"""You are a friendly and helpful TKRCET College Assistant.
-
-Your role is to assist students, parents, and visitors with information about the college.
+    # Optimized prompt - concise, relevant, and focused
+    prompt = f"""You are a helpful TKRCET College Assistant.
 
 {history_text}
 Available Information:
@@ -46,16 +44,18 @@ Available Information:
 
 Student's Question: {query}
 
-Instructions:
-1. Answer based on the provided information if available
-2. Be friendly and conversational in tone
-3. Provide COMPLETE and DETAILED answers - don't be too brief
-4. If the context mentions specific names, titles, or details, INCLUDE them in your answer
-5. For person-related questions, always mention the full name and designation if available
-6. If information is missing, say: "I couldn't find that specific detail in my records. Please contact the college directly for accurate information."
-7. Keep responses clear, informative, and helpful
+INSTRUCTIONS:
+1. Answer the question using the information provided above
+2. Synthesize a helpful response from the available context
+3. Keep response to 2-5 sentences - be concise but complete
+4. Extract and use any relevant details from the context
+5. If the context contains useful information, use it to form your answer
+6. Be helpful and informative - provide value to the student
+7. For admission/facilities/courses: summarize key points from the context
 
 Answer:"""
+    
+    return prompt
     
     return prompt
 
@@ -86,13 +86,16 @@ Available Information About People/Staff:
 Question: {query}
 
 CRITICAL Instructions:
-1. ONLY use names that appear in the "Available Information About People/Staff" section above
-2. DO NOT make up or invent any names - if you don't see a name above, say you don't have that information
-3. CAREFULLY READ the context and extract ANY names with titles (Dr., Prof., etc.)
-4. If you find a name with "Head", "Principal", "Dean", "HOD", or similar title, QUOTE IT EXACTLY in your answer
-5. Provide the person's full name, designation, and any other details available FROM THE CONTEXT ONLY
-6. If truly no relevant person is mentioned in the context above, say: "I don't have specific details about this person. Please contact the college administration."
-7. NEVER say names like "Dr. Rahul Sharma" or "Dr. Rajeev Kumar" unless they appear in the context above
+1. Answer ONLY the specific question asked about the person/role
+2. ONLY use names and details that appear in the "Available Information About People/Staff" section above
+3. DO NOT make up or invent any names - if you don't see a name above, say you don't have that information
+4. CAREFULLY READ the context and extract the exact name with title (Dr., Prof., etc.)
+5. If you find a name with "Head", "Principal", "Dean", "HOD", or similar title, QUOTE IT EXACTLY
+6. Provide the person's full name, designation, and relevant details FROM THE CONTEXT ONLY
+7. Keep response to 2-3 sentences - be concise and direct
+8. If no relevant person is mentioned in the context above, say: "I don't have specific details about this person. Please contact the college administration."
+9. NEVER mention unrelated people or topics from the context
+10. Be precise and factual - no filler phrases
 
 Response:"""
 

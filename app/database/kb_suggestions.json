@@ -1,0 +1,75 @@
+{
+  "pending": [
+    {
+      "query": "whats the admission process?",
+      "timestamp": "2026-01-26T10:38:45.504798",
+      "category": "personnel",
+      "facts": [
+        {
+          "key": "contact information for admissions",
+          "value": "You can visit the college website: https://tkrcet.ac.in or contact the college directly to inquire about the admission process."
+        }
+      ],
+      "confidence": 0.9,
+      "status": "pending"
+    },
+    {
+      "query": "now tell results",
+      "timestamp": "2026-01-26T11:18:38.709206",
+      "category": "personnel",
+      "facts": [
+        {
+          "key": "contact method",
+          "value": "Visit the college website or contact the college directly"
+        }
+      ],
+      "confidence": 0.9,
+      "status": "pending"
+    },
+    {
+      "query": "how r u?",
+      "timestamp": "2026-01-26T18:45:16.829967",
+      "category": "personnel",
+      "facts": [
+        {
+          "key": "website_link",
+          "value": "https://tkrcet.ac.in"
+        }
+      ],
+      "confidence": 1.0,
+      "status": "pending"
+    },
+    {
+      "query": "what is the admission process?",
+      "timestamp": "2026-01-26T18:54:28.270438",
+      "category": "personnel",
+      "facts": [
+        {
+          "key": "website link",
+          "value": "https://tkrcet.ac.in"
+        },
+        {
+          "key": "contact method",
+          "value": "directly"
+        }
+      ],
+      "confidence": 0.9,
+      "status": "pending"
+    },
+    {
+      "query": "i need results",
+      "timestamp": "2026-01-28T00:57:39.751986",
+      "category": "personnel",
+      "facts": [
+        {
+          "key": "contact method",
+          "value": "Visit the college website: https://tkrcet.ac.in or contact the college directly"
+        }
+      ],
+      "confidence": 0.9,
+      "status": "pending"
+    }
+  ],
+  "approved": [],
+  "rejected": []
+}

@@ -1,0 +1,56 @@
+# UltraRAG Configuration for College-Buddy Chatbot
+
+# MCP Servers
+servers:
+  retriever:
+    path: servers/retriever
+  generation:
+    path: servers/generation
+
+# Configuration
+config:
+  # Retriever Configuration
+  retriever:
+    backend: sentence_transformers
+    model_name_or_path: all-MiniLM-L6-v2
+    corpus_path: app/database/vectordb/corpus_ultrarag.jsonl
+    collection_name: college_buddy
+    
+    # Index settings
+    index_backend: faiss
+    index_backend_configs:
+      faiss:
+        index_path: app/database/vectordb/ultrarag_faiss.index
+        index_chunk_size: 10000
+        index_use_gpu: false
+        metric_type: L2
+    
+    # BM25 for hybrid search
+    bm25_config:
+      lang: en
+      save_path: app/database/vectordb/ultrarag_bm25.pkl
+    
+    # Search parameters
+    top_k: 5
+    batch_size: 16
+    
+  # Generation Configuration
+  generation:
+    backend: ollama
+    model_name: gemma3:4b
+    base_url: http://localhost:11434/api/generate
+    
+    # Generation parameters
+    temperature: 0.3
+    max_tokens: 250
+    num_ctx: 2048
+
+# Pipeline Workflow
+pipeline:
+  - retriever.retriever_init
+  - retriever.retriever_search:
+      output:
+        ret_psg: retrieved_passages
+  - generation.generate:
+      input:
+        context: retrieved_passages
